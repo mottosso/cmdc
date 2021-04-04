@@ -19,6 +19,43 @@ That's what this repository is for.
 
 <br>
 
+### Example
+
+The bindings should aim to match Maya Python API 2.0 as closely as possible, with the exception of being open source and to *never* allow Maya to crash as a result of calling any function or method.
+
+```py
+import cmdc
+
+typ = cmdc.TypeId(16)
+
+mat4 = cmdc.Matrix()
+mat4 *= cmdc.Matrix().inverse()
+
+vec3 = cmdc.Vector()
+vec3.x = 6
+
+quat = cmdc.Quaternion(angle=0.5, axis=cmdc.Vector(1, 0, 0))
+mat4 *= quat
+
+# No need for MString
+string = str()
+
+# Modify the Maya scene graph
+from maya import standalone
+standalone.initialize()
+fn = cmdc.FnDependencyNode()
+r = fn.create("reverse", name="myReverse")
+print(fn.name())
+
+# This next line really shouldn't work, should require MFnDagNode
+t = fn.create("transform", name="myTransform")
+print(fn.name())
+
+print("Success")
+```
+
+<br>
+
 ### Goal
 
 `cmdc` should have the same advantages over 1.0 as 2.0, and more.
@@ -86,40 +123,3 @@ More easy but tedious things.
 
 - Add more Maya versions
 - Add more platforms
-
-<br>
-
-### Usage
-
-The bindings should aim to match Maya Python API 2.0 as closely as possible, with the exception of being open source and to *never* allow Maya to crash as a result of calling any function or method.
-
-```py
-import cmdc
-
-typ = cmdc.TypeId(16)
-
-mat4 = cmdc.Matrix()
-mat4 *= cmdc.Matrix().inverse()
-
-vec3 = cmdc.Vector()
-vec3.x = 6
-
-quat = cmdc.Quaternion(angle=0.5, axis=cmdc.Vector(1, 0, 0))
-mat4 *= quat
-
-# No need for MString
-string = str()
-
-# Modify the Maya scene graph
-from maya import standalone
-standalone.initialize()
-fn = cmdc.FnDependencyNode()
-r = fn.create("reverse", name="myReverse")
-print(fn.name())
-
-# This next line really shouldn't work, should require MFnDagNode
-t = fn.create("transform", name="myTransform")
-print(fn.name())
-
-print("Success")
-```
