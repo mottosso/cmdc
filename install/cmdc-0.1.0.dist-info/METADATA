@@ -1,0 +1,15 @@
+Metadata-Version: 2.1
+Name: cmdc
+Version: 0.1.0
+Summary: A test project using pybind11
+Home-page: https://github.com/mottosso/cmdc
+Author: Marcus Ottosson
+Author-email: me@mottosso.com
+License: UNKNOWN
+Platform: UNKNOWN
+Provides-Extra: test
+Requires-Dist: pytest ; extra == 'test'
+
+UNKNOWN
+
+
