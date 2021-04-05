@@ -4,7 +4,7 @@
 
 <br>
 
-Another set of bindings for the C++ API of Maya 2018-2022, 
+Another set of bindings for the C++ API of Maya 2018-2022.
 
 **Why?**
 
