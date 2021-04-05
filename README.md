@@ -1,10 +1,10 @@
 <a href=/cmda/><p align=center><img width=90 src=https://user-images.githubusercontent.com/2152766/113510233-ca120400-9551-11eb-9a34-b8846a2c959c.png></p></a>
 
-<p align=center>A safe subset of <a href=https://help.autodesk.com/view/MAYAUL/2020/ENU/?guid=__py_ref_index_html><code>maya.api.OpenMaya</code></a></p>
+<p align=center>a.k.a. "Maya Python API 3.0"</p>
 
 <br>
 
-Another set of bindings for the C++ API of Maya 2018-2022, a.k.a. "Maya Python API 3.0"
+Another set of bindings for the C++ API of Maya 2018-2022, 
 
 **Why?**
 
