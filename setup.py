@@ -4,7 +4,7 @@ from pybind11.setup_helpers import Pybind11Extension, build_ext
 
 import os
 
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 
 ext_modules = [
     Pybind11Extension(
@@ -24,7 +24,7 @@ setup(
     author="Marcus Ottosson",
     author_email="me@mottosso.com",
     url="https://github.com/mottosso/cmdc",
-    description="A test project using pybind11",
+    description="A replacement for maya.api.OpenMaya",
     long_description="",
     ext_modules=ext_modules,
     extras_require={"test": "pytest"},
