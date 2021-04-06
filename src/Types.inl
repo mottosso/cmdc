@@ -30,16 +30,6 @@ py::class_<MTypeId>(m, "TypeId")
     }
 );
 
-py::class_<MObject>(m, "Object")
-    .def(py::init<>())
-    .def(py::init<const MObject &>())
-
-    .def("isNull", &MObject::isNull)
-
-    .def("__repr__", [](const MObject &a) {
-        return "<cmdc.CObject()>";
-    }
-);
 
 
 py::class_<MObjectHandle>(m, "ObjectHandle")

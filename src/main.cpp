@@ -1,7 +1,15 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/operators.h>
 
+#include <cstdlib>
+#include <fstream>
+#include <iostream>
+#include <regex>
+#include <string>
+#include <vector>
+
 // Types
+#include <maya/MFn.h>
 #include <maya/MObjectHandle.h>
 #include <maya/MVector.h>
 #include <maya/MQuaternion.h>
@@ -15,6 +23,7 @@
 
 // Function sets
 #include <maya/MFnDependencyNode.h>
+
 
 #define STRINGIFY(x) #x
 #define MACRO_STRINGIFY(x) STRINGIFY(x)
@@ -34,6 +43,8 @@ PYBIND11_MODULE(cmdc, m) {
 
     )pbdoc";
 
+    #include "MFn.inl"
+    #include "MObject.inl"
     #include "Types.inl"
     #include "Math.inl"
     #include "MFnDependencyNode.inl"
