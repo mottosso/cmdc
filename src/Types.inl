@@ -30,26 +30,6 @@ py::class_<MTypeId>(m, "TypeId")
     }
 );
 
-py::class_<MObject>(m, "Object")
-    .def(py::init<>())
-    .def(py::init<const MObject &>())
-
-    .def("isNull", &MObject::isNull)
-    .def("hasFn", [](MObject& self, MFn::Type type) -> bool {
-        return self.hasFn(type);
-    })
-    .def("apiType", [](MObject& self) -> MFn::Type {
-        return self.apiType();
-    })
-    .def("apiTypeStr", [](MObject& self) -> const char* {
-        return self.apiTypeStr();
-    })
-
-    .def("__repr__", [](const MObject &a) {
-        return "<cmdc.CObject()>";
-    }
-);
-
 
 
 py::class_<MObjectHandle>(m, "ObjectHandle")

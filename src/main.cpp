@@ -44,6 +44,7 @@ PYBIND11_MODULE(cmdc, m) {
     )pbdoc";
 
     #include "MFn.inl"
+    #include "MObject.inl"
     #include "Types.inl"
     #include "Math.inl"
     #include "MFnDependencyNode.inl"
