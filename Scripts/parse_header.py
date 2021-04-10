@@ -13,6 +13,9 @@ import sys
 import textwrap
 
 import maya.api.OpenMaya 
+import maya.api.OpenMayaAnim
+import maya.api.OpenMayaRender
+import maya.api.OpenMayaUI
 
 LOG = logging.getLogger('parse_header')
 LOG.setLevel(logging.INFO)
@@ -54,7 +57,11 @@ STATIC_METHOD = (
 )
 
 def parse_header(header_name):
-    """Parse the given header."""
+    """Parse the given header.
+    
+    Args:
+        header_name (str): Name of the header to parse (eg, 'MDagPath')
+    """
 
     if header_name.endswith('.h'):
         class_name, __ = header_name.split('.')
@@ -75,12 +82,10 @@ def parse_header(header_name):
     class_methods = collections.defaultdict(list)
     class_methods['__init__'].append('    .def(py::init<>())')
 
+    m_class = find_maya_class(class_name)
+
     for (signature, arguments) in filter_function_lines(lines):
-        argument_list = list(map(str.strip, arguments.split(',')))
-
-        m_class = getattr(maya.api.OpenMaya, class_name)
-
-        method_name, return_type, arguments = parse_function(signature, argument_list)
+        method_name, arguments, return_type = parse_method(signature, arguments)
 
         if method_name in IGNORED_METHODS:
             continue
@@ -135,7 +140,20 @@ def parse_header(header_name):
         fp.write(code_str)
 
 
-def parse_function(signature, argument_list):
+def parse_method(signature, arguments):
+    """Parse the given method components.
+
+    Args:
+        signature (str): Method C++ signature string.
+        arguments (str): Method C++ arguments string.
+
+    Returns:
+        tuple[str]
+            - Name, arguments, return type
+    """
+
+    argument_list = list(map(str.strip, arguments.split(',')))
+
     signature_list = signature.split()
 
     method_name = None 
@@ -168,10 +186,21 @@ def parse_function(signature, argument_list):
     else:
         return_type = ' -> {}'.format(return_type)
 
-    return method_name, return_type, ', '.join(in_args)
+    return method_name, ', '.join(in_args), return_type
 
 
 def parse_arguments(argument_list, has_outs):
+    """Parse the given method arguments.
+
+    Args:
+        argument_list (list[str]): C++ argument strings.
+        has_outs (bool): True if the method has an out argument (mutable value passed by reference).
+
+    Returns:
+        tuple[list]
+            - In arguments, out arguments
+    """
+
     in_args = []
     out_args = []
 
@@ -207,6 +236,8 @@ def parse_arguments(argument_list, has_outs):
 
 
 def sanitize_argument(arg_str):
+    """Return the argument string, sans C++ specific tokens."""
+
     parts = arg_str.split()
     parts = [p for p in parts if p not in IGNORED_CPP_TOKENS]
 
@@ -216,7 +247,24 @@ def sanitize_argument(arg_str):
     return ' '.join(parts)
 
 
+def find_maya_class(class_name):
+    """Return the maya.api class (for docstrings)."""
+
+    for module in [
+        maya.api.OpenMaya,
+        maya.api.OpenMayaAnim,
+        maya.api.OpenMayaRender,
+        maya.api.OpenMayaUI
+    ]:
+        if hasattr(module, class_name):
+            return getattr(module, class_name)
+    
+    return type('NoModule', (), {'__doc__': 'TODO: Add docstring'})
+
+
 def filter_function_lines(lines):
+    """Yield the lines that appear to be C++ function declarations."""
+
     func_re = re.compile(r'.*\(.*\).*;')
 
     signature_re = re.compile(r'(.*)\(.*\).*;')
@@ -233,6 +281,8 @@ def filter_function_lines(lines):
 
 
 def filter_header_lines(class_name, lines):
+    """Yield the lines in the class definition."""
+
     in_class_definition = False
 
     class_def_re = re.compile(r'^class OPENMAYA_EXPORT {}'.format(class_name))
@@ -249,6 +299,8 @@ def filter_header_lines(class_name, lines):
 
 
 def main(*argv):
+    """Parse the given headers."""
+
     for name in argv:
         try:
             parse_header(name)
