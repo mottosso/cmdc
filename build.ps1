@@ -31,14 +31,14 @@ $env:INCLUDE_PATH = $env:DEVKIT_LOCATION + "\include"
 $env:INCLUDE_PATH += ";" + $env:DEVKIT_LOCATION + "\include\Python"
 $env:LIBRARY_PATH = $env:DEVKIT_LOCATION + "\lib"
 # $env:LIBRARY_PATH += ";" + $env:VCTOOLSINSTALLDIR + "lib\x64"
-$env:LIBRARIES = "Foundation OpenMaya OpenMayaRender OpenMayaUI OpenMayaAnim OpenMayaFX"
+$env:LIBRARIES = "OpenMaya OpenMayaRender OpenMayaUI OpenMayaAnim OpenMayaFX"
 
 # python27.lib is the only holdout from the devkit, bummer
 $env:LIBRARY_PATH += ";$env:MAYA_LOCATION\lib"
 
-."$env:MAYA_LOCATION/bin/mayapy.exe" .\Scripts\mfn.py parse
-
+# Clean previous build  (may not exist, that's OK)
 remove-item ./install/cmdc.pyd
-& "$env:MAYA_LOCATION/bin/mayapy.exe" -m pip install  ./ --target ./install
 
-."$env:MAYA_LOCATION/bin/mayapy.exe" .\Scripts\mfn.py clear
+& "$env:MAYA_LOCATION/bin/mayapy.exe" .\Scripts\mfn.py parse
+& "$env:MAYA_LOCATION/bin/mayapy.exe" -m pip install  ./ --target ./install
+& "$env:MAYA_LOCATION/bin/mayapy.exe" .\Scripts\mfn.py clear

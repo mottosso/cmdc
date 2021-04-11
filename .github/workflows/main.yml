@@ -1,0 +1,119 @@
+name: cmdc-build
+
+on:
+  push:
+    branches: [ master ]
+
+  pull_request:
+    branches: [ master ]
+
+  # This allows you to run this workflow manually from the GitHub "Actions" tab
+  workflow_dispatch:
+
+jobs:
+  maya-win:
+    runs-on: windows-latest
+
+    strategy:
+
+      # Without this, all containers stop if any fail
+      # That's bad, we want to know whether it's only one
+      # or if it happens to multiples or all.
+      fail-fast: false
+
+      matrix:
+       include:
+         - maya: "2017.4"
+           devkit: "https://autodesk-adn-transfer.s3.us-west-2.amazonaws.com/ADN%20Extranet/M%26E/Maya/devkit%202017/Maya2017u4_DEVKIT_Windows.zip"
+         - maya: "2018.7"
+           devkit: "https://autodesk-adn-transfer.s3.us-west-2.amazonaws.com/ADN%20Extranet/M%26E/Maya/devkit%202018/Autodesk_Maya_2018_7_Update_DEVKIT_Windows.zip"
+         - maya: "2019.3"
+           devkit: "https://autodesk-adn-transfer.s3.us-west-2.amazonaws.com/ADN%20Extranet/M%26E/Maya/devkit%202019/Autodesk_Maya_2019_3_Update_DEVKIT_Windows.zip"
+         - maya: "2020.4"
+           devkit: "https://autodesk-adn-transfer.s3-us-west-2.amazonaws.com/ADN+Extranet/M%26E/Maya/devkit+2020/Autodesk_Maya_2020_4_Update_DEVKIT_Windows.zip"
+         - maya: "2022"
+           devkit: "https://autodesk-adn-transfer.s3.us-west-2.amazonaws.com/ADN%20Extranet/M%26E/Maya/devkit%202022/Autodesk_Maya_2022_DEVKIT_Windows.zip"
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v1
+
+      - name: Devkit Source
+        run: |
+          Write-Host "Downloading ${{ matrix.devkit }}.."
+          Invoke-WebRequest -Uri ${{ matrix.devkit }} -OutFile "$pwd/devkit.zip"
+          Write-Host "Extracting devkit.zip.."
+          Expand-Archive -LiteralPath devkit.zip -DestinationPath $pwd
+
+      # Here we'll also translate Visual Studio's environment
+      # setup script - vcvars64.bat - to PowerShell
+      - name: Build
+        run: |
+          pushd "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build"
+          cmd /c "vcvars64.bat&set" | foreach {
+            if ($_ -match "=") {
+              $v = $_.split("="); set-item -force -path "ENV:\$($v[0])"  -value "$($v[1])"
+            }
+          }
+          popd
+          $env:DEVKIT_LOCATION = "$pwd\devkitBase"
+          ./build_win32.ps1
+
+  # maya-osx:
+  #   runs-on: macos-latest
+
+  #   strategy:
+
+  #     # Without this, all containers stop if any fail
+  #     # That's bad, we want to know whether it's only one
+  #     # or if it happens to multiples or all.
+  #     fail-fast: false
+
+  #     matrix:
+  #      include:
+  #        - maya: "2017.4"
+  #          devkit: "https://autodesk-adn-transfer.s3.us-west-2.amazonaws.com/ADN%20Extranet/M%26E/Maya/devkit%202017/Maya2017u4_DEVKIT_MacOSX.zip"
+  #        - maya: "2018.7"
+  #          devkit: "https://autodesk-adn-transfer.s3.us-west-2.amazonaws.com/ADN%20Extranet/M%26E/Maya/devkit%202018/Autodesk_Maya_2018_7_Update_DEVKIT_Mac.dmg"
+  #        - maya: "2019.3"
+  #          devkit: "https://autodesk-adn-transfer.s3.us-west-2.amazonaws.com/ADN%20Extranet/M%26E/Maya/devkit%202019/Autodesk_Maya_2019_3_Update_DEVKIT_Mac.dmg"
+  #        - maya: "2020.4"
+  #          devkit: "https://autodesk-adn-transfer.s3-us-west-2.amazonaws.com/ADN+Extranet/M%26E/Maya/devkit+2020/Autodesk_Maya_2020_4_Update_DEVKIT_Mac.dmg"
+  #        - maya: "2022"
+  #          devkit: "https://autodesk-adn-transfer.s3.us-west-2.amazonaws.com/ADN%20Extranet/M%26E/Maya/devkit%202022/Autodesk_Maya_2022_DEVKIT_Mac.dmg"
+
+  #   # Steps represent a sequence of tasks that will be executed as part of the job
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v1
+
+
+  # maya-linux:
+  #   # The type of runner that the job will run on
+  #   runs-on: ubuntu-latest
+
+  #   strategy:
+
+  #     # Without this, all containers stop if any fail
+  #     # That's bad, we want to know whether it's only one
+  #     # or if it happens to multiples or all.
+  #     fail-fast: false
+
+  #     matrix:
+  #      include:
+  #        - maya: "2017.4"
+  #          devkit: "https://autodesk-adn-transfer.s3.us-west-2.amazonaws.com/ADN%20Extranet/M%26E/Maya/devkit%202017/Maya2017u4_DEVKIT_Linux.tgz"
+  #        - maya: "2018.7"
+  #          devkit: "https://autodesk-adn-transfer.s3.us-west-2.amazonaws.com/ADN%20Extranet/M%26E/Maya/devkit%202018/Autodesk_Maya_2018_7_Update_DEVKIT_Linux.tgz"
+  #        - maya: "2019.3"
+  #          devkit: "https://autodesk-adn-transfer.s3.us-west-2.amazonaws.com/ADN%20Extranet/M%26E/Maya/devkit%202019/Autodesk_Maya_2019_3_Update_DEVKIT_Linux.tgz"
+  #        - maya: "2020.4"
+  #          devkit: "https://autodesk-adn-transfer.s3.us-west-2.amazonaws.com/ADN%20Extranet/M%26E/Maya/devkit%202020/Autodesk_Maya_2020_4_Update_DEVKIT_Linux.tgz"
+  #        - maya: "2022"
+  #          devkit: "https://autodesk-adn-transfer.s3.us-west-2.amazonaws.com/ADN%20Extranet/M%26E/Maya/devkit%202022/Autodesk_Maya_2022_DEVKIT_Linux.tgz"
+
+  #   # Steps represent a sequence of tasks that will be executed as part of the job
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v1
