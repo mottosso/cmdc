@@ -39,9 +39,16 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v1
 
-      # Here we'll translate Visual Studio's environment
+      - name: Devkit Source
+        run: |
+          Write-Host "Downloading ${{ matrix.devkit }}.."
+          Invoke-WebRequest -Uri ${{ matrix.devkit }} -OutFile "$pwd/devkit.zip"
+          Write-Host "Extracting devkit.zip.."
+          Expand-Archive -LiteralPath devkit.zip -DestinationPath $pwd
+
+      # Here we'll also translate Visual Studio's environment
       # setup script - vcvars64.bat - to PowerShell
-      - name: Visual Studio Environment
+      - name: Build
         run: |
           pushd "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build"
           cmd /c "vcvars64.bat&set" | foreach {
@@ -50,16 +57,6 @@ jobs:
             }
           }
           popd
-
-      - name: Devkit Source
-        run: |
-          Write-Host "Downloading ${{ matrix.devkit }}.."
-          Invoke-WebRequest -Uri ${{ matrix.devkit }} -OutFile "$pwd/devkit.zip"
-          Write-Host "Extracting devkit.zip.."
-          Expand-Archive -LiteralPath devkit.zip -DestinationPath $pwd
-
-      - name: Build
-        run: |
           $env:DEVKIT_LOCATION = "$pwd\devkitBase"
           ./build_win32.ps1
 
