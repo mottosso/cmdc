@@ -9,17 +9,18 @@
 #include <vector>
 
 // Types
-#include <maya/MFn.h>
-#include <maya/MObjectHandle.h>
-#include <maya/MVector.h>
-#include <maya/MQuaternion.h>
-#include <maya/MEulerRotation.h>
-#include <maya/MMatrix.h>
 #include <maya/MColor.h>
+#include <maya/MDagPath.h>
+#include <maya/MEulerRotation.h>
+#include <maya/MFn.h>
+#include <maya/MMatrix.h>
+#include <maya/MObjectHandle.h>
 #include <maya/MPoint.h>
-#include <maya/MTypeId.h>
-#include <maya/MString.h>
 #include <maya/MPlug.h>
+#include <maya/MQuaternion.h>
+#include <maya/MString.h>
+#include <maya/MTypeId.h>
+#include <maya/MVector.h>
 
 // Function sets
 #include <maya/MFnDependencyNode.h>
@@ -43,12 +44,13 @@ PYBIND11_MODULE(cmdc, m) {
 
     )pbdoc";
 
-    #include "MFn.inl"
-    #include "MObject.inl"
-    #include "Types.inl"
     #include "Math.inl"
+    #include "MDagPath.inl"
+    #include "MFn.inl"
     #include "MFnDependencyNode.inl"
+    #include "MObject.inl"
     #include "MPlug.inl"
+    #include "Types.inl"
 
 #ifdef VERSION_INFO
     m.attr("__version__") = MACRO_STRINGIFY(VERSION_INFO);
