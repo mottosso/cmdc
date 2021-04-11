@@ -53,7 +53,8 @@ jobs:
 
       - name: Devkit Source
         run: |
-          Expand-Archive -LiteralPath ${{ matrix.devkit }} -DestinationPath $pwd
+          Invoke-WebRequest -Uri "{{ matrix.devkit }}" -OutFile "$pwd/devkit.zip"
+          Expand-Archive -LiteralPath devkit.zip -DestinationPath $pwd
           $env:DEVKIT_LOCATION = $pwd + "\devkitBase"
 
       - name: Build
