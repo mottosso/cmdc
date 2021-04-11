@@ -56,7 +56,7 @@ jobs:
           Write-Host "Downloading ${{ matrix.devkit }}.."
           Invoke-WebRequest -Uri ${{ matrix.devkit }} -OutFile "$pwd/devkit.zip"
           Expand-Archive -LiteralPath devkit.zip -DestinationPath $pwd
-          $env:DEVKIT_LOCATION = $pwd + "\devkitBase"
+          $env:DEVKIT_LOCATION = "$pwd\devkitBase"
 
       - name: Build
         run: ./build_win32.ps1
