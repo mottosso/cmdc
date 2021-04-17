@@ -109,6 +109,13 @@ Raises IndexError if index is out of range.)pbdoc")
         MObject result;
         MStatus status = self.getDependNode(index, result);
 
+        if (!status) {            
+            MString error_msg("");
+                    error_msg += index;
+
+            throw std::out_of_range(error_msg.asChar());
+        }
+
         return result;
     }, R"pbdoc(getDependNode(index) -> MObject
 
