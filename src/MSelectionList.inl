@@ -1,5 +1,5 @@
 py::class_<MSelectionList> sel(m, "SelectionList");
-py::enum_<MSelectionList::MergeStrategy>(fn, "MergeStrategy")
+py::enum_<MSelectionList::MergeStrategy>(sel, "MergeStrategy")
     .value("kMergeNormal", MSelectionList::MergeStrategy::kMergeNormal)
     .value("kXORWithList", MSelectionList::MergeStrategy::kXORWithList)
     .value("kRemoveFromList", MSelectionList::MergeStrategy::kRemoveFromList)
@@ -141,7 +141,27 @@ Raises TypeError if there is no dependency node associated with the current item
 Raises IndexError if index is out of range.)pbdoc")
 
     .def("getPlug", [](MSelectionList & self, unsigned int index) -> MPlug {
-        throw std::logic_error{"Function not yet implemented."};   
+        if (index >= self.length()) {
+            MString error_msg;
+                    error_msg += index;
+            throw std::out_of_range(error_msg.asChar());
+        }
+
+        MStatus status;
+        MPlug result;
+        status = self.getPlug(index, result);
+
+        if (!status) {
+            throw pybind11::type_error("The specified item is not a plug.");
+        }
+
+        MObject attribute = result.attribute(&status);
+
+        if (!status || attribute.isNull()) {
+            throw pybind11::type_error("The specified item is not a plug.");
+        }
+
+        return result;    
     }, R"pbdoc(Returns the index'th item of the list as a plug. 
     
 Raises TypeError if the item is not a plug. 
@@ -213,7 +233,7 @@ does not contain a component.)pbdoc")
 Modify this list to contain the intersection of itself and the given list.)pbdoc")
 
     .def("isEmpty", [](MSelectionList & self) -> bool {
-        throw std::logic_error{"Function not yet implemented."};
+        return self.isEmpty();
     }, R"pbdoc(isEmpty() -> bool
 
 Returns True if the selection list is empty.)pbdoc")

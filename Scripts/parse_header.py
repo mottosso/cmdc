@@ -286,6 +286,8 @@ def filter_function_lines(lines):
 def filter_header_lines(class_name, lines):
     """Yield the lines in the class definition."""
 
+    skip_next_statement = False
+    no_script = False
     in_class_definition = False
 
     class_def_re = re.compile(r'^class OPENMAYA_EXPORT {}'.format(class_name))
@@ -294,6 +296,27 @@ def filter_header_lines(class_name, lines):
 
     for line in lines:
         line = line.strip()
+
+        if line == 'BEGIN_NO_SCRIPT_SUPPORT:':
+            no_script = True 
+            continue 
+
+        if line == 'END_NO_SCRIPT_SUPPORT:':
+            no_script = False 
+            continue 
+
+        if no_script:
+            continue
+
+        if line.startswith('OPENMAYA_DEPRECATED'): 
+            skip_next_statement = True
+            continue 
+
+        try:
+            # Remove trailing comments
+            line = line[:line.index('//')].strip()
+        except ValueError:
+            pass
 
         if not in_class_definition:
             in_class_definition = class_def_re.match(line) is not None 
@@ -309,7 +332,10 @@ def filter_header_lines(class_name, lines):
             if not _is_complete_statement(statement):
                 continue 
 
-            yield statement
+            if skip_next_statement:
+                skip_next_statement = False
+            else:
+                yield statement
 
             statements = []
 

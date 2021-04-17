@@ -7,6 +7,7 @@ import cmdc
 def test_get_object_from_empty_list():
     sel = cmdc.SelectionList()
 
+    assert sel.isEmpty()
     assert len(sel) == 0
 
     with pytest.raises(IndexError):
@@ -46,7 +47,32 @@ def test_get_dag_path():
     assert dag.hasFn(cmdc.Fn.kCamera)
 
 def test_get_dag_path_error():
-    sel = cmdc.SelectionList().add('time1')
+    sel = cmdc.SelectionList()
+    sel.add('time1')
+    sel.add('time1.outTime')
 
     with pytest.raises(TypeError):
-        dag = sel.getDagPath(0)
+        sel.getDagPath(0)
+
+    with pytest.raises(TypeError):
+        sel.getDagPath(1)
+
+
+def test_get_plug():
+    sel = cmdc.SelectionList().add('time1.outTime')
+
+    plug = sel.getPlug(0)
+
+    assert plug.node().hasFn(cmdc.Fn.kTime)
+
+
+def test_get_plug_error():
+    sel = cmdc.SelectionList()
+    sel.add('time1')
+    sel.add('persp')
+
+    with pytest.raises(TypeError):
+        plug = sel.getPlug(0)
+
+    with pytest.raises(TypeError):
+        sel.getPlug(1)
