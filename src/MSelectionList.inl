@@ -100,11 +100,9 @@ or a component (tuple of (MDagPath, MObject) ).)pbdoc")
 Empties the selection list.)pbdoc")
 
     .def("getDagPath", [](MSelectionList & self, unsigned int index) -> MDagPath {
-        if (index >= self.length())
-        {
-            MString error_msg("");
+        if (index >= self.length()) {
+            MString error_msg;
                     error_msg += index;
-
             throw std::out_of_range(error_msg.asChar());
         }
 
@@ -122,21 +120,16 @@ Raises TypeError if the item is neither a DAG path nor a component.
 Raises IndexError if index is out of range.)pbdoc")
 
     .def("getDependNode", [](MSelectionList & self, unsigned int index) -> MObject {
-        if (index >= self.length())
-        {
-            MString error_msg("");
+        if (index >= self.length()) {
+            MString error_msg;
                     error_msg += index;
-
             throw std::out_of_range(error_msg.asChar());
         }
 
         MObject result;
         MStatus status = self.getDependNode(index, result);
 
-        if (!status) {            
-            MString error_msg("");
-                    error_msg += index;
-
+        if (!status) {
             throw pybind11::type_error("The specified item is not a dependency node.");
         }
 
@@ -148,11 +141,11 @@ Raises TypeError if there is no dependency node associated with the current item
 Raises IndexError if index is out of range.)pbdoc")
 
     .def("getPlug", [](MSelectionList & self, unsigned int index) -> MPlug {
-        throw std::logic_error{"Function not yet implemented."};
-    }, R"pbdoc(getPlug(index) -> MPlug
-
-Returns the index'th item of the list as a plug. Raises TypeError if
-the item is not a plug. Raises IndexError if index is out of range.)pbdoc")
+        throw std::logic_error{"Function not yet implemented."};   
+    }, R"pbdoc(Returns the index'th item of the list as a plug. 
+    
+Raises TypeError if the item is not a plug. 
+Raises IndexError if index is out of range.)pbdoc")
 
     .def("getSelectionStrings", [](MSelectionList & self) -> std::vector<std::string> {
         throw std::logic_error{"Function not yet implemented."};
