@@ -490,7 +490,7 @@ Note that the behavior of connectedTo() is identical to destinationsWithConversi
     }, R"pbdoc(True if plug is networked.)pbdoc")
 
     .def("isNull", [](MPlug & self) -> bool {
-        throw std::logic_error{"Function not yet implemented."};
+        return self.isNull();
     }, R"pbdoc(True if plug does not reference an attribute.)pbdoc")
 
     .def("isProcedural", [](MPlug & self) -> bool {
@@ -505,12 +505,19 @@ Note that the behavior of connectedTo() is identical to destinationsWithConversi
         throw std::logic_error{"Function not yet implemented."};
     }, R"pbdoc(Returns this plug's logical index within its parent array.)pbdoc")
 
-    .def("name", [](MPlug & self) -> MString {
-        throw std::logic_error{"Function not yet implemented."};
+    .def("name", [](MPlug & self) -> std::string {
+        return std::string(self.asString().asChar());
     }, R"pbdoc(Returns the name of the plug.)pbdoc")
 
     .def("node", [](MPlug & self) -> MObject {
-        throw std::logic_error{"Function not yet implemented."};
+        MStatus status;
+        MObject result = self.node(&status);
+
+        if (!status) {
+            throw std::exception(status.errorString().asChar());
+        }
+
+        return result; 
     }, R"pbdoc(Returns the node that this plug belongs to.)pbdoc")
 
     .def("numChildren", [](MPlug & self) -> int {

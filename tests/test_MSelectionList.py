@@ -77,6 +77,9 @@ def test_get_plug_error():
     with pytest.raises(TypeError):
         sel.getPlug(1)
 
+    with pytest.raises(IndexError):
+        obj = sel.getDependNode(5)
+
 
 def test_selection_strings():
     sel = cmdc.SelectionList()
@@ -91,6 +94,3 @@ def test_selection_strings():
     sel_str = sel.getSelectionStrings(0)
 
     assert sel_str == ['time1']
-
-    with pytest.raises(IndexError):
-        obj = sel.getDependNode(5)
