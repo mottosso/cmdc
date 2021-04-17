@@ -7,6 +7,12 @@ py::enum_<MSelectionList::MergeStrategy>(fn, "MergeStrategy")
 
  sel.def(py::init<>())
 
+    .def("__len__", [](MSelectionList & self) -> int {
+        return self.length();
+    }, R"pbdoc(length() -> int
+
+Returns the number of items on the selection list.)pbdoc")
+
     .def("add", [](MSelectionList & self, MDagPath object, MObject component = MObject::kNullObj, bool mergeWithExisting = false) {
         throw std::logic_error{"Function not yet implemented."};
     }, R"pbdoc(add(pattern, searchChildNamespaces=False) -> self
@@ -45,6 +51,19 @@ or plugs which match the given the pattern string.
 The second version adds the specific item to the list, where the
 item can be a plug (MPlug), a node (MObject), a DAG path (MDagPath)
 or a component (tuple of (MDagPath, MObject) ).)pbdoc")
+
+    .def("add", [](MSelectionList & self, std::string matchString) {
+        MString match_string(matchString.c_str());
+        MStatus status = self.add(match_string);
+
+        if (!status)
+        {
+            MString error_msg("No object(s) match name '^1s'.");
+                    error_msg.format(error_msg, match_string);
+
+            throw std::invalid_argument(error_msg.asChar());
+        }
+    }, R"pbdoc(add(Add the specified object(s) to the selection list.)pbdoc")
 
     .def("add", [](MSelectionList & self, std::string matchString, bool searchChildNamespacesToo = false) {
         throw std::logic_error{"Function not yet implemented."};
@@ -87,7 +106,10 @@ Raises TypeError if the item is neither a DAG path nor a component.
 Raises IndexError if index is out of range.)pbdoc")
 
     .def("getDependNode", [](MSelectionList & self, unsigned int index) -> MObject {
-        throw std::logic_error{"Function not yet implemented."};
+        MObject result;
+        MStatus status = self.getDependNode(index, result);
+
+        return result;
     }, R"pbdoc(getDependNode(index) -> MObject
 
 Returns the node associated with the index'th item, whether it be a
@@ -172,12 +194,6 @@ Modify this list to contain the intersection of itself and the given list.)pbdoc
     }, R"pbdoc(isEmpty() -> bool
 
 Returns True if the selection list is empty.)pbdoc")
-
-    .def("length", [](MSelectionList & self) -> int {
-        throw std::logic_error{"Function not yet implemented."};
-    }, R"pbdoc(length() -> int
-
-Returns the number of items on the selection list.)pbdoc")
 
     .def("merge", [](MSelectionList & self, MDagPath object, MObject component = MObject::kNullObj, MSelectionList::MergeStrategy strategy = MSelectionList::MergeStrategy::kMergeNormal) {
         throw std::logic_error{"Function not yet implemented."};
