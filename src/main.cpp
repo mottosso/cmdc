@@ -18,9 +18,11 @@
 #include <maya/MPoint.h>
 #include <maya/MPlug.h>
 #include <maya/MQuaternion.h>
+#include <maya/MSelectionList.h>
 #include <maya/MString.h>
 #include <maya/MTypeId.h>
 #include <maya/MVector.h>
+#include <maya/MUuid.h>
 
 // Function sets
 #include <maya/MFnDependencyNode.h>
@@ -50,6 +52,7 @@ PYBIND11_MODULE(cmdc, m) {
     #include "MFnDependencyNode.inl"
     #include "MObject.inl"
     #include "MPlug.inl"
+    #include "MSelectionList.inl"
     #include "Types.inl"
 
 #ifdef VERSION_INFO
