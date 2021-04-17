@@ -23,3 +23,12 @@ def test_add_object_that_exists():
     obj = sel.getDependNode(0)
 
     assert obj.hasFn(cmdc.Fn.kTime)
+
+
+def test_add_object_that_does_not_exist():
+    sel = cmdc.SelectionList()
+
+    with pytest.raises(ValueError):
+        sel.add('free_lunch')
+
+    assert len(sel) == 0
