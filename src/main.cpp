@@ -1,5 +1,6 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/operators.h>
+#include <pybind11/stl.h>
 
 #include <cstdlib>
 #include <fstream>
@@ -25,6 +26,7 @@
 #include <maya/MQuaternion.h>
 #include <maya/MSelectionList.h>
 #include <maya/MString.h>
+#include <maya/MStringArray.h>
 #include <maya/MTime.h>
 #include <maya/MTypeId.h>
 #include <maya/MVector.h>

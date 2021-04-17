@@ -168,7 +168,20 @@ Raises TypeError if the item is not a plug.
 Raises IndexError if index is out of range.)pbdoc")
 
     .def("getSelectionStrings", [](MSelectionList & self) -> std::vector<std::string> {
-        throw std::logic_error{"Function not yet implemented."};
+        MStringArray strings;
+        MStatus status = self.getSelectionStrings(strings);
+
+        if (!status) {
+            throw std::exception("Failed to get selection strings.");
+        }
+
+        std::vector<std::string> result(strings.length());
+
+        for (unsigned int i = 0; i < strings.length(); i++) {
+            result[i] = std::string(strings[i].asChar());
+        }
+
+        return result;
     }, R"pbdoc(getSelectionStrings(index=None) -> (string, string, ...)
 
 Returns a tuple containing the string representation of the
@@ -180,7 +193,26 @@ then the string representations of all the items in the selection
 list are returned. Raises IndexError if index is out of bounds.)pbdoc")
 
     .def("getSelectionStrings", [](MSelectionList & self, unsigned int index) -> std::vector<std::string> {
-        throw std::logic_error{"Function not yet implemented."};
+        if (index >= self.length()) {
+            MString error_msg;
+                    error_msg += index;
+            throw std::out_of_range(error_msg.asChar());
+        }
+    
+        MStringArray strings;
+        MStatus status = self.getSelectionStrings(index, strings);
+
+        if (!status) {
+            throw std::exception("Failed to get selection strings.");
+        }
+
+        std::vector<std::string> result(strings.length());
+
+        for (unsigned int i = 0; i < strings.length(); i++) {
+            result[i] = std::string(strings[i].asChar());
+        }
+
+        return result;
     }, R"pbdoc(getSelectionStrings(index=None) -> (string, string, ...)
 
 Returns a tuple containing the string representation of the

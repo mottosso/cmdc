@@ -76,3 +76,21 @@ def test_get_plug_error():
 
     with pytest.raises(TypeError):
         sel.getPlug(1)
+
+
+def test_selection_strings():
+    sel = cmdc.SelectionList()
+    sel.add('time1')
+    sel.add('persp')
+    sel.add('front')
+
+    sel_str = sel.getSelectionStrings()
+
+    assert sel_str == ['time1', 'persp', 'front']
+
+    sel_str = sel.getSelectionStrings(0)
+
+    assert sel_str == ['time1']
+
+    with pytest.raises(IndexError):
+        obj = sel.getDependNode(5)
