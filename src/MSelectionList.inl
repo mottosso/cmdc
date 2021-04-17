@@ -13,7 +13,7 @@ py::enum_<MSelectionList::MergeStrategy>(fn, "MergeStrategy")
 
 Returns the number of items on the selection list.)pbdoc")
 
-    .def("add", [](MSelectionList & self, MDagPath object, MObject component = MObject::kNullObj, bool mergeWithExisting = false) {
+    .def("add", [](MSelectionList & self, MDagPath object, MObject component = MObject::kNullObj, bool mergeWithExisting = false) -> MSelectionList {
         throw std::logic_error{"Function not yet implemented."};
     }, R"pbdoc(add(pattern, searchChildNamespaces=False) -> self
 add(item, mergeWithExisting=True) -> self
@@ -26,7 +26,7 @@ The second version adds the specific item to the list, where the
 item can be a plug (MPlug), a node (MObject), a DAG path (MDagPath)
 or a component (tuple of (MDagPath, MObject) ).)pbdoc")
 
-    .def("add", [](MSelectionList & self, MObject object, bool mergeWithExisting = false) {
+    .def("add", [](MSelectionList & self, MObject object, bool mergeWithExisting = false) -> MSelectionList {
         throw std::logic_error{"Function not yet implemented."};
     }, R"pbdoc(add(pattern, searchChildNamespaces=False) -> self
 add(item, mergeWithExisting=True) -> self
@@ -39,7 +39,7 @@ The second version adds the specific item to the list, where the
 item can be a plug (MPlug), a node (MObject), a DAG path (MDagPath)
 or a component (tuple of (MDagPath, MObject) ).)pbdoc")
 
-    .def("add", [](MSelectionList & self, MPlug plug, bool mergeWithExisting = false) {
+    .def("add", [](MSelectionList & self, MPlug plug, bool mergeWithExisting = false) -> MSelectionList {
         throw std::logic_error{"Function not yet implemented."};
     }, R"pbdoc(add(pattern, searchChildNamespaces=False) -> self
 add(item, mergeWithExisting=True) -> self
@@ -52,7 +52,7 @@ The second version adds the specific item to the list, where the
 item can be a plug (MPlug), a node (MObject), a DAG path (MDagPath)
 or a component (tuple of (MDagPath, MObject) ).)pbdoc")
 
-    .def("add", [](MSelectionList & self, std::string matchString) {
+    .def("add", [](MSelectionList & self, std::string matchString) -> MSelectionList {
         MString match_string(matchString.c_str());
         MStatus status = self.add(match_string);
 
@@ -63,9 +63,11 @@ or a component (tuple of (MDagPath, MObject) ).)pbdoc")
 
             throw std::invalid_argument(error_msg.asChar());
         }
+
+        return self;
     }, R"pbdoc(add(Add the specified object(s) to the selection list.)pbdoc")
 
-    .def("add", [](MSelectionList & self, std::string matchString, bool searchChildNamespacesToo = false) {
+    .def("add", [](MSelectionList & self, std::string matchString, bool searchChildNamespacesToo = false) -> MSelectionList {
         throw std::logic_error{"Function not yet implemented."};
     }, R"pbdoc(add(pattern, searchChildNamespaces=False) -> self
 add(item, mergeWithExisting=True) -> self
@@ -78,7 +80,7 @@ The second version adds the specific item to the list, where the
 item can be a plug (MPlug), a node (MObject), a DAG path (MDagPath)
 or a component (tuple of (MDagPath, MObject) ).)pbdoc")
 
-    .def("add", [](MSelectionList & self, MUuid uuid, bool mergeWithExisting = false) {
+    .def("add", [](MSelectionList & self, MUuid uuid, bool mergeWithExisting = false) -> MSelectionList {
         throw std::logic_error{"Function not yet implemented."};
     }, R"pbdoc(add(pattern, searchChildNamespaces=False) -> self
 add(item, mergeWithExisting=True) -> self
@@ -97,15 +99,37 @@ or a component (tuple of (MDagPath, MObject) ).)pbdoc")
 
 Empties the selection list.)pbdoc")
 
-    .def("getDagPath", [](MSelectionList & self, unsigned int index) -> std::tuple<MDagPath, MObject> {
-        throw std::logic_error{"Function not yet implemented."};
-    }, R"pbdoc(getDagPath(index) -> MDagPath
+    .def("getDagPath", [](MSelectionList & self, unsigned int index) -> MDagPath {
+        if (index >= self.length())
+        {
+            MString error_msg("");
+                    error_msg += index;
 
-Returns the DAG path associated with the index'th item of the list.
+            throw std::out_of_range(error_msg.asChar());
+        }
+
+        MDagPath result;
+
+        MStatus status = self.getDagPath(index, result);
+
+        if (!status) {
+            throw pybind11::type_error("The specified item is not a DAG path.");
+        }
+
+        return result;
+    }, R"pbdoc(Returns the DAG path associated with the index'th item of the list.
 Raises TypeError if the item is neither a DAG path nor a component.
 Raises IndexError if index is out of range.)pbdoc")
 
     .def("getDependNode", [](MSelectionList & self, unsigned int index) -> MObject {
+        if (index >= self.length())
+        {
+            MString error_msg("");
+                    error_msg += index;
+
+            throw std::out_of_range(error_msg.asChar());
+        }
+
         MObject result;
         MStatus status = self.getDependNode(index, result);
 
@@ -113,15 +137,14 @@ Raises IndexError if index is out of range.)pbdoc")
             MString error_msg("");
                     error_msg += index;
 
-            throw std::out_of_range(error_msg.asChar());
+            throw pybind11::type_error("The specified item is not a dependency node.");
         }
 
         return result;
-    }, R"pbdoc(getDependNode(index) -> MObject
-
-Returns the node associated with the index'th item, whether it be a
+    }, R"pbdoc(Returns the node associated with the index'th item, whether it be a
 dependency node, DAG path, component or plug.
-Raises kFailure if there is no dependency node associated with the current item.
+
+Raises TypeError if there is no dependency node associated with the current item.
 Raises IndexError if index is out of range.)pbdoc")
 
     .def("getPlug", [](MSelectionList & self, unsigned int index) -> MPlug {

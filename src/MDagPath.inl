@@ -54,7 +54,7 @@ py::class_<MDagPath>(m, "DagPath")
     }, R"pbdoc(Returns the specified sub-path of this path.)pbdoc")
 
     .def("hasFn", [](MDagPath & self, MFn::Type type) -> bool {
-        throw std::logic_error{"Function not yet implemented."};
+        return self.hasFn(type);
     }, R"pbdoc(Returns True if the object at the end of the path supports the given function set.)pbdoc")
 
     .def("inclusiveMatrix", [](MDagPath & self) -> MMatrix {
