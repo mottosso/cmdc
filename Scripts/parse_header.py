@@ -207,8 +207,11 @@ def parse_arguments(argument_list, has_outs):
     for arg_str in argument_list:
         if arg_str in [
             'MStatus* ReturnStatus = nullptr',
+            'MStatus* ReturnStatus = NULL',
             'MStatus * ReturnStatus = nullptr',
+            'MStatus * ReturnStatus = NULL',
             'MStatus *ReturnStatus = nullptr',
+            'MStatus *ReturnStatus = NULL',
         ]:
             continue
 
