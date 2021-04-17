@@ -287,15 +287,38 @@ def filter_header_lines(class_name, lines):
 
     class_def_re = re.compile(r'^class OPENMAYA_EXPORT {}'.format(class_name))
 
+    statements = []
+
     for line in lines:
+        line = line.strip()
+
         if not in_class_definition:
             in_class_definition = class_def_re.match(line) is not None 
 
         if in_class_definition:
-            yield line.strip()
+            statements.append(line)
+
+            if line.endswith(','):
+                continue 
+
+            statement = ' '.join(statements)
+
+            if not _is_complete_statement(statement):
+                continue 
+
+            yield statement
+
+            statements = []
 
             if line == '};\n':
                 in_class_definition = False
+
+
+def _is_complete_statement(statement):
+    if '(' in statement:
+        return '(' in statement and ')' in statement and statement.endswith(';')
+    else:
+        return True 
 
 
 def main(*argv):
