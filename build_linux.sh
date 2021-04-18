@@ -4,10 +4,6 @@
 # requires g++ (7.3.1)
 # requires $DEVKIT_LOCATION
 
-round() {
-  printf "%.${2}f" "${1}"
-}
-
 CMDC_VERSION="0.1.1"
 
 t0=$(date +%s.%N)
