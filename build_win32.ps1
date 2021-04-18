@@ -12,7 +12,13 @@ $t0 = $stopwatch.ElapsedMilliseconds
 
 Write-Host "(1) Parsing.."
 
-& python .\scripts\mfn.py parse
+python .\scripts\mfn.py parse
+
+# Exit on failure, to stop and let CI know
+# (How about this syntax, huh? xD )
+if (!$?) {
+    [System.Environment]::Exit(1)
+}
 
 $env:CMDC_VERSION = "0.1.1"
 $env:DISTUTILS_USE_SDK = 1
@@ -27,9 +33,9 @@ Write-Host "(1) ----------------------------"
 Write-Host "(2) Compiling.."
 
 # Make build directory, unless one already exists
-md -Force build | Out-Null
+mkdir -p build
 
-& cl.exe `
+cl.exe `
     /Tpsrc/main.cpp `
     /Fobuild/main.obj `
     /c `
@@ -48,6 +54,9 @@ md -Force build | Out-Null
     /EHsc `
     /bigobj
 
+if (!$?) {
+    [System.Environment]::Exit(1)
+}
 
 #
 # Link
@@ -60,7 +69,7 @@ Write-Host "(2) Finished in $compile_duration ms"
 Write-Host "(2) ----------------------------"
 Write-Host "(3) Linking.."
 
-& link.exe `
+link.exe `
     /DLL `
     /nologo `
     /INCREMENTAL:NO `
@@ -77,6 +86,10 @@ Write-Host "(3) Linking.."
     "/OUT:$pwd\build\cmdc.pyd" `
     "/IMPLIB:$pwd\build\cmdc.lib" `
     "/MANIFESTFILE:$pwd\build\cmdc.pyd.manifest"
+
+if (!$?) {
+    [System.Environment]::Exit(1)
+}
 
 $t3 = $stopwatch.ElapsedMilliseconds
 $link_duration = $t3 - $t2
