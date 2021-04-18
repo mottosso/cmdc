@@ -1,7 +1,23 @@
+param (
+    [string]$maya_version = "2020"
+)
+
+if (-not (Test-Path env:DEVKIT_LOCATION)) {
+    Write-Host "Set the DEVKIT_LOCATION environment variable to the absolute path of Maya's devkit."
+    exit(1)
+}
+
 # requires python.exe
 # requires cl.exe
 # requires link.exe
 # requires $env:DEVKIT_LOCATION
+
+# This directory keeps shifting amongst versions of Maya
+if ($maya_version -like "2017*") { $python_include = "python2.7" }
+if ($maya_version -like "2018*") { $python_include = "python2.7" }
+if ($maya_version -like "2019*") { $python_include = "python2.7" }
+if ($maya_version -like "2020*") { $python_include = "Python" }
+if ($maya_version -like "2022*") { $python_include = "Python3.7" }
 
 #
 # Compile
@@ -33,7 +49,7 @@ Write-Host "(1) ----------------------------"
 Write-Host "(2) Compiling.."
 
 # Make build directory, unless one already exists
-mkdir -p build
+md -Force build | Out-Null
 
 cl.exe `
     /Tpsrc/main.cpp `
@@ -47,7 +63,7 @@ cl.exe `
     /DNDEBUG `
     -DVERSION_INFO="$env:CMDC_VERSION" `
     -I "$env:DEVKIT_LOCATION\include" `
-    -I "$env:DEVKIT_LOCATION\include\Python" `
+    -I "$env:DEVKIT_LOCATION\include\$python_include" `
     -I "$pwd\include" `
     /std:c++latest `
     /wd5033 `

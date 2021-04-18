@@ -58,7 +58,7 @@ jobs:
           }
           popd
           $env:DEVKIT_LOCATION = "$pwd\devkitBase"
-          ./build_win32.ps1
+          ./build_win32.ps1 ${{ matrix.maya }}
 
   # maya-osx:
   #   runs-on: macos-latest
@@ -124,7 +124,6 @@ jobs:
         run: |
           yum install centos-release-scl -y
           yum install devtoolset-7 bc -y
-          echo "source scl_source enable devtoolset-7" >> $HOME/.bash_profile
 
       - name: Devkit source
         run: |
@@ -136,5 +135,6 @@ jobs:
       - name: Build
         run: |
           export DEVKIT_LOCATION=$(pwd)/devkitBase
+          source scl_source enable devtoolset-7
           chmod +x ./build_linux.sh
           ./build_linux.sh
