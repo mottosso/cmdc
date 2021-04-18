@@ -58,6 +58,16 @@ jobs:
           $env:DEVKIT_LOCATION = "$pwd\devkitBase"
           ./build_win32.ps1 ${{ matrix.maya }}
 
+      - name: Pre-release
+        uses: "marvinpinto/action-automatic-releases@latest"
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          automatic_release_tag: "latest"
+          prerelease: true
+          title: "cmdc-${{ matrix.maya }}-windows"
+          files: |
+            build/cmdc.pyd
+
   # maya-osx:
   #   runs-on: macos-latest
 
@@ -86,14 +96,9 @@ jobs:
 
 
   maya-linux:
-    # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
     strategy:
-
-      # Without this, all containers stop if any fail
-      # That's bad, we want to know whether it's only one
-      # or if it happens to multiples or all.
       fail-fast: false
 
       matrix:
@@ -109,7 +114,6 @@ jobs:
 
     container: mottosso/mayabase-centos7
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       - name: Checkout code
         uses: actions/checkout@v1
@@ -135,3 +139,13 @@ jobs:
           g++ --version
           chmod +x ./build_linux.sh
           ./build_linux.sh ${{ matrix.maya }}
+
+      - name: Pre-release
+        uses: "marvinpinto/action-automatic-releases@latest"
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          automatic_release_tag: "latest"
+          prerelease: true
+          title: "cmdc-${{ matrix.maya }}-linux"
+          files: |
+            build/cmdc.so
