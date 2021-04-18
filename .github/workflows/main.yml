@@ -129,7 +129,7 @@ jobs:
       - name: Devkit source
         run: |
           echo "Downloading ${{ matrix.devkit }}.."
-          wget ${{ matrix.devkit }} -O "$pwd/devkit.tgz"
+          wget ${{ matrix.devkit }} -O "$(pwd)/devkit.tgz"
           echo "Extracting devkit.tgz.."
           tar -xvf $(pwd)/devkit.tgz $pwd
 
