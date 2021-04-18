@@ -136,6 +136,5 @@ jobs:
       - name: Build
         run: |
           export DEVKIT_LOCATION=$(pwd)/devkitBase
-          echo $(pwd)
-          ls
-          bash -c $(pwd)/build_linux.sh
+          chmod +x ./build_linux.sh
+          ./build_linux.sh
