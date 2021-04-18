@@ -17,7 +17,7 @@ if ($maya_version -like "2017*") { $python_include = "python2.7" }
 if ($maya_version -like "2018*") { $python_include = "python2.7" }
 if ($maya_version -like "2019*") { $python_include = "python2.7" }
 if ($maya_version -like "2020*") { $python_include = "Python" }
-if ($maya_version -like "2022*") { $python_include = "Python3.7" }
+if ($maya_version -like "2022*") { $python_include = "Python3.7\Python" }
 
 #
 # Compile
