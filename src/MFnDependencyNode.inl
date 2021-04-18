@@ -37,35 +37,35 @@ py::class_<MFnDependencyNode>(m, "FnDependencyNode")
     .def("name", [](MFnDependencyNode& self) -> std::string {
         MStatus status;
         auto name = self.name(&status);
-        if (!status) throw std::exception("Could not get name.");
+        if (!status) throw std::runtime_error("Could not get name.");
         return name.asChar();
     })
 
     .def("typeName", [](MFnDependencyNode& self) -> std::string {
         MStatus status;
         auto typeName = self.typeName(&status);
-        if (!status) throw std::exception("Could not get typeName.");
+        if (!status) throw std::runtime_error("Could not get typeName.");
         return typeName.asChar();
     })
 
     .def("pluginName", [](MFnDependencyNode& self) -> std::string {
         MStatus status;
         auto pluginName = self.pluginName(&status);
-        if (!status) throw std::exception("Could not get pluginName.");
+        if (!status) throw std::runtime_error("Could not get pluginName.");
         return pluginName.asChar();
     })
 
     .def("absoluteName", [](MFnDependencyNode& self) -> std::string {
         MStatus status;
         auto absoluteName = self.absoluteName(&status);
-        if (!status) throw std::exception("Could not get absoluteName.");
+        if (!status) throw std::runtime_error("Could not get absoluteName.");
         return absoluteName.asChar();
     })
 
     .def("typeId", [](MFnDependencyNode& self) -> unsigned int {
         MStatus status;
         auto typeId = self.typeId(&status);
-        if (!status) throw std::exception("Could not get typeId.");
+        if (!status) throw std::runtime_error("Could not get typeId.");
         return typeId.id();
     })
 

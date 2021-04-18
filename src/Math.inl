@@ -8,7 +8,7 @@ py::class_<MString>(m, "String")
     .def(py::self += char())
     .def(py::self += double())
     .def(py::self += int())
-    .def(py::self += unsigned int())
+    // .def(py::self += unsigned int())  # Not supported with GCC?
     .def(py::self += float())
 
     .def("__repr__", [](const MString &a) {
