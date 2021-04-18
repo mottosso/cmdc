@@ -119,17 +119,18 @@ jobs:
           yum install centos-release-scl -y
           yum install devtoolset-7 bc -y
 
-      - name: Devkit source
-        run: |
-          echo "Downloading ${{ matrix.devkit }}.."
-          wget ${{ matrix.devkit }} -O "$(pwd)/devkit.tgz"
-          echo "Extracting devkit.tgz.."
-          tar -xvf $(pwd)/devkit.tgz $pwd
+      # - name: Devkit source
+      #   run: |
+      #     echo "Downloading ${{ matrix.devkit }}.."
+      #     wget ${{ matrix.devkit }} -O "$(pwd)/devkit.tgz"
+      #     echo "Extracting devkit.tgz.."
+      #     tar -xvf $(pwd)/devkit.tgz $pwd
 
       - name: Build
         run: |
           export DEVKIT_LOCATION=$(pwd)/devkitBase
-          # source scl_source enable devtoolset-7
-          # chmod +x ./build_linux.sh
+          source scl_source enable devtoolset-7
+          g++ --version
+          chmod +x ./build_linux.sh
           cat ./build_linux.sh
           # ./build_linux.sh
