@@ -129,7 +129,7 @@ jobs:
       - name: Build
         run: |
           export DEVKIT_LOCATION=$(pwd)/devkitBase
-          source scl_source enable devtoolset-7
-          chmod +x ./build_linux.sh
+          # source scl_source enable devtoolset-7
+          # chmod +x ./build_linux.sh
           cat ./build_linux.sh
-          ./build_linux.sh
+          # ./build_linux.sh
