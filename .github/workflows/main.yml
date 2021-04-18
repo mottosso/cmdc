@@ -134,4 +134,4 @@ jobs:
           . scl_source enable devtoolset-7 || true
           g++ --version
           chmod +x ./build_linux.sh
-          ./build_linux.sh
+          ./build_linux.sh ${{ matrix.maya }}
