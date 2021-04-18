@@ -9,10 +9,10 @@ MAYA_VERSION=2020
 MAYA_VERSION=${1:-$MAYA_VERSION}
 CMDC_VERSION="0.1.1"
 
-if  [[ $MAYA_VERSION == 2018* ]]; then PYTHON_INCLUDE=python2.7 fi
-if  [[ $MAYA_VERSION == 2019* ]]; then PYTHON_INCLUDE=python2.7 fi
-if  [[ $MAYA_VERSION == 2020* ]]; then PYTHON_INCLUDE=Python fi
-if  [[ $MAYA_VERSION == 2022* ]]; then PYTHON_INCLUDE=Python37/Python fi
+if  [[ $MAYA_VERSION == 2018* ]] ; then PYTHON_INCLUDE=python2.7 ; fi
+if  [[ $MAYA_VERSION == 2019* ]] ; then PYTHON_INCLUDE=python2.7 ; fi
+if  [[ $MAYA_VERSION == 2020* ]] ; then PYTHON_INCLUDE=Python ; fi
+if  [[ $MAYA_VERSION == 2022* ]] ; then PYTHON_INCLUDE=Python37/Python ; fi
 
 t0=$(date +%s.%N)
 
