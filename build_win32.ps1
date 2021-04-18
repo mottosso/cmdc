@@ -17,7 +17,7 @@ if ($maya_version -like "2017*") { $python_include = "python2.7" }
 if ($maya_version -like "2018*") { $python_include = "python2.7" }
 if ($maya_version -like "2019*") { $python_include = "python2.7" }
 if ($maya_version -like "2020*") { $python_include = "Python" }
-if ($maya_version -like "2022*") { $python_include = "Python3.7\Python" }
+if ($maya_version -like "2022*") { $python_include = "Python37\Python" }
 
 #
 # Compile
@@ -85,6 +85,13 @@ Write-Host "(2) Finished in $compile_duration ms"
 Write-Host "(2) ----------------------------"
 Write-Host "(3) Linking.."
 
+if ($maya_version -like "2022*") {
+    $export = "PyInit_cmdc"
+}
+else {
+    $export = "initcmdc"
+}
+
 link.exe `
     /DLL `
     /nologo `
@@ -97,7 +104,7 @@ link.exe `
     OpenMayaUI.lib `
     OpenMayaAnim.lib `
     OpenMayaFX.lib `
-    /EXPORT:initcmdc `
+    /EXPORT:$export `
     build\main.obj `
     "/OUT:$pwd\build\cmdc.pyd" `
     "/IMPLIB:$pwd\build\cmdc.lib" `
