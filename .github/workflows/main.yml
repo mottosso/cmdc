@@ -11,8 +11,27 @@ on:
   workflow_dispatch:
 
 jobs:
+
+  # Create a new release only once, that the below jobs can
+  # then upload files into. I.e. once per Maya version and OS.
+  create_release:
+    name: Create release
+    runs-on: ubuntu-latest
+    outputs:
+      upload_url: ${{ steps.create_release.outputs.upload_url }}
+    steps:
+      - name: Create release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: latest
+          release_name: Development Release
+
   maya-win:
     runs-on: windows-latest
+    needs: create_release
 
     strategy:
 
@@ -58,18 +77,25 @@ jobs:
           $env:DEVKIT_LOCATION = "$pwd\devkitBase"
           ./build_win32.ps1 ${{ matrix.maya }}
 
-      - name: Pre-release
-        uses: "marvinpinto/action-automatic-releases@latest"
+      - name: Zip
+        shell: bash
+        run: |
+          mkdir -p artifact
+          zip -r artifact/cmdc-${{ matrix.maya }}-windows.zip build/cmdc.pyd
+
+      - name: Upload
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          automatic_release_tag: "latest"
-          prerelease: true
-          title: "cmdc-${{ matrix.maya }}-windows"
-          files: |
-            build/cmdc.pyd
+          upload_url: ${{ needs.create_release.outputs.upload_url }}
+          asset_path: ./artifact/cmdc-${{ matrix.maya }}-windows.zip
+          asset_name: cmdc-${{ matrix.maya }}-windows.zip
+          asset_content_type: application/zip
 
   # maya-osx:
   #   runs-on: macos-latest
+  #   needs: create_release
 
   #   strategy:
 
@@ -97,6 +123,7 @@ jobs:
 
   maya-linux:
     runs-on: ubuntu-latest
+    needs: create_release
 
     strategy:
       fail-fast: false
@@ -140,12 +167,18 @@ jobs:
           chmod +x ./build_linux.sh
           ./build_linux.sh ${{ matrix.maya }}
 
-      - name: Pre-release
-        uses: "marvinpinto/action-automatic-releases@latest"
+      - name: Zip
+        shell: bash
+        run: |
+          mkdir -p artifact
+          zip -r artifact/cmdc-${{ matrix.maya }}-linux.zip build/cmdc.so
+
+      - name: Upload
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          automatic_release_tag: "latest"
-          prerelease: true
-          title: "cmdc-${{ matrix.maya }}-linux"
-          files: |
-            build/cmdc.so
+          upload_url: ${{ needs.create_release.outputs.upload_url }}
+          asset_path: ./artifact/cmdc-${{ matrix.maya }}-linux.zip
+          asset_name: cmdc-${{ matrix.maya }}-linux.zip
+          asset_content_type: application/zip
