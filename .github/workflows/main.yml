@@ -98,14 +98,14 @@ jobs:
 
       matrix:
        include:
-  #        - maya: "2018.7"
-  #          devkit: "https://autodesk-adn-transfer.s3.us-west-2.amazonaws.com/ADN%20Extranet/M%26E/Maya/devkit%202018/Autodesk_Maya_2018_7_Update_DEVKIT_Linux.tgz"
-  #        - maya: "2019.3"
-  #          devkit: "https://autodesk-adn-transfer.s3.us-west-2.amazonaws.com/ADN%20Extranet/M%26E/Maya/devkit%202019/Autodesk_Maya_2019_3_Update_DEVKIT_Linux.tgz"
+         - maya: "2018.7"
+           devkit: "https://autodesk-adn-transfer.s3.us-west-2.amazonaws.com/ADN%20Extranet/M%26E/Maya/devkit%202018/Autodesk_Maya_2018_7_Update_DEVKIT_Linux.tgz"
+         - maya: "2019.3"
+           devkit: "https://autodesk-adn-transfer.s3.us-west-2.amazonaws.com/ADN%20Extranet/M%26E/Maya/devkit%202019/Autodesk_Maya_2019_3_Update_DEVKIT_Linux.tgz"
          - maya: "2020.4"
            devkit: "https://autodesk-adn-transfer.s3.us-west-2.amazonaws.com/ADN%20Extranet/M%26E/Maya/devkit%202020/Autodesk_Maya_2020_4_Update_DEVKIT_Linux.tgz"
-  #        - maya: "2022"
-  #          devkit: "https://autodesk-adn-transfer.s3.us-west-2.amazonaws.com/ADN%20Extranet/M%26E/Maya/devkit%202022/Autodesk_Maya_2022_DEVKIT_Linux.tgz"
+         - maya: "2022"
+           devkit: "https://autodesk-adn-transfer.s3.us-west-2.amazonaws.com/ADN%20Extranet/M%26E/Maya/devkit%202022/Autodesk_Maya_2022_DEVKIT_Linux.tgz"
 
     container: mottosso/mayabase-centos7
 
