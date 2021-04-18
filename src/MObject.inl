@@ -11,11 +11,11 @@ py::class_<MObject>(m, "Object")
     .def("apiType", [](MObject& self) -> MFn::Type {
         return self.apiType();
     }, R"pbdoc(Return the exact type of the internal Maya Object.)pbdoc")
-    .def("apiTypeStr", [](MObject& self) -> const char* {
+    .def("apiTypeStr", [](MObject& self) -> std::string {
         return self.apiTypeStr();
     }, R"pbdoc(Return the type name of the internal Maya Object.)pbdoc")
 
     .def("__repr__", [](const MObject &a) {
-        return "<cmdc.CObject()>";
+        return "<cmdc.Object()>";
     }
 );

@@ -12,7 +12,7 @@ py::class_<MString>(m, "String")
     .def(py::self += float())
 
     .def("__repr__", [](const MString &a) {
-        return "<cmdc.CString()>";
+        return "<cmdc.String()>";
     }
 );
 
@@ -39,7 +39,7 @@ py::class_<MVector>(m, "Vector")
 
     // Support print()
     .def("__repr__", [](const MVector &a) {
-        return "<cmdc.CVector( " +
+        return "<cmdc.Vector( " +
                std::to_string(a.x) + ", " +
                std::to_string(a.y) + ", " +
                std::to_string(a.z) + " )>";
@@ -68,7 +68,7 @@ py::class_<MPoint>(m, "Point")
 
     // Support print()
     .def("__repr__", [](const MPoint &a) {
-        return "<cmdc.CPoint( " +
+        return "<cmdc.Point( " +
                std::to_string(a.x) + ", " +
                std::to_string(a.y) + ", " +
                std::to_string(a.z) + ", " +
@@ -101,7 +101,7 @@ py::class_<MMatrix>(m, "Matrix")
     // Support print()
     .def("__repr__", [](const MMatrix &a) {
 
-        return "<cmdc.CMatrix( " + std::to_string(a(0, 0)) + ", " + std::to_string(a(0, 1)) + ", " + std::to_string(a(0, 2)) + ", " + std::to_string(a(0, 3)) + "\n" +
+        return "<cmdc.Matrix( " + std::to_string(a(0, 0)) + ", " + std::to_string(a(0, 1)) + ", " + std::to_string(a(0, 2)) + ", " + std::to_string(a(0, 3)) + "\n" +
             "              " + std::to_string(a(1, 0)) + ", " + std::to_string(a(1, 1)) + ", " + std::to_string(a(1, 2)) + ", " + std::to_string(a(1, 3)) + "\n" +
             "              " + std::to_string(a(2, 0)) + ", " + std::to_string(a(2, 1)) + ", " + std::to_string(a(2, 2)) + ", " + std::to_string(a(2, 3)) + "\n" +
             "              " + std::to_string(a(3, 0)) + ", " + std::to_string(a(3, 1)) + ", " + std::to_string(a(3, 2)) + ", " + std::to_string(a(3, 3)) +
@@ -125,7 +125,7 @@ py::class_<MQuaternion>(m, "Quaternion")
     .def_readwrite("w", &MQuaternion::w)
 
     .def("__repr__", [](const MQuaternion& q) {
-        return "<cmdc.CQuaternion( " +
+        return "<cmdc.Quaternion( " +
                std::to_string(q.x) + ", " +
                std::to_string(q.y) + ", " +
                std::to_string(q.z) + ", " +

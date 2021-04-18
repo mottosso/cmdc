@@ -70,6 +70,6 @@ py::class_<MFnDependencyNode>(m, "FnDependencyNode")
     })
 
     .def("__repr__", [](const MObject &a) {
-        return "<cmdc.CObject()>";
+        return "<cmdc.Object()>";
     }
 );
