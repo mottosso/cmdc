@@ -124,7 +124,7 @@ jobs:
         run: |
           yum install centos-release-scl -y
           yum install devtoolset-7 bc -y
-          echo source scl_source enable devtoolset-7 >> ~/.bashrc
+          echo "source scl_source enable devtoolset-7" >> $HOME/.bash_profile
 
       - name: Devkit source
         run: |
