@@ -4,8 +4,9 @@ FROM mottosso/mayabase-centos7
 RUN yum install centos-release-scl -y && \
     yum install devtoolset-7 bc -y
 
-RUN echo source scl_source enable devtoolset-7 >> ~/.bashrc
-
+ENV DEVKIT_LOCATION=/devkit
 WORKDIR /workspace
 
-ENTRYPOINT bash
+COPY docker_entrypoint.sh /usr/bin/entrypoint.sh
+RUN chmod +x /usr/bin/entrypoint.sh
+ENTRYPOINT [ "/usr/bin/entrypoint.sh" ]

@@ -104,17 +104,23 @@ It's easy but tedious.
 
 This should build on any platform, for any Maya with Python available. Including 2022. Included is an example build script for Maya 2020 on Windows.
 
-- C++11 compatible compiler, e.g. Visual Studio 2015
-- Maya 2020
-- pip 19+
+- A Maya devkit
+- C++11 compatible compiler, e.g. Visual Studio 2019
+
+**Windows**
 
 ```pwsh
-# Prerequisities the script cannot figure out on its own
 $env:DEVKIT_LOCATION="C:\github\maya-devkit\2020.2\windows"
-$env:MAYA_LOCATION="C:\Program Files\Autodesk\Maya2020"
+.\build_win32.ps1 2020
+```
 
-# Go!
-.\build.ps1
+**Linux on Windows**
+
+```pwsh
+$env:DEVKIT_LOCATION="C:\github\maya-devkit\2020.2\linux"
+cd cmdc
+docker build -t cmdc .
+.\docker_build_linux.ps1 2020
 ```
 
 **How can I help?**
