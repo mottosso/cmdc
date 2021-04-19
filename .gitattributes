@@ -1,1 +1,2 @@
 build_linux.sh text eol=lf
+docker_entrypoint.sh text eol=lf
