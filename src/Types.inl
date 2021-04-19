@@ -4,7 +4,7 @@ py::class_<MStatus>(m, "Status")
     .def(py::init<const MStatus &>())
 
     .def("__repr__", [](const MStatus &a) {
-        return "<cmdc.CStatus()>";
+        return "<cmdc.Status()>";
     }
 );
 
@@ -26,7 +26,7 @@ py::class_<MTypeId>(m, "TypeId")
             id = 0;
         }
 
-        return "<cmdc.CTypeId( " + std::to_string(id) + ")>";
+        return "<cmdc.TypeId( " + std::to_string(id) + ")>";
     }
 );
 
@@ -37,6 +37,6 @@ py::class_<MObjectHandle>(m, "ObjectHandle")
     .def(py::init<const MObject &>())
 
     .def("__repr__", [](const MObjectHandle &a) {
-        return "<cmdc.CObjectHandle()>";
+        return "<cmdc.ObjectHandle()>";
     }
 );
