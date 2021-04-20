@@ -1,28 +1,25 @@
 import cmdc
 
-typ = cmdc.TypeId(16)
 
-mat4 = cmdc.Matrix()
-mat4 *= cmdc.Matrix().inverse()
+def test_example():
+    cmdc.TypeId(16)
 
-vec3 = cmdc.Vector()
-vec3.x = 6
+    mat4 = cmdc.Matrix()
+    mat4 *= cmdc.Matrix().inverse()
 
-quat = cmdc.Quaternion(angle=0.5, axis=cmdc.Vector(1, 0, 0))
-mat4 *= quat
+    vec3 = cmdc.Vector()
+    vec3.x = 6
 
-# No need for MString
-string = str()
+    quat = cmdc.Quaternion(angle=0.5, axis=cmdc.Vector(1, 0, 0))
+    mat4 *= quat
 
-# Modify the Maya scene graph
-from maya import standalone
-standalone.initialize()
-fn = cmdc.FnDependencyNode()
-r = fn.create("reverse", name="myReverse")
-print(fn.name())
+    # Modify the Maya scene graph
+    from maya import standalone
+    standalone.initialize()
+    fn = cmdc.FnDependencyNode()
+    fn.create("reverse", name="myReverse")
+    assert fn.name() == "myReverse"
 
-# This next line really shouldn't work, should require MFnDagNode
-t = fn.create("transform", name="myTransform")
-print(fn.name())
-
-print("Success")
+    # This next line really shouldn't work, should require MFnDagNode
+    fn.create("transform", name="myTransform")
+    assert fn.name() == "myTransform"

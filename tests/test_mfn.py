@@ -3,15 +3,24 @@
 import cmdc
 import maya.api.OpenMaya
 
+
 def test_fn_types():
+    """Check that the Fn.Type enum is identical to the MFn.Type enum"""
+
     for k, v in maya.api.OpenMaya.MFn.__dict__.items():
         if not k.startswith('k'):
-            continue 
+            continue
 
-        assert hasattr(cmdc.Fn.Type, k), "Missing enum '%s'." % k
-        assert getattr(cmdc.Fn.Type, k).value == v, "Enum has wrong value '%s'." % k
+        assert hasattr(cmdc.Fn.Type, k), (
+            "Missing enum '%s'." % k)
+
+        assert getattr(cmdc.Fn.Type, k).value == v, (
+            "Enum has wrong value '%s'." % k)
+
 
 def test_null_obj_fn():
+    """Test that a null Object has the expected Fn"""
+
     o = cmdc.Object()
 
     assert not o.hasFn(cmdc.Fn.kInvalid)
