@@ -1,6 +1,6 @@
 """Test suite for MSelectionList bindings."""
 
-import pytest
+import nose.tools
 
 import cmdc 
 
@@ -10,8 +10,10 @@ def test_get_object_from_empty_list():
     assert sel.isEmpty()
     assert len(sel) == 0
 
-    with pytest.raises(IndexError):
-        obj = sel.getDependNode(0)
+    nose.tools.assert_raises(
+        IndexError,
+        sel.getDependNode, 0
+    )
 
 
 def test_add_object_that_exists():
@@ -27,8 +29,10 @@ def test_add_object_that_exists():
 def test_add_object_that_does_not_exist():
     sel = cmdc.SelectionList()
 
-    with pytest.raises(ValueError):
-        sel.add('free_lunch')
+    nose.tools.assert_raises(
+        ValueError,
+        sel.add, 'free_lunch'
+    )
 
     assert len(sel) == 0
 
@@ -51,11 +55,15 @@ def test_get_dag_path_error():
     sel.add('time1')
     sel.add('time1.outTime')
 
-    with pytest.raises(TypeError):
-        sel.getDagPath(0)
+    nose.tools.assert_raises(
+        TypeError,
+        sel.getDagPath, 0
+    )
 
-    with pytest.raises(TypeError):
-        sel.getDagPath(1)
+    nose.tools.assert_raises(
+        TypeError,
+        sel.getDagPath, 1
+    )
 
 
 def test_get_plug():
@@ -71,14 +79,20 @@ def test_get_plug_error():
     sel.add('time1')
     sel.add('persp')
 
-    with pytest.raises(TypeError):
-        plug = sel.getPlug(0)
+    nose.tools.assert_raises(
+        TypeError,
+        sel.getPlug, 0
+    )
 
-    with pytest.raises(TypeError):
-        sel.getPlug(1)
+    nose.tools.assert_raises(
+        TypeError,
+        sel.getPlug, 1
+    )
 
-    with pytest.raises(IndexError):
-        obj = sel.getDependNode(5)
+    nose.tools.assert_raises(
+        IndexError,
+        sel.getPlug, 5
+    )
 
 
 def test_selection_strings():
