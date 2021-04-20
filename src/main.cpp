@@ -1,5 +1,6 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/operators.h>
+#include <pybind11/stl.h>
 
 #include <cstdlib>
 #include <fstream>
@@ -9,7 +10,11 @@
 #include <vector>
 
 // Types
+#include <maya/MAngle.h>
 #include <maya/MColor.h>
+#include <maya/MDataBlock.h>
+#include <maya/MDataHandle.h>
+#include <maya/MDistance.h>
 #include <maya/MDagPath.h>
 #include <maya/MEulerRotation.h>
 #include <maya/MFn.h>
@@ -17,10 +22,15 @@
 #include <maya/MObjectHandle.h>
 #include <maya/MPoint.h>
 #include <maya/MPlug.h>
+#include <maya/MPxData.h>
 #include <maya/MQuaternion.h>
+#include <maya/MSelectionList.h>
 #include <maya/MString.h>
+#include <maya/MStringArray.h>
+#include <maya/MTime.h>
 #include <maya/MTypeId.h>
 #include <maya/MVector.h>
+#include <maya/MUuid.h>
 
 // Function sets
 #include <maya/MFnDependencyNode.h>
@@ -50,6 +60,7 @@ PYBIND11_MODULE(cmdc, m) {
     #include "MFnDependencyNode.inl"
     #include "MObject.inl"
     #include "MPlug.inl"
+    #include "MSelectionList.inl"
     #include "Types.inl"
 
 #ifdef VERSION_INFO

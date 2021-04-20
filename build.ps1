@@ -31,7 +31,7 @@ $env:INCLUDE_PATH = $env:DEVKIT_LOCATION + "\include"
 $env:INCLUDE_PATH += ";" + $env:DEVKIT_LOCATION + "\include\Python"
 $env:LIBRARY_PATH = $env:DEVKIT_LOCATION + "\lib"
 # $env:LIBRARY_PATH += ";" + $env:VCTOOLSINSTALLDIR + "lib\x64"
-$env:LIBRARIES = "OpenMaya OpenMayaRender OpenMayaUI OpenMayaAnim OpenMayaFX"
+$env:LIBRARIES = "Foundation OpenMaya OpenMayaRender OpenMayaUI OpenMayaAnim OpenMayaFX"
 
 # python27.lib is the only holdout from the devkit, bummer
 $env:LIBRARY_PATH += ";$env:MAYA_LOCATION\lib"

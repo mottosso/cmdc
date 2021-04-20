@@ -1,3 +1,4 @@
 *.dist-info
 *.pyd
 build/**
+tmp/*
