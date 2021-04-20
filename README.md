@@ -1,4 +1,4 @@
-<a href=/cmda/><p align=center><img width=90 src=https://user-images.githubusercontent.com/2152766/113510233-ca120400-9551-11eb-9a34-b8846a2c959c.png></p></a>
+<a href=/cmda/><p align=center><img width=90 src=https://user-images.githubusercontent.com/2152766/115344277-0e81de80-a1a5-11eb-92ba-e580d91537da.png></p></a>
 
 <p align=center>a.k.a. "Maya Python API 3.0"</p>
 
@@ -78,25 +78,22 @@ print("Success")
 
 It'll work, but won't have half the things you'll need to do anything of use in Maya. The current source is enough to illustrate (1) how to expose types, (2) how to expose function sets and (3) how to deal with passing MObject references around.
 
-**How can I help?**
-
-It's easy but tedious.
-
-- Add more members
-- Add more tests
-
 <br>
 
 ### Repository
 
 | File | Description
 |:-----|:-------------
-| `src/`      | C++ source for the pybind11 bindings
-| `install/`  | Destination of the compiled binding, e.g. `cmdc.pyd`
-| `build.ps1` | Example build script for Maya 2020 on Windows
-| `pyproject.toml` | `setup.py` uses this ahead of building
-| `setup.py` | Let pip handle actually compiling the extension
-| `test.py`  | Tests for bound methods and types
+| `src/`            | C++ source for the pybind11 bindings
+| `include/`        | The pybind11 source
+| `lib/`            | The missing Python libraries
+| `tests/`          | Tests for bound methods and types
+| `scripts/`        | Code-generation
+| `build_win32.ps1` | Build script for any Maya on Windows
+| `build_linux.ps1` | Build script for any Maya on Linux
+| `docker_build_linux.ps1` | Build script for any Maya on Windows for Linux
+| `Dockerfile`      | Linux build environment, same one used by CI
+| `docker_entrypoint.ps1` |Docker helper file
 
 <br>
 
@@ -114,6 +111,15 @@ $env:DEVKIT_LOCATION="C:\github\maya-devkit\2020.2\windows"
 .\build_win32.ps1 2020
 ```
 
+**Linux**
+
+```bash
+export DEVKIT_LOCATION=/github/maya-devkit/2020.2/linux
+cd cmdc
+docker build -t cmdc .
+./build_linux.ps1 2020
+```
+
 **Linux on Windows**
 
 ```pwsh
@@ -122,10 +128,3 @@ cd cmdc
 docker build -t cmdc .
 .\docker_build_linux.ps1 2020
 ```
-
-**How can I help?**
-
-More easy but tedious things.
-
-- Add more Maya versions
-- Add more platforms
