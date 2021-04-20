@@ -172,7 +172,7 @@ Raises IndexError if index is out of range.)pbdoc")
         MStatus status = self.getSelectionStrings(strings);
 
         if (!status) {
-            throw std::exception("Failed to get selection strings.");
+            throw std::runtime_error("Failed to get selection strings.");
         }
 
         std::vector<std::string> result(strings.length());
@@ -203,7 +203,7 @@ list are returned. Raises IndexError if index is out of bounds.)pbdoc")
         MStatus status = self.getSelectionStrings(index, strings);
 
         if (!status) {
-            throw std::exception("Failed to get selection strings.");
+            throw std::runtime_error("Failed to get selection strings.");
         }
 
         std::vector<std::string> result(strings.length());
@@ -282,17 +282,6 @@ The second version merges the specified component with those already
 on the list.)pbdoc")
 
     .def("merge", [](MSelectionList & self, MSelectionList other, MSelectionList::MergeStrategy strategy = MSelectionList::MergeStrategy::kMergeNormal) {
-        throw std::logic_error{"Function not yet implemented."};
-    }, R"pbdoc(merge(other, strategy=kMergeNormal) -> self
-merge(dagPath, component, strategy=kMergeNormal) -> self
-
-The first version merges the items from another selection list in
-with those already on the list, using the given strategy.
-
-The second version merges the specified component with those already
-on the list.)pbdoc")
-
-    .def("merge", [](MSelectionList & self, void, MSelectionList::MergeStrategy strategy) -> void {
         throw std::logic_error{"Function not yet implemented."};
     }, R"pbdoc(merge(other, strategy=kMergeNormal) -> self
 merge(dagPath, component, strategy=kMergeNormal) -> self

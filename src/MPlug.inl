@@ -206,7 +206,7 @@ Note that the behavior of connectedTo() is identical to destinationsWithConversi
         MObject result = self.node(&status);
 
         if (!status) {
-            throw std::exception(status.errorString().asChar());
+            throw std::runtime_error(status.errorString().asChar());
         }
 
         return result; 
@@ -312,10 +312,7 @@ This method will produce the networked version of the connectedplug.)pbdoc")
 This method is very similar to the source() method.  The only difference is that the source() method skips over any unit conversionnode connected to this destination, and returns the source of the unit conversion node.
 sourceWithConversion() does not skip over unitconversion nodes, and returns the source plug on a unit conversionnode, if present.
 Note that the behavior of connectedTo() is identical to sourceWithConversion(), that is, do not skip over unit conversion nodes.)pbdoc") 
-.def("__repr__", [](const MPlug &a) {
-        return "<cmdc.Plug()>";
-    }
-);
+
     .def("array", [](MPlug & self) -> MPlug {
         throw std::logic_error{"Function not yet implemented."};
     }, R"pbdoc(Returns a plug for the array of plugs of which this plug is an element.)pbdoc")
@@ -514,7 +511,7 @@ Note that the behavior of connectedTo() is identical to destinationsWithConversi
         MObject result = self.node(&status);
 
         if (!status) {
-            throw std::exception(status.errorString().asChar());
+            throw std::runtime_error(status.errorString().asChar());
         }
 
         return result; 
