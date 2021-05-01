@@ -15,6 +15,10 @@ py::class_<MObject>(m, "Object")
         return self.apiTypeStr();
     }, R"pbdoc(Return the type name of the internal Maya Object.)pbdoc")
 
+    .def("__eq__", [](MObject& self, const MObject& other) -> bool{
+        return (self == other);
+    }, R"pbdoc(Returns true if both MObjects refer to the same Maya object.)pbdoc")
+
     .def("__repr__", [](const MObject &a) {
         return "<cmdc.Object()>";
     }
