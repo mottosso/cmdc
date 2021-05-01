@@ -19,7 +19,10 @@ py::class_<MObject>(m, "Object")
         return (self == other);
     }, R"pbdoc(Returns true if both MObjects refer to the same Maya object.)pbdoc")
 
-    .def("__repr__", [](const MObject &a) {
-        return "<cmdc.Object()>";
+    .def("__repr__", [](const MObject &self) {
+        std::string ret = "<cmdc.Object(";
+        ret += self.apiTypeStr();
+        ret += ")>";
+        return ret;
     }
 );
