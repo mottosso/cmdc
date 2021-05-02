@@ -1,28 +1,73 @@
 py::class_<MDagPath>(m, "DagPath")
     .def(py::init<>())
 
+    .def(py::self == MDagPath())
+
     .def("apiType", [](MDagPath & self) -> MFn::Type {
-        throw std::logic_error{"Function not yet implemented."};
+        MStatus status = MStatus();
+        MFn::Type type = self.apiType(&status);
+
+        if (!status){
+            throw std::logic_error("(kFailure): Object does not exist");
+        }
+
+        return type;
     }, R"pbdoc(Returns the type of the object at the end of the path.)pbdoc")
 
     .def("child", [](MDagPath & self, unsigned int i) -> MObject {
-        throw std::logic_error{"Function not yet implemented."};
+        MStatus status = MStatus();
+        MObject child = self.child(i, &status);
+
+        switch (status.statusCode()){
+            case MS::kInvalidParameter:
+                throw std::out_of_range("(kInvalidParameter): Index not in valid range");
+            case MS::kFailure:
+                throw std::logic_error("(kFailure): Object does not exist");
+        }
+
+        return child;
     }, R"pbdoc(Returns the specified child of the object at the end of the path.)pbdoc")
 
     .def("childCount", [](MDagPath & self) -> int {
-        throw std::logic_error{"Function not yet implemented."};
+        MStatus status = MStatus();
+        int childCount = self.childCount(&status);
+
+        if (!status) {
+            throw std::logic_error("(kFailure): Object does not exist");
+        }
+
+        return childCount;
     }, R"pbdoc(Returns the number of objects parented directly beneath the object at the end of the path.)pbdoc")
 
     .def("exclusiveMatrix", [](MDagPath & self) -> MMatrix {
-        throw std::logic_error{"Function not yet implemented."};
+        MStatus status = MStatus();
+        MMatrix exclusive_matrix = self.exclusiveMatrix(&status);
+
+        if (!status) {
+            throw std::logic_error("(kFailure): Object does not exist");
+        }
+
+        return exclusive_matrix;
     }, R"pbdoc(Returns the matrix for all transforms in the path, excluding the end object.)pbdoc")
 
     .def("exclusiveMatrixInverse", [](MDagPath & self) -> MMatrix {
-        throw std::logic_error{"Function not yet implemented."};
+        MStatus status = MStatus();
+        MMatrix exclusive_matrix_inverse = self.exclusiveMatrixInverse(&status);
+
+        if (!status) {
+            throw std::logic_error("(kFailure): Object does not exist");
+        }
+
+        return exclusive_matrix_inverse;
     }, R"pbdoc(Returns the inverse of exclusiveMatrix().)pbdoc")
 
     .def("extendToShape", [](MDagPath & self) {
-        throw std::logic_error{"Function not yet implemented."};
+        MStatus status = self.extendToShape();
+
+        if (!status) {
+            throw std::logic_error("(kFailure): Object does not exist");
+        }
+
     }, R"pbdoc(Extends the path to the specified shape node parented directly beneath the transform at the current end of the path.)pbdoc")
 
     .def("fullPathName", [](MDagPath & self) -> MString {
