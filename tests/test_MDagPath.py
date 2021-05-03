@@ -62,7 +62,6 @@ def test_exclusiveMatrix():
     persp = sel.getDagPath(0)
     assert isinstance(persp.exclusiveMatrix(), cmdc.Matrix)
 
-    # I would have expected this to raise a RuntimeError
     invalid_dag = cmdc.DagPath()
     nose.tools.assert_raises(
         RuntimeError,
@@ -76,7 +75,6 @@ def test_exclusiveMatrixInverse():
     persp = sel.getDagPath(0)
     assert isinstance(persp.exclusiveMatrixInverse(), cmdc.Matrix)
 
-    # I would have expected this to raise a RuntimeError
     invalid_dag = cmdc.DagPath()
     nose.tools.assert_raises(
         RuntimeError,
@@ -97,3 +95,13 @@ def test_extendToShape():
         RuntimeError,
         invalid_dag.extendToShape,
     )
+
+
+def test_isValid():
+    sel = cmdc.SelectionList().add("persp")
+    persp = sel.getDagPath(0)
+    assert persp.isValid()
+
+    invalid_dag = cmdc.DagPath()
+    assert not invalid_dag.isValid()
+
