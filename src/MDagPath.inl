@@ -133,27 +133,87 @@ py::class_<MDagPath>(m, "DagPath")
     }, R"pbdoc(Returns the specified sub-path of this path.)pbdoc")
 
     .def("hasFn", [](MDagPath & self, MFn::Type type) -> bool {
-        return self.hasFn(type);
+        if (!self.isValid()) {
+            throw std::logic_error("Call on invalid DagPath.");
+        }
+
+        MStatus status;
+        bool result = self.hasFn(type, &status);
+
+        if (!status) {
+            throw std::logic_error(status.errorString().asChar());
+        }
+
+        return result;
     }, R"pbdoc(Returns True if the object at the end of the path supports the given function set.)pbdoc")
 
     .def("inclusiveMatrix", [](MDagPath & self) -> MMatrix {
-        throw std::logic_error{"Function not yet implemented."};
+        if (!self.isValid()) {
+            throw std::logic_error("Call on invalid DagPath.");
+        }
+        return self.inclusiveMatrix();
     }, R"pbdoc(Returns the matrix for all transforms in the path, including the end object, if it is a transform.)pbdoc")
 
     .def("inclusiveMatrixInverse", [](MDagPath & self) -> MMatrix {
-        throw std::logic_error{"Function not yet implemented."};
+        if (!self.isValid()) {
+            throw std::logic_error("Call on invalid DagPath.");
+        }
+
+        MStatus status;
+        MMatrix result = self.inclusiveMatrixInverse(&status);
+
+        if (!status) {
+            throw std::logic_error(status.errorString().asChar());
+        }
+
+        return result;
     }, R"pbdoc(Returns the inverse of inclusiveMatrix().)pbdoc")
 
     .def("instanceNumber", [](MDagPath & self) -> int {
-        throw std::logic_error{"Function not yet implemented."};
+        if (!self.isValid()) {
+            throw std::logic_error("Call on invalid DagPath.");
+        } else if (!self.isInstanced()) {
+            throw pybind11::type_error("Call on a non instanced DagPath.");
+        }
+
+        MStatus status;
+        int result = self.instanceNumber(&status);
+
+        if (!status) {
+            throw std::logic_error(status.errorString().asChar());
+        }
+
+        return result;
     }, R"pbdoc(Returns the instance number of this path to the object at the end.)pbdoc")
 
     .def("isInstanced", [](MDagPath & self) -> bool {
-        throw std::logic_error{"Function not yet implemented."};
+        if (!self.isValid()) {
+            throw std::logic_error("Call on invalid DagPath.");
+        }
+
+        MStatus status;
+        bool result = self.isInstanced(&status);
+
+        if (!status) {
+            throw std::logic_error(status.errorString().asChar());
+        }
+
+        return result;
     }, R"pbdoc(Returns True if the object at the end of the path can be reached by more than one path.)pbdoc")
 
     .def("isTemplated", [](MDagPath & self) -> bool {
-        throw std::logic_error{"Function not yet implemented."};
+        if (!self.isValid()) {
+            throw std::logic_error("Call on invalid DagPath.");
+        }
+
+        MStatus status;
+        bool result = self.isTemplated(&status);
+
+        if (!status) {
+            throw std::logic_error(status.errorString().asChar());
+        }
+
+        return result;
     }, R"pbdoc(Returns true if the DAG Node at the end of the path is templated.)pbdoc")
 
     .def("isValid", [](MDagPath & self) -> bool {
@@ -168,23 +228,79 @@ py::class_<MDagPath>(m, "DagPath")
     }, R"pbdoc(Returns True if this is a valid path.)pbdoc")
 
     .def("isVisible", [](MDagPath & self) -> bool {
-        throw std::logic_error{"Function not yet implemented."};
+        if (!self.isValid()) {
+            throw std::logic_error("Call on invalid DagPath.");
+        }
+
+        MStatus status;
+        bool result = self.isVisible(&status);
+
+        if (!status) {
+            throw std::logic_error(status.errorString().asChar());
+        }
+
+        return result;
     }, R"pbdoc(Returns true if the DAG Node at the end of the path is visible.)pbdoc")
 
     .def("length", [](MDagPath & self) -> int {
-        throw std::logic_error{"Function not yet implemented."};
+        if (!self.isValid()) {
+            throw std::logic_error("Call on invalid DagPath.");
+        }
+
+        MStatus status;
+        int result = self.length(&status);
+
+        if (!status) {
+            throw std::logic_error(status.errorString().asChar());
+        }
+
+        return result;
     }, R"pbdoc(Returns the number of nodes on the path, not including the DAG's root node.)pbdoc")
 
     .def("node", [](MDagPath & self) -> MObject {
-        throw std::logic_error{"Function not yet implemented."};
+        if (!self.isValid()) {
+            throw std::logic_error("Call on invalid DagPath.");
+        }
+
+        MStatus status;
+        MObject result = self.node(&status);
+
+        if (!status) {
+            throw std::logic_error(status.errorString().asChar());
+        }
+
+        return result;
     }, R"pbdoc(Returns the DAG node at the end of the path.)pbdoc")
 
     .def("numberOfShapesDirectlyBelow", [](MDagPath & self) -> unsigned int {
-        throw std::logic_error{"Function not yet implemented."};
+        if (!self.isValid()) {
+            throw std::logic_error("Call on invalid DagPath.");
+        }
+
+        unsigned int result;
+
+        MStatus status = self.numberOfShapesDirectlyBelow(result);
+
+        if (!status) {
+            throw std::logic_error(status.errorString().asChar());
+        }
+
+        return result;
     }, R"pbdoc(Returns the number of shape nodes parented directly beneath the transform at the end of the path.)pbdoc")
 
-    .def("partialPathName", [](MDagPath & self) -> MString {
-        throw std::logic_error{"Function not yet implemented."};
+    .def("partialPathName", [](MDagPath & self) -> std::string {
+        if (!self.isValid()) {
+            throw std::logic_error("Call on invalid DagPath.");
+        }
+
+        MStatus status;
+        MString result = self.partialPathName(&status);
+
+        if (!status) {
+            throw std::logic_error(status.errorString().asChar());
+        }
+
+        return std::string(result.asChar());
     }, R"pbdoc(Returns the minimum string representation which will uniquely identify the path.)pbdoc")
 
     .def("pathCount", [](MDagPath & self) -> int {
@@ -192,11 +308,31 @@ py::class_<MDagPath>(m, "DagPath")
     }, R"pbdoc(Returns the number of sub-paths which make up this path.)pbdoc")
 
     .def("pop", [](MDagPath & self, unsigned int num = 1) {
-        throw std::logic_error{"Function not yet implemented."};
-    }, R"pbdoc(Removes objects from the end of the path.)pbdoc")
+        if (!self.isValid()) {
+            throw std::logic_error("Call on invalid DagPath.");
+        } else if (num > self.length()) {
+            throw pybind11::value_error("");
+        }
+
+        MStatus status = self.pop(num);
+
+        if (!status) {
+            throw std::logic_error(status.errorString().asChar());
+        }
+
+    }, R"pbdoc(Removes objects from the end of the path.)pbdoc", py::arg("num") = 1)
 
     .def("push", [](MDagPath & self, MObject child) {
-        throw std::logic_error{"Function not yet implemented."};
+        if (!self.isValid()) {
+            throw std::logic_error("Call on invalid DagPath.");
+        }
+
+        MStatus status = self.push(child);
+
+        if (!status) {
+            throw std::logic_error(status.errorString().asChar());
+        }
+
     }, R"pbdoc(Extends the path to the specified child object, which must be parented directly beneath the object currently at the end of the path.)pbdoc")
 
     .def("set", [](MDagPath & self, MDagPath src) {

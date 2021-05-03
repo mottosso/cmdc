@@ -1,5 +1,9 @@
-import nose
 import cmdc
+import nose
+from maya import cmds
+
+from . import new_scene
+
 
 def test_equality():
     sel = cmdc.SelectionList().add("persp")
@@ -8,6 +12,12 @@ def test_equality():
     b = sel.getDagPath(0)
     assert a == b
 
+def test_inequality():
+    sel = cmdc.SelectionList().add("persp").add("perspShape")
+
+    a = sel.getDagPath(0)
+    b = sel.getDagPath(1)
+    assert a != b
 
 def test_apiType():
     sel = cmdc.SelectionList().add("persp")
@@ -133,6 +143,105 @@ def test_getAPathTo():
     )
 
 
+def test_hasFn():
+    sel = cmdc.SelectionList().add("persp").add("perspShape")
+
+    persp = sel.getDagPath(0)
+    assert persp.hasFn(cmdc.Fn.kTransform)
+
+    persp_shape = sel.getDagPath(1)
+    assert persp_shape.hasFn(cmdc.Fn.kCamera)
+
+    invalid_dag = cmdc.DagPath()
+    nose.tools.assert_raises(
+        RuntimeError,
+        invalid_dag.hasFn,
+        cmdc.Fn.kTransform
+    )
+
+def test_inclusiveMatrix():
+    sel = cmdc.SelectionList().add("persp").add("perspShape")
+
+    persp = sel.getDagPath(0)
+    assert isinstance(persp.inclusiveMatrix(), cmdc.Matrix)
+
+    invalid_dag = cmdc.DagPath()
+    nose.tools.assert_raises(
+        RuntimeError,
+        invalid_dag.inclusiveMatrix,
+    )
+
+
+def test_inclusiveMatrixInverse():
+    sel = cmdc.SelectionList().add("persp").add("perspShape")
+
+    persp = sel.getDagPath(0)
+    assert isinstance(persp.inclusiveMatrixInverse(), cmdc.Matrix)
+
+    invalid_dag = cmdc.DagPath()
+    nose.tools.assert_raises(
+        RuntimeError,
+        invalid_dag.inclusiveMatrixInverse,
+    )
+
+@nose.with_setup(teardown=new_scene)
+def test_instancenumber():
+    sel = cmdc.SelectionList().add("|persp|perspShape")
+
+    persp_shape = sel.getDagPath(0)
+    nose.tools.assert_raises(
+        TypeError,
+        persp_shape.instanceNumber,
+    )
+
+    cmds.instance("perspShape")
+    sel.add("|persp1|perspShape")
+    persp1_shape = sel.getDagPath(1)
+    assert persp_shape.instanceNumber() == 0
+    assert persp1_shape.instanceNumber() == 1
+
+    invalid_dag = cmdc.DagPath()
+    nose.tools.assert_raises(
+        RuntimeError,
+        invalid_dag.instanceNumber,
+    )
+
+@nose.with_setup(teardown=new_scene)
+def test_isInstanced():
+    sel = cmdc.SelectionList().add("perspShape")
+
+    persp_shape = sel.getDagPath(0)
+    assert not persp_shape.isInstanced()
+
+    cmds.instance("perspShape")
+    assert persp_shape.isInstanced()
+
+    invalid_dag = cmdc.DagPath()
+    nose.tools.assert_raises(
+        RuntimeError,
+        invalid_dag.isInstanced,
+    )
+
+@nose.with_setup(teardown=new_scene)
+def test_isTemplated():
+    class DisplayType(object):
+        normal = 0
+        template = 1
+
+    sel = cmdc.SelectionList().add("persp")
+    persp = sel.getDagPath(0)
+    assert not persp.isTemplated()
+
+    cmds.setAttr("persp.overrideEnabled", True)
+    cmds.setAttr("persp.overrideDisplayType", DisplayType.template)
+    assert persp.isTemplated()
+
+    invalid_dag = cmdc.DagPath()
+    nose.tools.assert_raises(
+        RuntimeError,
+        invalid_dag.isTemplated,
+    )
+
 def test_isValid():
     sel = cmdc.SelectionList().add("persp")
     persp = sel.getDagPath(0)
@@ -140,4 +249,109 @@ def test_isValid():
 
     invalid_dag = cmdc.DagPath()
     assert not invalid_dag.isValid()
+
+@nose.with_setup(teardown=new_scene)
+def test_isVisible():
+    sel = cmdc.SelectionList().add("persp")
+
+    persp = sel.getDagPath(0)
+    assert not persp.isVisible()
+
+    cmds.showHidden("persp")
+    assert persp.isVisible()
+
+    invalid_dag = cmdc.DagPath()
+    nose.tools.assert_raises(
+        RuntimeError,
+        invalid_dag.isVisible,
+    )
+
+def test_length():
+    sel = cmdc.SelectionList().add("persp").add("perspShape")
+
+    persp = sel.getDagPath(0)
+    assert persp.length() == 1
+
+    persp_shape = sel.getDagPath(1)
+    assert persp_shape.length() == 2
+
+    invalid_dag = cmdc.DagPath()
+    nose.tools.assert_raises(
+        RuntimeError,
+        invalid_dag.length,
+    )
+
+def test_node():
+    sel = cmdc.SelectionList().add("persp")
+
+    persp_dag = sel.getDagPath(0)
+    persp_obj = sel.getDependNode(0)
+    assert persp_dag.node() == persp_obj
+
+    invalid_dag = cmdc.DagPath()
+    nose.tools.assert_raises(
+        RuntimeError,
+        invalid_dag.length,
+    )
+
+def test_numberOfShapesDirectlyBelow():
+    sel = cmdc.SelectionList().add("persp").add("perspShape")
+
+    persp = sel.getDagPath(0)
+    assert persp.numberOfShapesDirectlyBelow() == 1
+
+    persp_shape = sel.getDagPath(1)
+    assert persp_shape.numberOfShapesDirectlyBelow() == 0
+
+    invalid_dag = cmdc.DagPath()
+    nose.tools.assert_raises(
+        RuntimeError,
+        invalid_dag.numberOfShapesDirectlyBelow,
+    )
+
+def test_partialPathName():
+    sel = cmdc.SelectionList().add("persp").add("perspShape")
+
+    persp = sel.getDagPath(0)
+    assert persp.partialPathName() == "persp"
+
+    persp_shape = sel.getDagPath(1)
+    assert persp_shape.partialPathName() == "perspShape"
+
+    invalid_dag = cmdc.DagPath()
+    nose.tools.assert_raises(
+        RuntimeError,
+        invalid_dag.partialPathName,
+    )
+
+def test_pop():
+    sel = cmdc.SelectionList().add("persp").add("perspShape")
+
+    persp = sel.getDagPath(0)
+    persp_shape = sel.getDagPath(1)
+    persp_shape.pop(1)
+    assert persp == persp_shape
+
+    invalid_dag = cmdc.DagPath()
+    nose.tools.assert_raises(
+        RuntimeError,
+        invalid_dag.pop,
+    )
+
+def test_push():
+    sel = cmdc.SelectionList().add("persp").add("perspShape")
+
+    persp_dag = sel.getDagPath(0)
+    persp_shape_dag = sel.getDagPath(1)
+    persp_shape_obj = sel.getDependNode(1)
+
+    persp_dag.push(persp_shape_obj)
+    assert persp_dag == persp_shape_dag
+
+    invalid_dag = cmdc.DagPath()
+    nose.tools.assert_raises(
+        RuntimeError,
+        invalid_dag.push,
+        cmdc.Object()
+    )
 
