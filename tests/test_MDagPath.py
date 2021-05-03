@@ -13,13 +13,10 @@ def test_apiType():
     sel = cmdc.SelectionList().add("persp")
 
     valid_dag = sel.getDagPath(0)
-    assert valid_dag.apiType() == cmdc.Fn.Type.kTransform
+    assert valid_dag.apiType() == cmdc.Fn.kTransform
 
     invalid_dag = cmdc.DagPath()
-    nose.tools.assert_raises(
-        RuntimeError,
-        invalid_dag.apiType,
-    )
+    assert invalid_dag.apiType() == cmdc.Fn.kInvalid
 
 def test_child():
     sel = cmdc.SelectionList().add("persp").add("perspShape")

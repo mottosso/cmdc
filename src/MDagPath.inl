@@ -4,9 +4,7 @@ py::class_<MDagPath>(m, "DagPath")
     .def(py::self == MDagPath())
 
     .def("apiType", [](MDagPath & self) -> MFn::Type {
-        if (!self.isValid()) {
-            throw std::logic_error("Call on invalid DagPath.");
-        }
+        // Not throwing anything here since apiType returns kInvalid when it fails.
         return self.apiType();
     }, R"pbdoc(Returns the type of the object at the end of the path.)pbdoc")
 
@@ -14,45 +12,88 @@ py::class_<MDagPath>(m, "DagPath")
         if (!self.isValid()) {
             throw std::logic_error("Call on invalid DagPath.");
         } else if (i >= self.childCount()) {
-                throw std::out_of_range("Index not in valid range");
+            throw std::out_of_range("Index out of range.");
         }
 
-        return self.child(i);
+        MStatus status;
+        MObject result = self.child(i, &status);
+
+        if (!status) {
+            throw std::logic_error(status.errorString().asChar());
+        }
+
+        return result;
     }, R"pbdoc(Returns the specified child of the object at the end of the path.)pbdoc")
 
     .def("childCount", [](MDagPath & self) -> int {
         if (!self.isValid()) {
             throw std::logic_error("Call on invalid DagPath.");
         }
-        return self.childCount();
+
+        MStatus status;
+        int result = self.childCount(&status);
+
+        if (!status) {
+            throw std::logic_error(status.errorString().asChar());
+        }
+
+        return result;
     }, R"pbdoc(Returns the number of objects parented directly beneath the object at the end of the path.)pbdoc")
 
     .def("exclusiveMatrix", [](MDagPath & self) -> MMatrix {
         if (!self.isValid()) {
             throw std::logic_error("Call on invalid DagPath.");
         }
-        return self.exclusiveMatrix();
+
+        MStatus status;
+        MMatrix result = self.exclusiveMatrix(&status);
+
+        if (!status) {
+            throw std::logic_error(status.errorString().asChar());
+        }
+
+        return result;
     }, R"pbdoc(Returns the matrix for all transforms in the path, excluding the end object.)pbdoc")
 
     .def("exclusiveMatrixInverse", [](MDagPath & self) -> MMatrix {
         if (!self.isValid()) {
             throw std::logic_error("Call on invalid DagPath.");
         }
-        return self.exclusiveMatrixInverse();
+        MStatus status;
+        MMatrix result = self.exclusiveMatrixInverse(&status);
+
+        if (!status) {
+            throw std::logic_error(status.errorString().asChar());
+        }
+
+        return result;
     }, R"pbdoc(Returns the inverse of exclusiveMatrix().)pbdoc")
 
     .def("extendToShape", [](MDagPath & self) {
         if (!self.isValid()) {
             throw std::logic_error("Call on invalid DagPath.");
         }
-        self.extendToShape();
+
+        MStatus status = self.extendToShape();
+
+        if (!status) {
+            throw std::logic_error(status.errorString().asChar());
+        }
     }, R"pbdoc(Extends the path to the specified shape node parented directly beneath the transform at the current end of the path.)pbdoc")
 
     .def("fullPathName", [](MDagPath & self) -> std::string {
         if (!self.isValid()) {
             throw std::logic_error("Call on invalid Dag Path.");
         }
-        return std::string(self.fullPathName().asChar());
+
+        MStatus status;
+        std::string result = self.fullPathName(&status).asChar();
+
+        if (!status) {
+            throw std::logic_error(status.errorString().asChar());
+        }
+
+        return result;
     }, R"pbdoc(Returns a string representation of the path from the DAG root to the path's last node.)pbdoc")
 
     .def_static("getAPathTo", [](MObject node) -> MDagPath {
@@ -65,8 +106,13 @@ py::class_<MDagPath>(m, "DagPath")
             throw pybind11::type_error(error_msg);
         }
 
-        MDagPath path = MDagPath();
-        MDagPath::getAPathTo(node, path);
+        MDagPath path;
+        MStatus status = MDagPath::getAPathTo(node, path);
+
+        if (!status) {
+            throw std::logic_error(status.errorString().asChar());
+        }
+
         return path;
     }, R"pbdoc(Returns the first path found to the given node.)pbdoc")
 
@@ -111,7 +157,14 @@ py::class_<MDagPath>(m, "DagPath")
     }, R"pbdoc(Returns true if the DAG Node at the end of the path is templated.)pbdoc")
 
     .def("isValid", [](MDagPath & self) -> bool {
-        return self.isValid();
+        MStatus status;
+        bool result = self.isValid(&status);
+
+        if (!status) {
+            throw std::logic_error(status.errorString().asChar());
+        }
+
+        return result;
     }, R"pbdoc(Returns True if this is a valid path.)pbdoc")
 
     .def("isVisible", [](MDagPath & self) -> bool {
