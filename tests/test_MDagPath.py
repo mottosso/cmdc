@@ -96,6 +96,45 @@ def test_extendToShape():
         invalid_dag.extendToShape,
     )
 
+def test_fullPathName():
+    sel = cmdc.SelectionList().add("persp").add("perspShape")
+
+    persp = sel.getDagPath(0)
+    persp_path_name =persp.fullPathName() 
+    assert persp_path_name == "|persp"
+    assert isinstance(persp_path_name, str)
+
+    persp_shape = sel.getDagPath(1)
+    assert persp_shape.fullPathName() == "|persp|perspShape"
+
+    invalid_dag = cmdc.DagPath()
+    nose.tools.assert_raises(
+        RuntimeError,
+        invalid_dag.fullPathName,
+    )
+
+def test_getAPathTo():
+    sel = cmdc.SelectionList().add("persp").add("time1")
+
+    persp_obj = sel.getDependNode(0)
+    persp_dag = sel.getDagPath(0)
+    result = cmdc.DagPath.getAPathTo(persp_obj) 
+    assert result == persp_dag
+
+    time_obj = sel.getDependNode(1)
+    nose.tools.assert_raises(
+        TypeError,
+        cmdc.DagPath.getAPathTo,
+        time_obj
+    )
+
+    invalid_obj = cmdc.Object()
+    nose.tools.assert_raises(
+        RuntimeError,
+        cmdc.DagPath.getAPathTo,
+        invalid_obj 
+    )
+
 
 def test_isValid():
     sel = cmdc.SelectionList().add("persp")

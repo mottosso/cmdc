@@ -48,16 +48,26 @@ py::class_<MDagPath>(m, "DagPath")
         self.extendToShape();
     }, R"pbdoc(Extends the path to the specified shape node parented directly beneath the transform at the current end of the path.)pbdoc")
 
-    .def("fullPathName", [](MDagPath & self) -> MString {
-        throw std::logic_error{"Function not yet implemented."};
+    .def("fullPathName", [](MDagPath & self) -> std::string {
+        if (!self.isValid()) {
+            throw std::logic_error("Call on invalid Dag Path.");
+        }
+        return std::string(self.fullPathName().asChar());
     }, R"pbdoc(Returns a string representation of the path from the DAG root to the path's last node.)pbdoc")
 
     .def_static("getAPathTo", [](MObject node) -> MDagPath {
-        throw std::logic_error{"Function not yet implemented."};
-    }, R"pbdoc(Returns the first path found to the given node.)pbdoc")
+        if (node.isNull()) {
+            throw std::logic_error("Passed Object is null.");
+        } else if (!node.hasFn(MFn::Type::kDagNode)) {
+            std::string error_msg = "Passed Object has Fn ";
+            error_msg += node.apiTypeStr();
+            error_msg += ". Should be kDagNode or subclass.";
+            throw pybind11::type_error(error_msg);
+        }
 
-    .def_static("getAPathTo", [](MObject node) -> MDagPath {
-        throw std::logic_error{"Function not yet implemented."};
+        MDagPath path = MDagPath();
+        MDagPath::getAPathTo(node, path);
+        return path;
     }, R"pbdoc(Returns the first path found to the given node.)pbdoc")
 
     .def_static("getAllPathsTo", [](MObject node) -> std::vector<MDagPath> {
