@@ -60,6 +60,24 @@ class TestArrayMethods(unittest.TestCase):
         nose.tools.assert_raises(TypeError, non_array_element.array)
         nose.tools.assert_raises(ValueError, cmdc.Plug().array)
 
+    def test_logicalIndex(self):
+        """Test for MPlug::logicalIndex binding."""
+
+        selection = cmdc.SelectionList().add(p(self.node, 'array[*]'))
+
+        plug_0 = selection.getPlug(0)
+        plug_1 = selection.getPlug(1)
+        plug_3 = selection.getPlug(2)
+
+        assert plug_0.logicalIndex() == 0
+        assert plug_1.logicalIndex() == 1
+        assert plug_3.logicalIndex() == 3
+
+        non_element = cmdc.SelectionList().add(p(self.node, 'single')).getPlug(0)
+
+        nose.tools.assert_raises(TypeError, non_element.logicalIndex)
+        nose.tools.assert_raises(ValueError, cmdc.Plug().logicalIndex)
+
     def test_numElements(self):
         """Test for MPlug::numElements binding."""
 

@@ -291,8 +291,26 @@ Note that the behavior of connectedTo() is identical to destinationsWithConversi
         return self.isSource();
     }, R"pbdoc(True if plug is the source of a connection.)pbdoc")
 
-    .def("logicalIndex", [](MPlug & self) -> int {
-        throw std::logic_error{"Function not yet implemented."};
+    .def("logicalIndex", [](MPlug & self) -> unsigned int {
+       if (self.isNull()) {
+            throw std::invalid_argument("Accessed a null plug.");
+        }
+
+        if (!self.isElement()) {
+            MString error_msg("Plug '^1s' is not an array element plug.");
+                    error_msg.format(error_msg, self.name());
+
+            throw pybind11::type_error(error_msg.asChar());
+        }
+
+        MStatus status;
+        unsigned int result = self.logicalIndex(&status);
+
+        if (!status) {
+            throw std::runtime_error(status.errorString().asChar());
+        }
+
+        return result; 
     }, R"pbdoc(Returns this plug's logical index within its parent array.)pbdoc")
 
     .def("name", [](MPlug & self) -> std::string {
