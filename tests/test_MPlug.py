@@ -206,6 +206,29 @@ class TestConnectionMethods(unittest.TestCase):
         
         nose.tools.assert_raises(ValueError, cmdc.Plug().destinations)
 
+    def test_destinationsWithConversion(self):
+        """Test for MPlug::destinationsWithConversions binding."""
+
+        src_plug = cmdc.SelectionList().add(p(self.src_node, 'attr')).getPlug(0)
+        tgt_plug = cmdc.SelectionList().add(p(self.tgt_node, 'attr')).getPlug(0)
+        alt_plug = cmdc.SelectionList().add(p(self.alt_node, 'attr')).getPlug(0)
+
+        assert tgt_plug.destinations() == [], 'Plug.destinationsWithConversions should return an empty list for unconnected plugs'
+        
+        destinations = src_plug.destinationsWithConversions()
+        
+        assert destinations is not None, 'Plug.destinationsWithConversions returned a null'
+
+        assert len(destinations) == 2, 'Plug.destinationsWithConversions returned %s values; expected 2' % len(destinations)
+
+        assert destinations[0].node().hasFn(cmdc.Fn.kUnitConversion), 'Plug.destinationsWithConversions skipped over conversion node'
+        assert destinations[1].node().hasFn(cmdc.Fn.kUnitConversion), 'Plug.destinationsWithConversions skipped over conversion node'
+
+        assert tgt_plug not in destinations, 'Plug.destinationsWithConversions returned incorrect results'
+        assert alt_plug not in destinations, 'Plug.destinationsWithConversions returned incorrect results'
+        
+        nose.tools.assert_raises(ValueError, cmdc.Plug().destinationsWithConversions)
+
     def test_source(self):
         """Test for MPlug::source binding."""
 
