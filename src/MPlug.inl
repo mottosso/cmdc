@@ -94,7 +94,49 @@ plug.def(py::init<>())
     }, R"pbdoc(Returns the attribute currently referenced by this plug.)pbdoc")
 
     .def("child", [](MPlug & self, MObject attr) -> MPlug {
-        throw std::logic_error{"Function not yet implemented."};
+        if (self.isNull()) {
+            throw std::invalid_argument("Accessed a null plug.");
+        }
+
+        if ((self.isCompound() && self.isArray()) || !self.isCompound()) {
+            MString error_msg("Plug '^1s' is not a compound plug or is a compound array plug.");
+                    error_msg.format(error_msg, self.name());
+
+            throw pybind11::type_error(error_msg.asChar());
+        }
+
+        MStatus status;
+        MPlug result;
+        
+        // You would think we could just call plug.child(attr), but that is not returning the 
+        // correct status code for errors. So we'll do it the hard way.
+        for (unsigned int i = 0; i < self.numChildren(); i++)
+        {
+            MPlug tmp = self.child(i, &status);
+
+            if (!status) {
+                break;
+            }
+
+            if (tmp.attribute() == attr) {
+                result = tmp;
+                break;
+            }
+        }
+
+        if (result.isNull())
+        {
+            MString error_msg("The given attribute is not a child of plug '^1s'.");
+                    error_msg.format(error_msg, self.name());
+
+            throw std::invalid_argument(error_msg.asChar());
+        }
+
+        if (!status) {
+            throw std::runtime_error(status.errorString().asChar());
+        }
+
+        return result;
     }, R"pbdoc(Returns a plug for the specified child attribute of this plug.)pbdoc")
 
     .def("child", [](MPlug & self, unsigned int index) -> MPlug {

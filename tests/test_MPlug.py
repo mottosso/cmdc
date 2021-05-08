@@ -3,6 +3,7 @@
 import nose.tools
 
 from maya import cmds 
+from maya.api import OpenMaya 
 
 import cmdc
 
@@ -48,25 +49,34 @@ class test_array(object):
             plug.array
         )
 
-class test_attribute(object):
+
+class test_child(object):
     @staticmethod
-    def test_pass():
+    def test_pass_attr():
         node = cmds.createNode('network')
 
-        cmds.addAttr(node, ln='test')
-        attr_name = '{}.test'.format(node)
+        cmds.addAttr(node, ln='test', at='compound', nc=1)
+        cmds.addAttr(node, ln='child', parent='test')
+        
+        parent = cmdc.SelectionList().add(node + '.test').getPlug(0)
+        child = cmdc.SelectionList().add(node + '.test.child').getPlug(0).attribute()
 
-        plug = cmdc.SelectionList().add(attr_name).getPlug(0)
-        attr = plug.attribute()
+        attr = parent.child(child)
 
         assert attr is not None
-        assert attr.hasFn(cmdc.Fn.kAttribute)
+        assert attr.name() == node + '.child', attr.name()
 
     @staticmethod
-    def test_null():
-        plug = cmdc.Plug()
+    def test_fail_attr():
+        node = cmds.createNode('network')
 
-        nose.tools.assert_raises(
-            ValueError,
-            plug.attribute
-        )
+        cmds.addAttr(node, ln='parent_a', at='compound', nc=1)
+        cmds.addAttr(node, ln='child_a', parent='parent_a')
+
+        cmds.addAttr(node, ln='parent_b', at='compound', nc=1)
+        cmds.addAttr(node, ln='child_b', parent='parent_b')
+
+        parent_a = cmdc.SelectionList().add(node + '.parent_a').getPlug(0)
+        child_b = cmdc.SelectionList().add(node + '.parent_b.child_b').getPlug(0).attribute()
+
+        nose.tools.assert_raises(ValueError, parent_a.child, child_b)
