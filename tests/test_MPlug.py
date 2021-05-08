@@ -42,17 +42,16 @@ class TestArrayMethods(unittest.TestCase):
 
         cls.node = node 
 
-    def test_array_pass(self):
+    def test_array(self):
         array_element = cmdc.SelectionList().add(p(self.node, 'array', 0)).getPlug(0)
         array_root = array_element.array()
 
         assert array_root is not None
         assert array_root.name() == p(self.node, 'array')
 
-    def test_array_fail(self):
-        array_element = cmdc.SelectionList().add(p(self.node, 'single')).getPlug(0)
+        non_array_element = cmdc.SelectionList().add(p(self.node, 'single')).getPlug(0)
 
-        nose.tools.assert_raises(TypeError, array_element.array)
+        nose.tools.assert_raises(TypeError, non_array_element.array)
         nose.tools.assert_raises(ValueError, cmdc.Plug().array)
 
 
@@ -75,7 +74,7 @@ class TestCompoundPlugMethods(unittest.TestCase):
 
         cls.node = node 
 
-    def test_child_pass(self):
+    def test_child(self):
         parent = cmdc.SelectionList().add(p(self.node, 'parent_a')).getPlug(0)
         child = cmdc.SelectionList().add(p(self.node, 'parent_a', 'child_a')).getPlug(0).attribute()
 
@@ -89,7 +88,6 @@ class TestCompoundPlugMethods(unittest.TestCase):
         assert attr is not None
         assert attr.name() == p(self.node, 'child_a'), attr.name()
 
-    def test_child_fail(self):
         parent = cmdc.SelectionList().add(p(self.node, 'parent_a')).getPlug(0)
         child = cmdc.SelectionList().add(p(self.node, 'parent_b', 'child_b')).getPlug(0).attribute()
 
@@ -97,12 +95,11 @@ class TestCompoundPlugMethods(unittest.TestCase):
         nose.tools.assert_raises(IndexError, parent.child, 1)
         nose.tools.assert_raises(ValueError, cmdc.Plug().child, 0)
 
-    def test_numChildren_pass(self):
+    def test_numChildren(self):
         parent = cmdc.SelectionList().add(p(self.node, 'parent_a')).getPlug(0)
 
         assert parent.numChildren() == 1
         
-    def test_numChildren_fail(self):
         non_parent = cmdc.SelectionList().add(p(self.node, 'single')).getPlug(0)
 
         nose.tools.assert_raises(TypeError, non_parent.numChildren)
@@ -126,7 +123,7 @@ class TestConnectionMethods(unittest.TestCase):
         cls.src_node = src_node
         cls.tgt_node = tgt_node
 
-    def test_source_pass(self):
+    def test_source(self):
         src_plug = cmdc.SelectionList().add(p(self.src_node, 'attr')).getPlug(0)
         tgt_plug = cmdc.SelectionList().add(p(self.tgt_node, 'attr')).getPlug(0)
 
@@ -135,7 +132,7 @@ class TestConnectionMethods(unittest.TestCase):
 
         nose.tools.assert_raises(ValueError, cmdc.Plug().source)
 
-    def test_sourceWithConversion_pass(self):
+    def test_sourceWithConversion(self):
         src_plug = cmdc.SelectionList().add(p(self.src_node, 'attr')).getPlug(0)
         tgt_plug = cmdc.SelectionList().add(p(self.tgt_node, 'attr')).getPlug(0)
 
