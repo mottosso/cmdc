@@ -27,6 +27,8 @@ def p(base, *args):
 
 
 class TestArrayMethods(unittest.TestCase):
+    """Tests for MPlug methods bindings for array/element plugs."""
+
     node = None 
 
     @classmethod 
@@ -45,6 +47,8 @@ class TestArrayMethods(unittest.TestCase):
         cls.node = node 
 
     def test_array(self):
+        """Test for MPlug::array binding."""
+        
         array_element = cmdc.SelectionList().add(p(self.node, 'array', 0)).getPlug(0)
         array_root = array_element.array()
 
@@ -57,6 +61,8 @@ class TestArrayMethods(unittest.TestCase):
         nose.tools.assert_raises(ValueError, cmdc.Plug().array)
 
     def test_numElements(self):
+        """Test for MPlug::numElements binding."""
+
         array_root = cmdc.SelectionList().add(p(self.node, 'array')).getPlug(0)
         
         assert array_root.numElements() == 3
@@ -68,6 +74,8 @@ class TestArrayMethods(unittest.TestCase):
 
 
 class TestCompoundPlugMethods(unittest.TestCase):
+    """Tests for MPlug methods bindings for compound plugs."""
+
     node = None
 
     @classmethod 
@@ -87,6 +95,8 @@ class TestCompoundPlugMethods(unittest.TestCase):
         cls.node = node 
 
     def test_child(self):
+        """Test for MPlug::child binding."""
+
         parent = cmdc.SelectionList().add(p(self.node, 'parent_a')).getPlug(0)
         child = cmdc.SelectionList().add(p(self.node, 'parent_a', 'child_a')).getPlug(0).attribute()
 
@@ -108,6 +118,8 @@ class TestCompoundPlugMethods(unittest.TestCase):
         nose.tools.assert_raises(ValueError, cmdc.Plug().child, 0)
 
     def test_parent(self):
+        """Test for MPlug::parent binding."""
+
         parent = cmdc.SelectionList().add(p(self.node, 'parent_a')).getPlug(0)
         child = cmdc.SelectionList().add(p(self.node, 'parent_a', 'child_a')).getPlug(0)
 
@@ -120,6 +132,8 @@ class TestCompoundPlugMethods(unittest.TestCase):
         nose.tools.assert_raises(ValueError, cmdc.Plug().parent)
 
     def test_numChildren(self):
+        """Test for MPlug::numChildren binding."""
+
         parent = cmdc.SelectionList().add(p(self.node, 'parent_a')).getPlug(0)
 
         assert parent.numChildren() == 1
@@ -131,6 +145,8 @@ class TestCompoundPlugMethods(unittest.TestCase):
 
 
 class TestConnectionMethods(unittest.TestCase):
+    """Tests for MPlug methods bindings for connections."""
+
     src_node = None 
     tgt_node = None 
 
@@ -148,6 +164,8 @@ class TestConnectionMethods(unittest.TestCase):
         cls.tgt_node = tgt_node
 
     def test_source(self):
+        """Test for MPlug::source binding."""
+
         src_plug = cmdc.SelectionList().add(p(self.src_node, 'attr')).getPlug(0)
         tgt_plug = cmdc.SelectionList().add(p(self.tgt_node, 'attr')).getPlug(0)
 
@@ -157,6 +175,8 @@ class TestConnectionMethods(unittest.TestCase):
         nose.tools.assert_raises(ValueError, cmdc.Plug().source)
 
     def test_sourceWithConversion(self):
+        """Test for MPlug::sourceWithConversion binding."""
+
         src_plug = cmdc.SelectionList().add(p(self.src_node, 'attr')).getPlug(0)
         tgt_plug = cmdc.SelectionList().add(p(self.tgt_node, 'attr')).getPlug(0)
 
