@@ -36,9 +36,11 @@ class TestArrayMethods(unittest.TestCase):
         node = cmds.createNode('network')
 
         cmds.addAttr(node, ln='array', multi=True)
-        cmds.addAttr(node, ln='single', multi=True)
+        cmds.addAttr(node, ln='single')
         
         cmds.setAttr(p(node, 'array', 0), 0.0)
+        cmds.setAttr(p(node, 'array', 1), 0.0)
+        cmds.setAttr(p(node, 'array', 3), 0.0)
 
         cls.node = node 
 
@@ -53,6 +55,16 @@ class TestArrayMethods(unittest.TestCase):
 
         nose.tools.assert_raises(TypeError, non_array_element.array)
         nose.tools.assert_raises(ValueError, cmdc.Plug().array)
+
+    def test_numElements(self):
+        array_root = cmdc.SelectionList().add(p(self.node, 'array')).getPlug(0)
+        
+        assert array_root.numElements() == 3
+
+        non_array_root = cmdc.SelectionList().add(p(self.node, 'single')).getPlug(0)
+
+        nose.tools.assert_raises(TypeError, non_array_root.numElements)
+        nose.tools.assert_raises(ValueError, cmdc.Plug().numElements)
 
 
 class TestCompoundPlugMethods(unittest.TestCase):

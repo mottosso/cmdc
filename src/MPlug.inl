@@ -342,8 +342,26 @@ Note that the behavior of connectedTo() is identical to destinationsWithConversi
         throw std::logic_error{"Function not yet implemented."};
     }, R"pbdoc(Returns the number of this plug's elements which have connections.)pbdoc")
 
-    .def("numElements", [](MPlug & self) -> int {
-        throw std::logic_error{"Function not yet implemented."};
+    .def("numElements", [](MPlug & self) -> unsigned int {
+        if (self.isNull()) {
+            throw std::invalid_argument("Accessed a null plug.");
+        }
+
+        if (!self.isArray()) {
+            MString error_msg("Plug '^1s' is not an array plug.");
+                    error_msg.format(error_msg, self.name());
+
+            throw pybind11::type_error(error_msg.asChar());
+        }
+
+        MStatus status;
+        unsigned int result = self.numElements(&status);
+
+        if (!status) {
+            throw std::runtime_error(status.errorString().asChar());
+        }
+
+        return result; 
     }, R"pbdoc(Returns the number of the plug's logical indices which are currently in use. Connected elements which have not yet been evaluated may not yet fully exist and may be excluded from the count.)pbdoc")
 
     .def("parent", [](MPlug & self) -> MPlug {
