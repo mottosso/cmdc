@@ -226,12 +226,55 @@ Note that the behavior of connectedTo() is identical to destinationsWithConversi
         throw std::logic_error{"Function not yet implemented."};
     }, R"pbdoc(Destroys a data handle previously constructed using constructHandle().)pbdoc")
 
-    .def("elementByLogicalIndex", [](MPlug & self, unsigned int logicalIndex) -> MPlug {
-        throw std::logic_error{"Function not yet implemented."};
+    .def("elementByLogicalIndex", [](MPlug & self, unsigned int index) -> MPlug {
+        if (self.isNull()) {
+            throw std::invalid_argument("Accessed a null plug.");
+        }
+
+        if (!self.isArray()) {
+            MString error_msg("Plug '^1s' is not an array plug.");
+                    error_msg.format(error_msg, self.name());
+
+            throw pybind11::type_error(error_msg.asChar());
+        }
+
+        MStatus status;
+        MPlug result = self.elementByLogicalIndex(index, &status);
+
+        if (!status) {
+            throw std::runtime_error(status.errorString().asChar());
+        }
+
+        return result;
     }, R"pbdoc(Returns a plug for the element of this plug array having the specified logical index.)pbdoc")
 
-    .def("elementByPhysicalIndex", [](MPlug & self, unsigned int physicalIndex) -> MPlug {
-        throw std::logic_error{"Function not yet implemented."};
+    .def("elementByPhysicalIndex", [](MPlug & self, unsigned int index) -> MPlug {
+        if (self.isNull()) {
+            throw std::invalid_argument("Accessed a null plug.");
+        }
+
+        if (!self.isArray()) {
+            MString error_msg("Plug '^1s' is not an array plug.");
+                    error_msg.format(error_msg, self.name());
+
+            throw pybind11::type_error(error_msg.asChar());
+        }
+
+        if (index >= self.numElements()) {
+            MString error_msg("Plug '^1s' only has '^2s' elements.");
+                    error_msg.format(error_msg, self.name(), MString("") + self.numElements());
+                
+            throw std::out_of_range(error_msg.asChar());
+        }
+
+        MStatus status;
+        MPlug result = self.elementByPhysicalIndex(index, &status);
+
+        if (!status) {
+            throw std::runtime_error(status.errorString().asChar());
+        }
+
+        return result;
     }, R"pbdoc(Returns a plug for the element of this plug array having the specified physical index. )pbdoc")
 
     .def("evaluateNumElements", [](MPlug & self) -> unsigned int {

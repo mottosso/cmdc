@@ -60,6 +60,51 @@ class TestArrayMethods(unittest.TestCase):
         nose.tools.assert_raises(TypeError, non_array_element.array)
         nose.tools.assert_raises(ValueError, cmdc.Plug().array)
 
+    def test_elementByLogicalIndex(self):
+        """Test for MPlug::elementByLogicalIndex binding."""
+
+        array_root = cmdc.SelectionList().add(p(self.node, 'array')).getPlug(0)
+        
+        selection = cmdc.SelectionList().add(p(self.node, 'array[*]'))
+
+        plug_0 = selection.getPlug(0)
+        plug_1 = selection.getPlug(1)
+        plug_3 = selection.getPlug(2)
+
+        assert array_root.elementByLogicalIndex(0) == plug_0
+        assert array_root.elementByLogicalIndex(1) == plug_1
+        assert array_root.elementByLogicalIndex(3) == plug_3
+
+        # A plug will be created at the requested index if it does not exist.
+        assert not array_root.elementByLogicalIndex(5).isNull()
+
+        non_array_root = cmdc.SelectionList().add(p(self.node, 'single')).getPlug(0)
+
+        nose.tools.assert_raises(TypeError, non_array_root.elementByLogicalIndex, 0)
+        nose.tools.assert_raises(ValueError, cmdc.Plug().elementByLogicalIndex, 0)
+
+    def test_elementByPhysicalIndex(self):
+        """Test for MPlug::elementByPhysicalIndex binding."""
+
+        array_root = cmdc.SelectionList().add(p(self.node, 'array')).getPlug(0)
+        
+        selection = cmdc.SelectionList().add(p(self.node, 'array[*]'))
+
+        plug_0 = selection.getPlug(0)
+        plug_1 = selection.getPlug(1)
+        plug_3 = selection.getPlug(2)
+
+        assert array_root.elementByPhysicalIndex(0) == plug_0
+        assert array_root.elementByPhysicalIndex(1) == plug_1
+        assert array_root.elementByPhysicalIndex(2) == plug_3
+
+        nose.tools.assert_raises(IndexError, array_root.elementByPhysicalIndex, 9001)
+
+        non_array_root = cmdc.SelectionList().add(p(self.node, 'single')).getPlug(0)
+
+        nose.tools.assert_raises(TypeError, non_array_root.elementByPhysicalIndex, 0)
+        nose.tools.assert_raises(ValueError, cmdc.Plug().elementByPhysicalIndex, 0)
+    
     def test_evaluateNumElements(self):
         """Test for MPlug::evaluateNumElements binding."""
 
