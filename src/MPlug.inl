@@ -222,59 +222,59 @@ Note that the behavior of connectedTo() is identical to destinationsWithConversi
     }, R"pbdoc(Description of the plug for debugging purposes, in the form node:attr1.attr2[].attr3...)pbdoc")
 
     .def("isArray", [](MPlug & self) -> bool {
-        throw std::logic_error{"Function not yet implemented."};
+        return self.isArray();
     }, R"pbdoc(True if plug is an array of plugs.)pbdoc")
 
     .def("isChild", [](MPlug & self) -> bool {
-        throw std::logic_error{"Function not yet implemented."};
+        return self.isChild();
     }, R"pbdoc(True if plug is a child of a compound parent.)pbdoc")
 
     .def("isCompound", [](MPlug & self) -> bool {
-        throw std::logic_error{"Function not yet implemented."};
+        return self.isCompound();
     }, R"pbdoc(True if plug is compound parent with children.)pbdoc")
 
     .def("isConnected", [](MPlug & self) -> bool {
-        throw std::logic_error{"Function not yet implemented."};
+        return self.isConnected();
     }, R"pbdoc(True if plug has any connections.)pbdoc")
 
     .def("isDefaultValue", [](MPlug & self, bool forceEval = true) -> bool {
-        throw std::logic_error{"Function not yet implemented."};
+        return self.isDefaultValue(forceEval);
     }, R"pbdoc(Returns a value indicating if the plug's value is equivalent to the plug's default value.)pbdoc")
 
     .def("isDestination", [](MPlug & self) -> bool {
-        throw std::logic_error{"Function not yet implemented."};
+        return self.isDestination();
     }, R"pbdoc(True if plug is the destination of a connection.)pbdoc")
 
     .def("isDynamic", [](MPlug & self) -> bool {
-        throw std::logic_error{"Function not yet implemented."};
+        return self.isDynamic();
     }, R"pbdoc(True if plug is for a dynamic attribute.)pbdoc")
 
     .def("isElement", [](MPlug & self) -> bool {
-        throw std::logic_error{"Function not yet implemented."};
+        return self.isElement();
     }, R"pbdoc(True if plug is an element of an array of plugs.)pbdoc")
 
     .def("isFreeToChange", [](MPlug & self, bool checkParents = true, bool checkChildren = true) -> MPlug::FreeToChangeState {
-        throw std::logic_error{"Function not yet implemented."};
+        return self.isFreeToChange(checkParents, checkChildren);
     }, R"pbdoc(Returns a value indicating if the plug's value can be changed, after taking into account the effects of locking and connections.)pbdoc")
 
     .def("isFromReferencedFile", [](MPlug & self) -> bool {
-        throw std::logic_error{"Function not yet implemented."};
+        return self.isFromReferencedFile();
     }, R"pbdoc(True if plug is part of a connection from a referenced file.)pbdoc")
 
     .def("isIgnoredWhenRendering", [](MPlug & self) -> bool {
-        throw std::logic_error{"Function not yet implemented."};
+        return self.isIgnoredWhenRendering();
     }, R"pbdoc(True if connetions to plug are ignored during rendering.)pbdoc")
 
     .def("isKeyable", [](MPlug & self) -> bool {
-        throw std::logic_error{"Function not yet implemented."};
+        return self.isKeyable();
     }, R"pbdoc(True if keys can be set on plug from Maya's UI.)pbdoc")
 
     .def("isLocked", [](MPlug & self) -> bool {
-        throw std::logic_error{"Function not yet implemented."};
+        return self.isLocked();
     }, R"pbdoc(True if plug is locked against changes.)pbdoc")
 
     .def("isNetworked", [](MPlug & self) -> bool {
-        throw std::logic_error{"Function not yet implemented."};
+        return self.isNetworked();    
     }, R"pbdoc(True if plug is networked.)pbdoc")
 
     .def("isNull", [](MPlug & self) -> bool {
@@ -282,11 +282,11 @@ Note that the behavior of connectedTo() is identical to destinationsWithConversi
     }, R"pbdoc(True if plug does not reference an attribute.)pbdoc")
 
     .def("isProcedural", [](MPlug & self) -> bool {
-        throw std::logic_error{"Function not yet implemented."};
+        return self.isProcedural();
     }, R"pbdoc(True if plug is procedural.)pbdoc")
 
     .def("isSource", [](MPlug & self) -> bool {
-        throw std::logic_error{"Function not yet implemented."};
+        return self.isSource();
     }, R"pbdoc(True if plug is the source of a connection.)pbdoc")
 
     .def("logicalIndex", [](MPlug & self) -> int {
