@@ -8,6 +8,8 @@ py::enum_<MPlug::MValueSelector>(plug, "ValueSelector")
 
 plug.def(py::init<>())
 
+    .def(py::self == MPlug())
+
     .def("array", [](MPlug & self) -> MPlug {
         if (self.isNull()) {
             throw std::invalid_argument("Accessed a null plug.");
@@ -399,13 +401,35 @@ Note that the behavior of connectedTo() is identical to destinationsWithConversi
     }, R"pbdoc(Sets the plug's value as a string.)pbdoc")
 
     .def("source", [](MPlug & self) -> MPlug {
-        throw std::logic_error{"Function not yet implemented."};
+        if (self.isNull()) {
+            throw std::invalid_argument("Accessed a null plug.");
+        }
+
+        MStatus status;
+        MPlug result = self.source(&status);
+
+        if (!status) {
+            throw std::runtime_error(status.errorString().asChar());
+        }
+
+        return result;      
     }, R"pbdoc(If this plug is a destination, return the source plug connected to it.
 If this plug is not a destination, a null plug is returned.
 This method will produce the networked version of the connectedplug.)pbdoc")
 
     .def("sourceWithConversion", [](MPlug & self) -> MPlug {
-        throw std::logic_error{"Function not yet implemented."};
+       if (self.isNull()) {
+            throw std::invalid_argument("Accessed a null plug.");
+        }
+
+        MStatus status;
+        MPlug result = self.sourceWithConversion(&status);
+
+        if (!status) {
+            throw std::runtime_error(status.errorString().asChar());
+        }
+
+        return result;       
     }, R"pbdoc(If this plug is a destination, return the source plug connected to it.
 This method is very similar to the source() method.  The only difference is that the source() method skips over any unit conversionnode connected to this destination, and returns the source of the unit conversion node.
 sourceWithConversion() does not skip over unitconversion nodes, and returns the source plug on a unit conversionnode, if present.

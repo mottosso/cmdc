@@ -102,3 +102,38 @@ class test_child(object):
         cmds.addAttr(node, ln='child_b', parent='parent_b')
 
         return node
+
+
+class test_source(object):
+    @staticmethod
+    def test_pass():
+        src_node = cmds.createNode('network', name='source')
+        tgt_node = cmds.createNode('network', name='target')
+
+        cmds.addAttr(src_node, ln='attr', at='double')
+        cmds.addAttr(tgt_node, ln='attr', at='doubleAngle')
+
+        cmds.connectAttr(src_node + '.attr', tgt_node + '.attr')
+
+        src_plug = cmdc.SelectionList().add(src_node + '.attr').getPlug(0)
+        tgt_plug = cmdc.SelectionList().add(tgt_node + '.attr').getPlug(0)
+
+        assert src_plug.source().isNull(), 'Plug.source should return a null plug when not a destination'
+        assert tgt_plug.source() == src_plug, 'Plug.source did not return the source plug.'
+
+    @staticmethod
+    def test_pass_with_conversion():
+        src_node = cmds.createNode('network', name='source')
+        tgt_node = cmds.createNode('network', name='target')
+
+        cmds.addAttr(src_node, ln='attr', at='double')
+        cmds.addAttr(tgt_node, ln='attr', at='doubleAngle')
+
+        cmds.connectAttr(src_node + '.attr', tgt_node + '.attr')
+
+        src_plug = cmdc.SelectionList().add(src_node + '.attr').getPlug(0)
+        tgt_plug = cmdc.SelectionList().add(tgt_node + '.attr').getPlug(0)
+
+        assert src_plug.sourceWithConversion().isNull(), 'Plug.sourceWithConversion should return a null plug when not a destination'
+        assert tgt_plug.sourceWithConversion() != src_plug, 'Plug.sourceWithConversion skipped over the conversion node'
+        assert tgt_plug.sourceWithConversion().node().hasFn(cmdc.Fn.kUnitConversion), 'Plug.sourceWithConversion skipped over conversion node'
