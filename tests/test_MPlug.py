@@ -25,7 +25,7 @@ class test_array(object):
         assert array_root.name() == attr_name
 
     @staticmethod
-    def test_fails_on_non_array_plug():
+    def test_fail():
         node = cmds.createNode('network')
 
         cmds.addAttr(node, ln='test')
@@ -40,10 +40,33 @@ class test_array(object):
         )
 
     @staticmethod
-    def test_fails_on_null_plug():
+    def test_null():
         plug = cmdc.Plug()
-        
+
         nose.tools.assert_raises(
             ValueError,
             plug.array
+        )
+
+class test_attribute(object):
+    @staticmethod
+    def test_pass():
+        node = cmds.createNode('network')
+
+        cmds.addAttr(node, ln='test')
+        attr_name = '{}.test'.format(node)
+
+        plug = cmdc.SelectionList().add(attr_name).getPlug(0)
+        attr = plug.attribute()
+
+        assert attr is not None
+        assert attr.hasFn(cmdc.Fn.kAttribute)
+
+    @staticmethod
+    def test_null():
+        plug = cmdc.Plug()
+
+        nose.tools.assert_raises(
+            ValueError,
+            plug.attribute
         )

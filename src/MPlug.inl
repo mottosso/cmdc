@@ -79,7 +79,18 @@ plug.def(py::init<>())
     }, R"pbdoc(Retrieves the plug's value, as a string.)pbdoc")
 
     .def("attribute", [](MPlug & self) -> MObject {
-        throw std::logic_error{"Function not yet implemented."};
+        if (self.isNull()) {
+            throw std::invalid_argument("Accessed a null plug.");
+        }
+
+        MStatus status;
+        MObject result = self.attribute(&status);
+
+        if (!status) {
+            throw std::runtime_error(status.errorString().asChar());
+        }
+
+        return result;    
     }, R"pbdoc(Returns the attribute currently referenced by this plug.)pbdoc")
 
     .def("child", [](MPlug & self, MObject attr) -> MPlug {
