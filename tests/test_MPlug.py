@@ -72,6 +72,20 @@ class TestArrayMethods(unittest.TestCase):
         nose.tools.assert_raises(TypeError, non_array_root.evaluateNumElements)
         nose.tools.assert_raises(ValueError, cmdc.Plug().evaluateNumElements)
 
+    def test_getExistingArrayAttributeIndices(self):
+        """Test for MPlug::getExistingArrayAttributeIndices binding."""
+
+        array_root = cmdc.SelectionList().add(p(self.node, 'array')).getPlug(0)
+        
+        indices = array_root.getExistingArrayAttributeIndices()
+
+        assert indices == [0, 1, 3]
+
+        non_array_root = cmdc.SelectionList().add(p(self.node, 'single')).getPlug(0)
+
+        nose.tools.assert_raises(TypeError, non_array_root.getExistingArrayAttributeIndices)
+        nose.tools.assert_raises(ValueError, cmdc.Plug().getExistingArrayAttributeIndices)
+
     def test_logicalIndex(self):
         """Test for MPlug::logicalIndex binding."""
 

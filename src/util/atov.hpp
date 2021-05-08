@@ -1,4 +1,15 @@
 namespace atov {
+    std::vector<int> convert(MIntArray& array)
+    {
+        std::vector<int> result(array.length());
+
+        for (unsigned int i = 0; i < array.length(); i++) {
+            result[i] = array[i];
+        }
+
+        return result;
+    }
+
     std::vector<MPlug> convert(MPlugArray& array)
     {
         std::vector<MPlug> result(array.length());
