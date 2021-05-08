@@ -52,10 +52,8 @@ class TestArrayMethods(unittest.TestCase):
     def test_array_fail(self):
         array_element = cmdc.SelectionList().add(p(self.node, 'single')).getPlug(0)
 
-        nose.tools.assert_raises(
-            TypeError,
-            array_element.array
-        )
+        nose.tools.assert_raises(TypeError, array_element.array)
+        nose.tools.assert_raises(ValueError, cmdc.Plug().array)
 
 
 class TestCompoundPlugMethods(unittest.TestCase):
@@ -72,6 +70,8 @@ class TestCompoundPlugMethods(unittest.TestCase):
 
         cmds.addAttr(node, ln='parent_b', at='compound', nc=1)
         cmds.addAttr(node, ln='child_b', parent='parent_b')
+
+        cmds.addAttr(node, ln='single')
 
         cls.node = node 
 
@@ -95,6 +95,18 @@ class TestCompoundPlugMethods(unittest.TestCase):
 
         nose.tools.assert_raises(ValueError, parent.child, child)
         nose.tools.assert_raises(IndexError, parent.child, 1)
+        nose.tools.assert_raises(ValueError, cmdc.Plug().child, 0)
+
+    def test_numChildren_pass(self):
+        parent = cmdc.SelectionList().add(p(self.node, 'parent_a')).getPlug(0)
+
+        assert parent.numChildren() == 1
+        
+    def test_numChildren_fail(self):
+        non_parent = cmdc.SelectionList().add(p(self.node, 'single')).getPlug(0)
+
+        nose.tools.assert_raises(TypeError, non_parent.numChildren)
+        nose.tools.assert_raises(ValueError, cmdc.Plug().numChildren)
 
 
 class TestConnectionMethods(unittest.TestCase):
@@ -121,6 +133,8 @@ class TestConnectionMethods(unittest.TestCase):
         assert src_plug.source().isNull(), 'Plug.source should return a null plug when not a destination'
         assert tgt_plug.source() == src_plug, 'Plug.source did not return the source plug.'
 
+        nose.tools.assert_raises(ValueError, cmdc.Plug().source)
+
     def test_sourceWithConversion_pass(self):
         src_plug = cmdc.SelectionList().add(p(self.src_node, 'attr')).getPlug(0)
         tgt_plug = cmdc.SelectionList().add(p(self.tgt_node, 'attr')).getPlug(0)
@@ -128,3 +142,5 @@ class TestConnectionMethods(unittest.TestCase):
         assert src_plug.sourceWithConversion().isNull(), 'Plug.sourceWithConversion should return a null plug when not a destination'
         assert tgt_plug.sourceWithConversion() != src_plug, 'Plug.sourceWithConversion skipped over the conversion node'
         assert tgt_plug.sourceWithConversion().node().hasFn(cmdc.Fn.kUnitConversion), 'Plug.sourceWithConversion skipped over conversion node'
+
+        nose.tools.assert_raises(ValueError, cmdc.Plug().sourceWithConversion)
