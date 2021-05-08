@@ -1,10 +1,21 @@
 namespace atov {
-    std::vector<MPlug> convert(MPlugArray& plug_array)
+    std::vector<MPlug> convert(MPlugArray& array)
     {
-        std::vector<MPlug> result(plug_array.length());
+        std::vector<MPlug> result(array.length());
 
-        for (unsigned int i = 0; i < plug_array.length(); i++) {
-            result[i] = plug_array[i];
+        for (unsigned int i = 0; i < array.length(); i++) {
+            result[i] = array[i];
+        }
+
+        return result;
+    }
+
+    std::vector<std::string> convert(MStringArray& array)
+    {
+        std::vector<std::string> result(array.length());
+
+        for (unsigned int i = 0; i < array.length(); i++) {
+            result[i] = std::string(array[i].asChar());
         }
 
         return result;

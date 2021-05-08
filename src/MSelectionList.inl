@@ -175,13 +175,7 @@ Raises IndexError if index is out of range.)pbdoc")
             throw std::runtime_error("Failed to get selection strings.");
         }
 
-        std::vector<std::string> result(strings.length());
-
-        for (unsigned int i = 0; i < strings.length(); i++) {
-            result[i] = std::string(strings[i].asChar());
-        }
-
-        return result;
+        return atov::convert(strings);
     }, R"pbdoc(getSelectionStrings(index=None) -> (string, string, ...)
 
 Returns a tuple containing the string representation of the
@@ -206,13 +200,7 @@ list are returned. Raises IndexError if index is out of bounds.)pbdoc")
             throw std::runtime_error("Failed to get selection strings.");
         }
 
-        std::vector<std::string> result(strings.length());
-
-        for (unsigned int i = 0; i < strings.length(); i++) {
-            result[i] = std::string(strings[i].asChar());
-        }
-
-        return result;
+        return atov::convert(strings);
     }, R"pbdoc(getSelectionStrings(index=None) -> (string, string, ...)
 
 Returns a tuple containing the string representation of the
