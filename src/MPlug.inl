@@ -182,13 +182,26 @@ plug.def(py::init<>())
         throw std::logic_error{"Function not yet implemented."};
     }, R"pbdoc(Constructs a data handle for the plug.)pbdoc")
 
-    .def("destinations", [](MPlug & self, std::vector<MPlug> theDestinations) -> bool {
-        throw std::logic_error{"Function not yet implemented."};
+    .def("destinations", [](MPlug & self) -> std::vector<MPlug> {
+        if (self.isNull()) {
+            throw std::invalid_argument("Accessed a null plug.");
+        }
+        
+        MPlugArray results;
+        MStatus status;
+
+        self.destinations(results, &status);
+
+        if (!status) {
+            throw std::runtime_error(status.errorString().asChar());
+        }
+
+        return atov::convert(results);  
     }, R"pbdoc(If this plug is a source, return the destination plugs connected to it.
 If this plug is not a source, a null plug is returned.
 This method will produce the networked version of the connected plug.)pbdoc")
 
-    .def("destinationsWithConversions", [](MPlug & self, std::vector<MPlug> theDestinations) -> bool {
+    .def("destinationsWithConversions", [](MPlug & self) -> std::vector<MPlug> {
         throw std::logic_error{"Function not yet implemented."};
     }, R"pbdoc(If this plug is a source, return the destination plugs connected to it.
 This method is very similar to the destinations() method.  The only difference is that the destinations() method skips over any unit conversion node connected to this source, and returns the destination of the unit conversion node.

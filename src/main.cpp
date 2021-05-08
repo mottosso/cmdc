@@ -22,6 +22,7 @@
 #include <maya/MObjectHandle.h>
 #include <maya/MPoint.h>
 #include <maya/MPlug.h>
+#include <maya/MPlugArray.h>
 #include <maya/MPxData.h>
 #include <maya/MQuaternion.h>
 #include <maya/MSelectionList.h>
@@ -35,6 +36,7 @@
 // Function sets
 #include <maya/MFnDependencyNode.h>
 
+#include "util/atov.hpp"
 
 #define STRINGIFY(x) #x
 #define MACRO_STRINGIFY(x) STRINGIFY(x)

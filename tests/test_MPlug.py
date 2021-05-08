@@ -167,19 +167,44 @@ class TestConnectionMethods(unittest.TestCase):
 
     src_node = None 
     tgt_node = None 
+    alt_node = None
 
     @classmethod 
     def setUpClass(cls):
         src_node = cmds.createNode('network', name='source')
         tgt_node = cmds.createNode('network', name='target')
+        alt_node = cmds.createNode('network')
 
         cmds.addAttr(src_node, ln='attr', at='double')
         cmds.addAttr(tgt_node, ln='attr', at='doubleAngle')
+        cmds.addAttr(alt_node, ln='attr', at='doubleAngle')
 
         cmds.connectAttr(p(src_node, 'attr'), p(tgt_node, 'attr'))
+        cmds.connectAttr(p(src_node, 'attr'), p(alt_node, 'attr'))
 
         cls.src_node = src_node
         cls.tgt_node = tgt_node
+        cls.alt_node = alt_node
+
+    def test_destinations(self):
+        """Test for MPlug::destinations binding."""
+
+        src_plug = cmdc.SelectionList().add(p(self.src_node, 'attr')).getPlug(0)
+        tgt_plug = cmdc.SelectionList().add(p(self.tgt_node, 'attr')).getPlug(0)
+        alt_plug = cmdc.SelectionList().add(p(self.alt_node, 'attr')).getPlug(0)
+
+        assert tgt_plug.destinations() == [], 'Plug.destinations should return an empty list for unconnected plugs'
+        
+        destinations = src_plug.destinations()
+        
+        assert destinations is not None, 'Plug.destinations returned a null'
+
+        assert len(destinations) == 2, 'Plug.destinations returned %s values; expected 2' % len(destinations)
+
+        assert tgt_plug in destinations, 'Plug.destinations returned incorrect results'
+        assert alt_plug in destinations, 'Plug.destinations returned incorrect results'
+        
+        nose.tools.assert_raises(ValueError, cmdc.Plug().destinations)
 
     def test_source(self):
         """Test for MPlug::source binding."""
