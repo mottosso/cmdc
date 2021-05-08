@@ -107,6 +107,18 @@ class TestCompoundPlugMethods(unittest.TestCase):
         nose.tools.assert_raises(IndexError, parent.child, 1)
         nose.tools.assert_raises(ValueError, cmdc.Plug().child, 0)
 
+    def test_parent(self):
+        parent = cmdc.SelectionList().add(p(self.node, 'parent_a')).getPlug(0)
+        child = cmdc.SelectionList().add(p(self.node, 'parent_a', 'child_a')).getPlug(0)
+
+        result = child.parent()
+
+        assert result is not None
+        assert result.name() == parent.name()
+
+        nose.tools.assert_raises(TypeError, parent.parent)
+        nose.tools.assert_raises(ValueError, cmdc.Plug().parent)
+
     def test_numChildren(self):
         parent = cmdc.SelectionList().add(p(self.node, 'parent_a')).getPlug(0)
 

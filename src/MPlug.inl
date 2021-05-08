@@ -365,7 +365,25 @@ Note that the behavior of connectedTo() is identical to destinationsWithConversi
     }, R"pbdoc(Returns the number of the plug's logical indices which are currently in use. Connected elements which have not yet been evaluated may not yet fully exist and may be excluded from the count.)pbdoc")
 
     .def("parent", [](MPlug & self) -> MPlug {
-        throw std::logic_error{"Function not yet implemented."};
+        if (self.isNull()) {
+            throw std::invalid_argument("Accessed a null plug.");
+        }
+
+        if (!self.isChild()) {
+            MString error_msg("Plug '^1s' is not a child plug.");
+                    error_msg.format(error_msg, self.name());
+
+            throw pybind11::type_error(error_msg.asChar());
+        }
+
+        MStatus status;
+        MPlug result = self.parent(&status);
+
+        if (!status) {
+            throw std::runtime_error(status.errorString().asChar());
+        }
+
+        return result;     
     }, R"pbdoc(Returns a plug for the parent of this plug.)pbdoc")
 
     .def("partialName", [](MPlug & self, bool includeNodeName = false, bool includeNonMandatoryIndices = false, bool includeInstancedIndices = false, bool useAlias = false, bool useFullAttributePath = false, bool useLongNames = false) -> MString {
