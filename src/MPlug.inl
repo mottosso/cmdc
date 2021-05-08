@@ -234,8 +234,26 @@ Note that the behavior of connectedTo() is identical to destinationsWithConversi
         throw std::logic_error{"Function not yet implemented."};
     }, R"pbdoc(Returns a plug for the element of this plug array having the specified physical index. )pbdoc")
 
-    .def("evaluateNumElements", [](MPlug & self) -> int {
-        throw std::logic_error{"Function not yet implemented."};
+    .def("evaluateNumElements", [](MPlug & self) -> unsigned int {
+        if (self.isNull()) {
+            throw std::invalid_argument("Accessed a null plug.");
+        }
+
+        if (!self.isArray()) {
+            MString error_msg("Plug '^1s' is not an array plug.");
+                    error_msg.format(error_msg, self.name());
+
+            throw pybind11::type_error(error_msg.asChar());
+        }
+
+        MStatus status;
+        unsigned int result = self.evaluateNumElements(&status);
+
+        if (!status) {
+            throw std::runtime_error(status.errorString().asChar());
+        }
+
+        return result;     
     }, R"pbdoc(Like numElements() but evaluates all connected elements first to ensure that they are included in the count.)pbdoc")
 
     .def("getExistingArrayAttributeIndices", [](MPlug & self, MIntArray indices) -> int {
