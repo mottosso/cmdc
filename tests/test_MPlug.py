@@ -1,98 +1,52 @@
 """Test suite for MPlug bindings."""
 
 import nose.tools
+import unittest
 
 from maya import cmds 
 from maya.api import OpenMaya 
 
 import cmdc
 
-class test_array(object):
-    @staticmethod
-    def test_pass():
+class TestArrayMethods(unittest.TestCase):
+    node = None 
+
+    @classmethod 
+    def setUpClass(cls):
+        cmds.file(new=True, force=True)
+
         node = cmds.createNode('network')
 
-        cmds.addAttr(node, ln='test', multi=True)
+        cmds.addAttr(node, ln='array', multi=True)
+        cmds.addAttr(node, ln='single', multi=True)
+        
+        cmds.setAttr(node + '.array[0]', 0.0)
 
-        attr_name = '{}.test'.format(node)
-        elem_name = '{}[0]'.format(attr_name)
+        cls.node = node 
 
-        cmds.setAttr(elem_name, 0.0)
-
-        array_element = cmdc.SelectionList().add(elem_name).getPlug(0)
+    def test_array_pass(self):
+        array_element = cmdc.SelectionList().add(self.node + '.array[0]').getPlug(0)
         array_root = array_element.array()
 
         assert array_root is not None
-        assert array_root.name() == attr_name
+        assert array_root.name() == self.node + '.array'
 
-    @staticmethod
-    def test_fail():
-        node = cmds.createNode('network')
-
-        cmds.addAttr(node, ln='test')
-
-        attr_name = '{}.test'.format(node)
-
-        array_element = cmdc.SelectionList().add(attr_name).getPlug(0)
+    def test_array_fail(self):
+        array_element = cmdc.SelectionList().add(self.node + '.single').getPlug(0)
 
         nose.tools.assert_raises(
             TypeError,
             array_element.array
         )
 
-    @staticmethod
-    def test_null():
-        plug = cmdc.Plug()
 
-        nose.tools.assert_raises(
-            ValueError,
-            plug.array
-        )
+class TestCompoundPlugMethods(unittest.TestCase):
+    node = None
 
+    @classmethod 
+    def setUpClass(cls):
+        cmds.file(new=True, force=True)
 
-class test_child(object):
-    @staticmethod
-    def test_pass_attr():
-        node = test_child._setup_scene()
-
-        parent = cmdc.SelectionList().add(node + '.parent_a').getPlug(0)
-        child = cmdc.SelectionList().add(node + '.parent_a.child_a').getPlug(0).attribute()
-
-        attr = parent.child(child)
-
-        assert attr is not None
-        assert attr.name() == node + '.child_a', attr.name()
-
-    @staticmethod
-    def test_fail_attr():
-        node = test_child._setup_scene()
-
-        parent = cmdc.SelectionList().add(node + '.parent_a').getPlug(0)
-        child = cmdc.SelectionList().add(node + '.parent_b.child_b').getPlug(0).attribute()
-
-        nose.tools.assert_raises(ValueError, parent.child, child)
-
-    @staticmethod
-    def test_pass_index():
-        node = test_child._setup_scene()
-        
-        parent = cmdc.SelectionList().add(node + '.parent_a').getPlug(0)
-
-        attr = parent.child(0)
-
-        assert attr is not None
-        assert attr.name() == node + '.child_a', attr.name()
-
-    @staticmethod
-    def test_fail_index():
-        node = test_child._setup_scene()
-
-        parent = cmdc.SelectionList().add(node + '.parent_a').getPlug(0)
-
-        nose.tools.assert_raises(IndexError, parent.child, 1)
-
-    @staticmethod
-    def _setup_scene():
         node = cmds.createNode('network')
 
         cmds.addAttr(node, ln='parent_a', at='compound', nc=1)
@@ -101,12 +55,36 @@ class test_child(object):
         cmds.addAttr(node, ln='parent_b', at='compound', nc=1)
         cmds.addAttr(node, ln='child_b', parent='parent_b')
 
-        return node
+        cls.node = node 
+
+    def test_child_pass(self):
+        parent = cmdc.SelectionList().add(self.node + '.parent_a').getPlug(0)
+        child = cmdc.SelectionList().add(self.node + '.parent_a.child_a').getPlug(0).attribute()
+
+        attr = parent.child(child)
+
+        assert attr is not None
+        assert attr.name() == self.node + '.child_a', attr.name()
+
+        attr = parent.child(0)
+        
+        assert attr is not None
+        assert attr.name() == self.node + '.child_a', attr.name()
+
+    def test_child_fail(self):
+        parent = cmdc.SelectionList().add(self.node + '.parent_a').getPlug(0)
+        child = cmdc.SelectionList().add(self.node + '.parent_b.child_b').getPlug(0).attribute()
+
+        nose.tools.assert_raises(ValueError, parent.child, child)
+        nose.tools.assert_raises(IndexError, parent.child, 1)
 
 
-class test_source(object):
-    @staticmethod
-    def test_pass():
+class TestConnectionMethods(unittest.TestCase):
+    src_node = None 
+    tgt_node = None 
+
+    @classmethod 
+    def setUpClass(cls):
         src_node = cmds.createNode('network', name='source')
         tgt_node = cmds.createNode('network', name='target')
 
@@ -115,24 +93,19 @@ class test_source(object):
 
         cmds.connectAttr(src_node + '.attr', tgt_node + '.attr')
 
-        src_plug = cmdc.SelectionList().add(src_node + '.attr').getPlug(0)
-        tgt_plug = cmdc.SelectionList().add(tgt_node + '.attr').getPlug(0)
+        cls.src_node = src_node
+        cls.tgt_node = tgt_node
+
+    def test_source_pass(self):
+        src_plug = cmdc.SelectionList().add(self.src_node + '.attr').getPlug(0)
+        tgt_plug = cmdc.SelectionList().add(self.tgt_node + '.attr').getPlug(0)
 
         assert src_plug.source().isNull(), 'Plug.source should return a null plug when not a destination'
         assert tgt_plug.source() == src_plug, 'Plug.source did not return the source plug.'
 
-    @staticmethod
-    def test_pass_with_conversion():
-        src_node = cmds.createNode('network', name='source')
-        tgt_node = cmds.createNode('network', name='target')
-
-        cmds.addAttr(src_node, ln='attr', at='double')
-        cmds.addAttr(tgt_node, ln='attr', at='doubleAngle')
-
-        cmds.connectAttr(src_node + '.attr', tgt_node + '.attr')
-
-        src_plug = cmdc.SelectionList().add(src_node + '.attr').getPlug(0)
-        tgt_plug = cmdc.SelectionList().add(tgt_node + '.attr').getPlug(0)
+    def test_sourceWithConversion_pass(self):
+        src_plug = cmdc.SelectionList().add(self.src_node + '.attr').getPlug(0)
+        tgt_plug = cmdc.SelectionList().add(self.tgt_node + '.attr').getPlug(0)
 
         assert src_plug.sourceWithConversion().isNull(), 'Plug.sourceWithConversion should return a null plug when not a destination'
         assert tgt_plug.sourceWithConversion() != src_plug, 'Plug.sourceWithConversion skipped over the conversion node'
