@@ -53,21 +53,46 @@ class test_array(object):
 class test_child(object):
     @staticmethod
     def test_pass_attr():
-        node = cmds.createNode('network')
+        node = test_child._setup_scene()
 
-        cmds.addAttr(node, ln='test', at='compound', nc=1)
-        cmds.addAttr(node, ln='child', parent='test')
-        
-        parent = cmdc.SelectionList().add(node + '.test').getPlug(0)
-        child = cmdc.SelectionList().add(node + '.test.child').getPlug(0).attribute()
+        parent = cmdc.SelectionList().add(node + '.parent_a').getPlug(0)
+        child = cmdc.SelectionList().add(node + '.parent_a.child_a').getPlug(0).attribute()
 
         attr = parent.child(child)
 
         assert attr is not None
-        assert attr.name() == node + '.child', attr.name()
+        assert attr.name() == node + '.child_a', attr.name()
 
     @staticmethod
     def test_fail_attr():
+        node = test_child._setup_scene()
+
+        parent = cmdc.SelectionList().add(node + '.parent_a').getPlug(0)
+        child = cmdc.SelectionList().add(node + '.parent_b.child_b').getPlug(0).attribute()
+
+        nose.tools.assert_raises(ValueError, parent.child, child)
+
+    @staticmethod
+    def test_pass_index():
+        node = test_child._setup_scene()
+        
+        parent = cmdc.SelectionList().add(node + '.parent_a').getPlug(0)
+
+        attr = parent.child(0)
+
+        assert attr is not None
+        assert attr.name() == node + '.child_a', attr.name()
+
+    @staticmethod
+    def test_fail_index():
+        node = test_child._setup_scene()
+
+        parent = cmdc.SelectionList().add(node + '.parent_a').getPlug(0)
+
+        nose.tools.assert_raises(IndexError, parent.child, 1)
+
+    @staticmethod
+    def _setup_scene():
         node = cmds.createNode('network')
 
         cmds.addAttr(node, ln='parent_a', at='compound', nc=1)
@@ -76,7 +101,4 @@ class test_child(object):
         cmds.addAttr(node, ln='parent_b', at='compound', nc=1)
         cmds.addAttr(node, ln='child_b', parent='parent_b')
 
-        parent_a = cmdc.SelectionList().add(node + '.parent_a').getPlug(0)
-        child_b = cmdc.SelectionList().add(node + '.parent_b.child_b').getPlug(0).attribute()
-
-        nose.tools.assert_raises(ValueError, parent_a.child, child_b)
+        return node
