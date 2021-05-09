@@ -219,7 +219,7 @@ jobs:
         # Omitting name: means "download all artifacts"
         # Destination directory structure:
         # ~/modules
-        #   /cmdc
+        #   /cmdc-0.1
         #     windows-2018.7/cmdc.pyd
         #     windows-2019.3/cmdc.pyd
         #     windows-2020.4/cmdc.pyd
@@ -230,11 +230,13 @@ jobs:
         #     linux-2022/cmdc.so
         #   /cmdc.mod
         with:
-          path: modules/cmdc
+          path: modules/cmdc-0.1
 
       - name: Create distribution
         run: |
-          cp cmdc.mod modules/
+          pwd
+          ls
+          cp ./cmdc.mod modules/
           zip -r cmdc.zip modules/
 
       - name: Upload
