@@ -87,10 +87,16 @@ jobs:
           $env:DEVKIT_LOCATION = "$pwd\devkitBase"
           ./build_win32.ps1 ${{ matrix.maya }}
 
+      # - name: Layout
+      #   run: |
+      #     $outdir="windows-${{ matrix.maya }}"
+      #     mkdir $outdir
+      #     mv build/cmdc.pyd $outdir/cmdc.pyd
+
       - name: Artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: plug-ins/windows/${{ matrix.maya }}
+          name: windows-${{ matrix.maya }}
           path: build/cmdc.pyd
 
 
@@ -150,10 +156,16 @@ jobs:
           chmod +x ./build_linux.sh
           ./build_linux.sh ${{ matrix.maya }}
 
+      # - name: Layout
+      #   run: |
+      #     outdir=linux-${{ matrix.maya }}"
+      #     mkdir -p $outdir
+      #     mv build/cmdc.so $outdir/cmdc.so
+
       - name: Artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: plug-ins/linux/${{ matrix.maya }}
+          name: linux-${{ matrix.maya }}
           path: build/cmdc.so
 
 
@@ -207,24 +219,23 @@ jobs:
         # Omitting name: means "download all artifacts"
         # Destination directory structure:
         # ~/modules
-        #   /windows
-        #     /2018.7/cmdc.pyd
-        #     /2019.3/cmdc.pyd
-        #     /2020.4/cmdc.pyd
-        #     /2022/cmdc.pyd
-        #   /linux
-        #     /2018.7/cmdc.so
-        #     /2019.3/cmdc.so
-        #     /2020.4/cmdc.so
-        #     /2022/cmdc.so
+        #   /cmdc
+        #     windows-2018.7/cmdc.pyd
+        #     windows-2019.3/cmdc.pyd
+        #     windows-2020.4/cmdc.pyd
+        #     windows-2022/cmdc.pyd
+        #     linux-2018.7/cmdc.so
+        #     linux-2019.3/cmdc.so
+        #     linux-2020.4/cmdc.so
+        #     linux-2022/cmdc.so
         #   /cmdc.mod
         with:
-          path: modules
+          path: modules/cmdc
 
       - name: Create distribution
         run: |
           cp cmdc.mod modules/
-          zip -r cmdc.zip modules
+          zip -r cmdc.zip modules/
 
       - name: Upload
         uses: actions/upload-release-asset@v1
