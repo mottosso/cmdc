@@ -1,5 +1,5 @@
 namespace atov {
-    std::vector<int> convert(MIntArray& array)
+    inline std::vector<int> convert(MIntArray& array)
     {
         std::vector<int> result(array.length());
 
@@ -10,7 +10,7 @@ namespace atov {
         return result;
     }
 
-    std::vector<MPlug> convert(MPlugArray& array)
+    inline std::vector<MPlug> convert(MPlugArray& array)
     {
         std::vector<MPlug> result(array.length());
 
@@ -21,7 +21,7 @@ namespace atov {
         return result;
     }
 
-    std::vector<std::string> convert(MStringArray& array)
+    inline std::vector<std::string> convert(MStringArray& array)
     {
         std::vector<std::string> result(array.length());
 
