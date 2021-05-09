@@ -207,12 +207,12 @@ jobs:
         #     linux-2022/cmdc.so
         #   /cmdc.mod
         with:
-          path: modules/cmdc-${{ github.event.release.tag_name }}
+          path: modules/cmdc-$($env:GITHUB_REF -replace "refs/tags/")
 
       - name: Create distribution
         run: |
           cp ./cmdc.mod modules/
-          zip -r cmdc-${{ github.event.release.tag_name }}.zip modules/
+          zip -r cmdc-$($env:GITHUB_REF -replace "refs/tags/").zip modules/
 
       - name: Upload distribution
         uses: "marvinpinto/action-automatic-releases@latest"
@@ -220,4 +220,4 @@ jobs:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
           prerelease: false
           files: |
-            cmdc-${{ github.event.release.tag_name }}.zip
+            cmdc-*.zip
