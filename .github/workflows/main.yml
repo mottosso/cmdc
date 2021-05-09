@@ -11,6 +11,16 @@ on:
   workflow_dispatch:
 
 jobs:
+  #
+  # Windows
+  #   
+  #       __
+  #  |\__/  \
+  #  |       |
+  #  |    __ |
+  #   \__/  \|
+  #
+  #   
   maya-win:
     runs-on: windows-latest
 
@@ -58,42 +68,27 @@ jobs:
           $env:DEVKIT_LOCATION = "$pwd\devkitBase"
           ./build_win32.ps1 ${{ matrix.maya }}
 
-  # maya-osx:
-  #   runs-on: macos-latest
-
-  #   strategy:
-
-  #     # Without this, all containers stop if any fail
-  #     # That's bad, we want to know whether it's only one
-  #     # or if it happens to multiples or all.
-  #     fail-fast: false
-
-  #     matrix:
-  #      include:
-  #        - maya: "2018.7"
-  #          devkit: "https://autodesk-adn-transfer.s3.us-west-2.amazonaws.com/ADN%20Extranet/M%26E/Maya/devkit%202018/Autodesk_Maya_2018_7_Update_DEVKIT_Mac.dmg"
-  #        - maya: "2019.3"
-  #          devkit: "https://autodesk-adn-transfer.s3.us-west-2.amazonaws.com/ADN%20Extranet/M%26E/Maya/devkit%202019/Autodesk_Maya_2019_3_Update_DEVKIT_Mac.dmg"
-  #        - maya: "2020.4"
-  #          devkit: "https://autodesk-adn-transfer.s3-us-west-2.amazonaws.com/ADN+Extranet/M%26E/Maya/devkit+2020/Autodesk_Maya_2020_4_Update_DEVKIT_Mac.dmg"
-  #        - maya: "2022"
-  #          devkit: "https://autodesk-adn-transfer.s3.us-west-2.amazonaws.com/ADN%20Extranet/M%26E/Maya/devkit%202022/Autodesk_Maya_2022_DEVKIT_Mac.dmg"
-
-  #   # Steps represent a sequence of tasks that will be executed as part of the job
-  #   steps:
-  #     - name: Checkout code
-  #       uses: actions/checkout@v1
+      - name: Artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: windows-${{ matrix.maya }}
+          path: build/cmdc.pyd
 
 
+  #
+  # Linux
+  #
+  #     _
+  #    |o\
+  #    /  \
+  #   /    \
+  #  |_|___|
+  #
+  #
   maya-linux:
-    # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
     strategy:
-
-      # Without this, all containers stop if any fail
-      # That's bad, we want to know whether it's only one
-      # or if it happens to multiples or all.
       fail-fast: false
 
       matrix:
@@ -109,7 +104,6 @@ jobs:
 
     container: mottosso/mayabase-centos7
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       - name: Checkout code
         uses: actions/checkout@v1
@@ -135,3 +129,95 @@ jobs:
           g++ --version
           chmod +x ./build_linux.sh
           ./build_linux.sh ${{ matrix.maya }}
+
+      - name: Artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: linux-${{ matrix.maya }}
+          path: build/cmdc.so
+
+
+  # maya-osx:
+  #   runs-on: macos-latest
+  #   needs: create_release
+
+  #   strategy:
+
+  #     # Without this, all containers stop if any fail
+  #     # That's bad, we want to know whether it's only one
+  #     # or if it happens to multiples or all.
+  #     fail-fast: false
+
+  #     matrix:
+  #      include:
+  #        - maya: "2018.7"
+  #          devkit: "https://autodesk-adn-transfer.s3.us-west-2.amazonaws.com/ADN%20Extranet/M%26E/Maya/devkit%202018/Autodesk_Maya_2018_7_Update_DEVKIT_Mac.dmg"
+  #        - maya: "2019.3"
+  #          devkit: "https://autodesk-adn-transfer.s3.us-west-2.amazonaws.com/ADN%20Extranet/M%26E/Maya/devkit%202019/Autodesk_Maya_2019_3_Update_DEVKIT_Mac.dmg"
+  #        - maya: "2020.4"
+  #          devkit: "https://autodesk-adn-transfer.s3-us-west-2.amazonaws.com/ADN+Extranet/M%26E/Maya/devkit+2020/Autodesk_Maya_2020_4_Update_DEVKIT_Mac.dmg"
+  #        - maya: "2022"
+  #          devkit: "https://autodesk-adn-transfer.s3.us-west-2.amazonaws.com/ADN%20Extranet/M%26E/Maya/devkit%202022/Autodesk_Maya_2022_DEVKIT_Mac.dmg"
+
+  #   # Steps represent a sequence of tasks that will be executed as part of the job
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v1
+
+
+  #
+  # Shipping
+  #
+  #   _________
+  #  |\ _ _ _ _\
+  #  | \________\
+  #  | |        |
+  #  | |        |
+  #   \|________|
+  #
+  #
+  upload_release:
+    name: Upload release
+    needs: [maya-win, maya-linux]
+    runs-on: ubuntu-latest
+
+    on:
+      push:
+        tags:
+          - "*"
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v1
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v2
+
+        # Omitting name: means "download all artifacts"
+        # Destination directory structure:
+        # ~/modules
+        #   /cmdc-0.1
+        #     windows-2018.7/cmdc.pyd
+        #     windows-2019.3/cmdc.pyd
+        #     windows-2020.4/cmdc.pyd
+        #     windows-2022/cmdc.pyd
+        #     linux-2018.7/cmdc.so
+        #     linux-2019.3/cmdc.so
+        #     linux-2020.4/cmdc.so
+        #     linux-2022/cmdc.so
+        #   /cmdc.mod
+        with:
+          path: modules/cmdc-0.1
+
+      - name: Create distribution
+        run: |
+          cp ./cmdc.mod modules/
+          zip -r cmdc.zip modules/
+
+      - name: cmdc-${{ github.event.release.tag_name }}
+        uses: "marvinpinto/action-automatic-releases@latest"
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          prerelease: false
+          files: |
+            cmdc-${{ github.event.release.tag_name }}.zip
