@@ -29,6 +29,16 @@ jobs:
           tag_name: latest
           release_name: Development Release
 
+  #
+  # Windows
+  #   
+  #       __
+  #  |\__/  \
+  #  |       |
+  #  |    __ |
+  #   \__/  \|
+  #
+  #   
   maya-win:
     runs-on: windows-latest
     needs: create_release
@@ -77,50 +87,23 @@ jobs:
           $env:DEVKIT_LOCATION = "$pwd\devkitBase"
           ./build_win32.ps1 ${{ matrix.maya }}
 
-      - name: Zip
-        shell: bash
-        run: |
-          mkdir -p artifact
-          zip -r artifact/cmdc-${{ matrix.maya }}-windows.zip build/cmdc.pyd
-
-      - name: Upload
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Artifacts
+        uses: actions/upload-artifact@v2
         with:
-          upload_url: ${{ needs.create_release.outputs.upload_url }}
-          asset_path: ./artifact/cmdc-${{ matrix.maya }}-windows.zip
-          asset_name: cmdc-${{ matrix.maya }}-windows.zip
-          asset_content_type: application/zip
-
-  # maya-osx:
-  #   runs-on: macos-latest
-  #   needs: create_release
-
-  #   strategy:
-
-  #     # Without this, all containers stop if any fail
-  #     # That's bad, we want to know whether it's only one
-  #     # or if it happens to multiples or all.
-  #     fail-fast: false
-
-  #     matrix:
-  #      include:
-  #        - maya: "2018.7"
-  #          devkit: "https://autodesk-adn-transfer.s3.us-west-2.amazonaws.com/ADN%20Extranet/M%26E/Maya/devkit%202018/Autodesk_Maya_2018_7_Update_DEVKIT_Mac.dmg"
-  #        - maya: "2019.3"
-  #          devkit: "https://autodesk-adn-transfer.s3.us-west-2.amazonaws.com/ADN%20Extranet/M%26E/Maya/devkit%202019/Autodesk_Maya_2019_3_Update_DEVKIT_Mac.dmg"
-  #        - maya: "2020.4"
-  #          devkit: "https://autodesk-adn-transfer.s3-us-west-2.amazonaws.com/ADN+Extranet/M%26E/Maya/devkit+2020/Autodesk_Maya_2020_4_Update_DEVKIT_Mac.dmg"
-  #        - maya: "2022"
-  #          devkit: "https://autodesk-adn-transfer.s3.us-west-2.amazonaws.com/ADN%20Extranet/M%26E/Maya/devkit%202022/Autodesk_Maya_2022_DEVKIT_Mac.dmg"
-
-  #   # Steps represent a sequence of tasks that will be executed as part of the job
-  #   steps:
-  #     - name: Checkout code
-  #       uses: actions/checkout@v1
+          name: plug-ins/windows/${{ matrix.maya }}
+          path: build/cmdc.pyd
 
 
+  #
+  # Linux
+  #
+  #     _
+  #    |o\
+  #    /  \
+  #   /    \
+  #  |_|___|
+  #
+  #
   maya-linux:
     runs-on: ubuntu-latest
     needs: create_release
@@ -167,11 +150,81 @@ jobs:
           chmod +x ./build_linux.sh
           ./build_linux.sh ${{ matrix.maya }}
 
-      - name: Zip
-        shell: bash
+      - name: Artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: plug-ins/linux/${{ matrix.maya }}
+          path: build/cmdc.so
+
+
+  # maya-osx:
+  #   runs-on: macos-latest
+  #   needs: create_release
+
+  #   strategy:
+
+  #     # Without this, all containers stop if any fail
+  #     # That's bad, we want to know whether it's only one
+  #     # or if it happens to multiples or all.
+  #     fail-fast: false
+
+  #     matrix:
+  #      include:
+  #        - maya: "2018.7"
+  #          devkit: "https://autodesk-adn-transfer.s3.us-west-2.amazonaws.com/ADN%20Extranet/M%26E/Maya/devkit%202018/Autodesk_Maya_2018_7_Update_DEVKIT_Mac.dmg"
+  #        - maya: "2019.3"
+  #          devkit: "https://autodesk-adn-transfer.s3.us-west-2.amazonaws.com/ADN%20Extranet/M%26E/Maya/devkit%202019/Autodesk_Maya_2019_3_Update_DEVKIT_Mac.dmg"
+  #        - maya: "2020.4"
+  #          devkit: "https://autodesk-adn-transfer.s3-us-west-2.amazonaws.com/ADN+Extranet/M%26E/Maya/devkit+2020/Autodesk_Maya_2020_4_Update_DEVKIT_Mac.dmg"
+  #        - maya: "2022"
+  #          devkit: "https://autodesk-adn-transfer.s3.us-west-2.amazonaws.com/ADN%20Extranet/M%26E/Maya/devkit%202022/Autodesk_Maya_2022_DEVKIT_Mac.dmg"
+
+  #   # Steps represent a sequence of tasks that will be executed as part of the job
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v1
+
+
+  #
+  # Shipping
+  #
+  #   _________
+  #  |\ _ _ _ _\
+  #  | \________\
+  #  | |        |
+  #  | |        |
+  #   \|________|
+  #
+  #
+  upload_release:
+    name: Upload release
+    needs: [maya-win, maya-linux]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v2
+
+        # Omitting name: means "download all artifacts"
+        # Destination directory structure:
+        # ~/modules
+        #   /windows
+        #     /2018.7/cmdc.pyd
+        #     /2019.3/cmdc.pyd
+        #     /2020.4/cmdc.pyd
+        #     /2022/cmdc.pyd
+        #   /linux
+        #     /2018.7/cmdc.so
+        #     /2019.3/cmdc.so
+        #     /2020.4/cmdc.so
+        #     /2022/cmdc.so
+        #   /cmdc.mod
+        with:
+          path: modules
+
+      - name: Create distribution
         run: |
-          mkdir -p artifact
-          zip -r artifact/cmdc-${{ matrix.maya }}-linux.zip build/cmdc.so
+          cp cmdc.mod modules/
+          zip -r cmdc.zip modules
 
       - name: Upload
         uses: actions/upload-release-asset@v1
@@ -179,6 +232,5 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ needs.create_release.outputs.upload_url }}
-          asset_path: ./artifact/cmdc-${{ matrix.maya }}-linux.zip
-          asset_name: cmdc-${{ matrix.maya }}-linux.zip
+          asset_path: ./cmdc.zip
           asset_content_type: application/zip
