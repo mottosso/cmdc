@@ -23,51 +23,75 @@ plug.def(py::init<>())
     }, R"pbdoc(Returns a plug for the array of plugs of which this plug is an element.)pbdoc")
 
     .def("asBool", [](MPlug & self) -> bool {
-        throw std::logic_error{"Function not yet implemented."};
+        plug::assert_not_null(self);
+
+        return self.asBool();
     }, R"pbdoc(Retrieves the plug's value, as a boolean.)pbdoc")
 
     .def("asChar", [](MPlug & self) -> char {
-        throw std::logic_error{"Function not yet implemented."};
+        plug::assert_not_null(self);
+
+        return self.asChar();
     }, R"pbdoc(Retrieves the plug's value, as a single-byte integer.)pbdoc")
 
     .def("asDouble", [](MPlug & self) -> double {
-        throw std::logic_error{"Function not yet implemented."};
+        plug::assert_not_null(self);
+
+        return self.asDouble();
     }, R"pbdoc(Retrieves the plug's value, as a double-precision float.)pbdoc")
 
     .def("asFloat", [](MPlug & self) -> float {
-        throw std::logic_error{"Function not yet implemented."};
+        plug::assert_not_null(self);
+
+        return self.asFloat();    
     }, R"pbdoc(Retrieves the plug's value, as a single-precision float.)pbdoc")
 
     .def("asInt", [](MPlug & self) -> int {
-        throw std::logic_error{"Function not yet implemented."};
+        plug::assert_not_null(self);
+
+        return self.asInt(); 
     }, R"pbdoc(Retrieves the plug's value, as a regular integer.)pbdoc")
 
     .def("asMAngle", [](MPlug & self) -> MAngle {
-        throw std::logic_error{"Function not yet implemented."};
+        plug::assert_not_null(self);
+
+        return self.asMAngle(); 
     }, R"pbdoc(Retrieves the plug's value, as an MAngle.)pbdoc")
 
     .def("asMDataHandle", [](MPlug & self) -> MDataHandle {
-        throw std::logic_error{"Function not yet implemented."};
+        plug::assert_not_null(self);
+
+        return self.asMDataHandle(); 
     }, R"pbdoc(Retrieve the current value of the attribute this plug references.)pbdoc")
 
     .def("asMDistance", [](MPlug & self) -> MDistance {
-        throw std::logic_error{"Function not yet implemented."};
+        plug::assert_not_null(self);
+
+        return self.asMDistance(); 
     }, R"pbdoc(Retrieves the plug's value, as an MDistance.)pbdoc")
 
     .def("asMObject", [](MPlug & self) -> MObject {
-        throw std::logic_error{"Function not yet implemented."};
+        plug::assert_not_null(self);
+
+        return self.asMObject(); 
     }, R"pbdoc(Retrieves the plug's value, as as an MObject containing a direct reference to the plug's data.)pbdoc")
 
     .def("asMTime", [](MPlug & self) -> MTime {
-        throw std::logic_error{"Function not yet implemented."};
+        plug::assert_not_null(self);
+
+        return self.asMTime(); 
     }, R"pbdoc(Retrieves the plug's value, as an MTime.)pbdoc")
 
     .def("asShort", [](MPlug & self) -> short {
-        throw std::logic_error{"Function not yet implemented."};
+        plug::assert_not_null(self);
+
+        return self.asShort(); 
     }, R"pbdoc(Retrieves the plug's value, as a short integer.)pbdoc")
 
-    .def("asString", [](MPlug & self) -> MString {
-        throw std::logic_error{"Function not yet implemented."};
+    .def("asString", [](MPlug & self) -> std::string {
+        plug::assert_not_null(self);
+
+        return std::string(self.asString().asChar()); 
     }, R"pbdoc(Retrieves the plug's value, as a string.)pbdoc")
 
     .def("attribute", [](MPlug & self) -> MObject {
