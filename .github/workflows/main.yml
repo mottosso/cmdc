@@ -183,7 +183,7 @@ jobs:
     needs: [maya-win, maya-linux]
     runs-on: ubuntu-latest
 
-    # Only run on e.g. v0.1
+    # Only run on e.g. v0.1.0
     if: startsWith(github.ref, 'refs/tags/v')
 
     steps:
@@ -196,7 +196,7 @@ jobs:
         # Omitting name: means "download all artifacts"
         # Destination directory structure:
         # ~/modules
-        #   /cmdc-0.1
+        #   /cmdc-0.1.0
         #     windows-2018.7/cmdc.pyd
         #     windows-2019.3/cmdc.pyd
         #     windows-2020.4/cmdc.pyd
@@ -207,7 +207,7 @@ jobs:
         #     linux-2022/cmdc.so
         #   /cmdc.mod
         with:
-          path: modules/cmdc-0.1
+          path: modules/cmdc-${{ github.event.release.tag_name }}
 
       - name: Create distribution
         run: |
