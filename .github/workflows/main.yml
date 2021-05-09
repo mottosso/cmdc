@@ -11,24 +11,6 @@ on:
   workflow_dispatch:
 
 jobs:
-
-  # Create a new release only once, that the below jobs can
-  # then upload files into. I.e. once per Maya version and OS.
-  create_release:
-    name: Create release
-    runs-on: ubuntu-latest
-    outputs:
-      upload_url: ${{ steps.create_release.outputs.upload_url }}
-    steps:
-      - name: Create release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: latest
-          release_name: Development Release
-
   #
   # Windows
   #   
@@ -246,6 +228,6 @@ jobs:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
           automatic_release_tag: "latest"
           prerelease: true
-          title: "cmdc-prerelease"
+          title: "Development Build"
           files: |
             cmdc.zip
