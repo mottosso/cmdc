@@ -10,6 +10,7 @@ from maya.api import OpenMaya
 
 import cmdc
 
+
 def p(base, *args):
     """Construct a plug string from the given attributes."""
 
@@ -26,7 +27,7 @@ def p(base, *args):
 
     return '.'.join(parts)
 
-@unittest.skip('')
+
 class TestCommonMethods(unittest.TestCase):
     """Tests for common MPlug methods bindings."""
 
@@ -55,7 +56,7 @@ class TestCommonMethods(unittest.TestCase):
         # You would think it would return the full plug path, but it doesn't...
         assert plug.info() == p(self.node, 'branch', 0, 'leaf')
 
-@unittest.skip('')
+
 class TestArrayMethods(unittest.TestCase):
     """Tests for MPlug methods bindings for array/element plugs."""
 
@@ -191,7 +192,7 @@ class TestArrayMethods(unittest.TestCase):
         nose.tools.assert_raises(TypeError, non_array_root.numElements)
         nose.tools.assert_raises(ValueError, cmdc.Plug().numElements)
 
-@unittest.skip('')
+
 class TestCompoundPlugMethods(unittest.TestCase):
     """Tests for MPlug methods bindings for compound plugs."""
 
@@ -262,7 +263,7 @@ class TestCompoundPlugMethods(unittest.TestCase):
         nose.tools.assert_raises(TypeError, non_parent.numChildren)
         nose.tools.assert_raises(ValueError, cmdc.Plug().numChildren)
 
-@unittest.skip('')
+
 class TestConnectionMethods(unittest.TestCase):
     """Tests for MPlug methods bindings for connections."""
 
@@ -381,7 +382,7 @@ class TestConnectionMethods(unittest.TestCase):
         nose.tools.assert_raises(ValueError, cmdc.Plug().sourceWithConversion)
 
 
-def test_asType():
+def test_asType_methods():
     """Test for MPlug::as* bindings."""
 
     for (method_name, value, add_attr_kwargs, set_attr_kwargs) in [
@@ -399,12 +400,12 @@ def test_asType():
         ('asString', 'hello', {'dt': 'string'}, {'type': 'string'}),
     ]:
         # Somehow, this works
-        test_asType.__doc__ = """Test for MPlug::{} bindings.""".format(method_name)
+        test_asType_methods.__doc__ = """Test for MPlug::{} bindings.""".format(method_name)
 
-        yield check_asType, method_name, value, add_attr_kwargs, set_attr_kwargs
+        yield check_asType_method, method_name, value, add_attr_kwargs, set_attr_kwargs
 
 
-def check_asType(method_name, value, add_attr_kwargs, set_attr_kwargs):
+def check_asType_method(method_name, value, add_attr_kwargs, set_attr_kwargs):
     """Test for MPlug::as* bindings."""
 
     # 'asChar' expects an int but returns a char in Python
@@ -454,4 +455,90 @@ def test_asMObject():
     assert value is not None, 'Plug.asMObject returned a null'
     assert not value.isNull(), 'Plug.asMObject returned a null MObject'
     assert value.hasFn(cmdc.Fn.kMesh), \
+        'Plug.asMObject returned an object of type {} instead of kMesh'.format(value.apiTypeStr())
+
+
+def test_setType_methods():
+    """Test for MPlug::as* bindings."""
+
+    for (method_name, value, add_attr_kwargs) in [
+        ('setBool', True, {'at': 'bool'}),
+        ('setChar', ('A', 65), {'at': 'char'}),
+        ('setDouble', 1.0, {'at': 'double'}),
+        ('setFloat', 1.0, {'at': 'float'}),
+        ('setInt', 5, {'at': 'long'}),
+        # setMAngle - not yet implemented
+        # setMDataHandle - not yet implemented
+        # setMDistance - not yet implemented
+        # setMObject - custom test (see below)
+        # setMPxData - not yet implemented
+        # setMTime - not yet implemented
+        ('setShort', 3, {'at': 'enum', 'enumName': 'a:b:c:d'}),
+        ('setString', 'hello', {'dt': 'string'}),
+    ]:
+        # Somehow, this works
+        test_setType_methods.__doc__ = """Test for MPlug::{} bindings.""".format(method_name)
+
+        yield check_setType_method, method_name, value, add_attr_kwargs
+
+
+def check_setType_method(method_name, value, add_attr_kwargs):
+    """Test for MPlug::set* bindings."""
+
+    # 'asChar' expects an int but returns a char in Python
+    if isinstance(value, tuple):
+        in_value, out_value = value 
+    else:
+        in_value = value
+        out_value = value 
+ 
+    node = cmds.createNode('network')
+
+    attr = p(node, 'attr')
+
+    cmds.addAttr(node, ln='attr', **add_attr_kwargs)
+
+    plug = cmdc.SelectionList().add(attr).getPlug(0)
+    
+    method = getattr(plug, method_name)
+    method(in_value)
+
+    expected = out_value
+    actual = cmds.getAttr(attr)
+
+    error_message = (
+        'Plug method {} set the wrong value - expected: {}, actual: {}'
+        .format(
+            method_name, expected, actual
+        )
+    )
+
+    if isinstance(expected, float):
+        assert abs(expected - actual) <= 1e-5, error_message
+    else:
+        assert expected == actual, error_message
+
+
+def test_setMObject():
+    """Test for MPlug::setMObject bindings."""
+
+    node = cmds.createNode('network')
+
+    cmds.addAttr(node, ln='attr', dt='mesh')
+
+    cube, = cmds.polyCube(constructionHistory=False)
+    mesh, = cmds.listRelatives(cube, children=True, type='mesh')
+
+    src_plug = cmdc.SelectionList().add(p(mesh, 'worldMesh')).getPlug(0)
+    dst_plug = cmdc.SelectionList().add(p(node, 'attr')).getPlug(0)
+
+    src_value = src_plug.asMObject()
+
+    dst_plug.setMObject(src_value)
+
+    dst_value = dst_plug.asMObject()
+
+    assert dst_value is not None, 'Plug.asMObject returned a null'
+    assert not dst_value.isNull(), 'Plug.asMObject returned a null MObject'
+    assert dst_value.hasFn(cmdc.Fn.kMesh), \
         'Plug.asMObject returned an object of type {} instead of kMesh'.format(value.apiTypeStr())

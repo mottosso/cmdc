@@ -442,47 +442,69 @@ Note that the behavior of connectedTo() is identical to destinationsWithConversi
     }, R"pbdoc(Switches the plug to reference the given attribute of the same node as the previously referenced attribute.)pbdoc")
 
     .def("setBool", [](MPlug & self, bool value) {
-        throw std::logic_error{"Function not yet implemented."};
+        plug::assert_not_null(self);
+
+        self.setBool(value);
     }, R"pbdoc(Sets the plug's value as a boolean.)pbdoc")
 
     .def("setChar", [](MPlug & self, char value) {
-        throw std::logic_error{"Function not yet implemented."};
+        plug::assert_not_null(self);
+
+        self.setChar(value);
     }, R"pbdoc(Sets the plug's value as a single-byte integer.)pbdoc")
 
     .def("setDouble", [](MPlug & self, double value) {
-        throw std::logic_error{"Function not yet implemented."};
+        plug::assert_not_null(self);
+
+        self.setDouble(value);
     }, R"pbdoc(Sets the plug's value as a double-precision float.)pbdoc")
 
     .def("setFloat", [](MPlug & self, float value) {
-        throw std::logic_error{"Function not yet implemented."};
+        plug::assert_not_null(self);
+
+        self.setFloat(value);
     }, R"pbdoc(Sets the plug's value as a single-precision float.)pbdoc")
 
     .def("setInt", [](MPlug & self, int value) {
-        throw std::logic_error{"Function not yet implemented."};
+        plug::assert_not_null(self);
+
+        self.setInt(value);
     }, R"pbdoc(Sets the plug's value as a regular integer.)pbdoc")
 
     .def("setMAngle", [](MPlug & self, MAngle angle) {
-        throw std::logic_error{"Function not yet implemented."};
+        plug::assert_not_null(self);
+
+        self.setMAngle(angle);
     }, R"pbdoc(Sets the plug's value as an MAngle.)pbdoc")
 
     .def("setMDataHandle", [](MPlug & self, MDataHandle dataHandle) {
-        throw std::logic_error{"Function not yet implemented."};
+        plug::assert_not_null(self);
+
+        self.setMDataHandle(dataHandle);
     }, R"pbdoc(Sets the plug's value as a data handle.)pbdoc")
 
     .def("setMDistance", [](MPlug & self, MDistance distance) {
-        throw std::logic_error{"Function not yet implemented."};
+        plug::assert_not_null(self);
+
+        self.setMDistance(distance);
     }, R"pbdoc(Sets the plug's value as an MDistance.)pbdoc")
 
     .def("setMObject", [](MPlug & self, MObject object) {
-        throw std::logic_error{"Function not yet implemented."};
+        plug::assert_not_null(self);
+
+        self.setMObject(object);
     }, R"pbdoc(Sets the plug's value as an MObject.)pbdoc")
 
     .def("setMPxData", [](MPlug & self, MPxData *data) {
-        throw std::logic_error{"Function not yet implemented."};
+        plug::assert_not_null(self);
+
+        self.setMPxData(data);
     }, R"pbdoc(Sets the plug's value using custom plug-in data.)pbdoc")
 
     .def("setMTime", [](MPlug & self, MTime time) {
-        throw std::logic_error{"Function not yet implemented."};
+        plug::assert_not_null(self);
+
+        self.setMTime(time);
     }, R"pbdoc(Sets the plug's value as an MTime.)pbdoc")
 
     .def("setNumElements", [](MPlug & self, unsigned int num_elements) {
@@ -490,11 +512,17 @@ Note that the behavior of connectedTo() is identical to destinationsWithConversi
     }, R"pbdoc(Pre-allocates space for count elements in an array of plugs.)pbdoc")
 
     .def("setShort", [](MPlug & self, short value) {
-        throw std::logic_error{"Function not yet implemented."};
+        plug::assert_not_null(self);
+
+        self.setShort(value);
     }, R"pbdoc(Sets the plug's value as a short integer.)pbdoc")
 
-    .def("setString", [](MPlug & self, MString value) {
-        throw std::logic_error{"Function not yet implemented."};
+    .def("setString", [](MPlug & self, std::string value) {
+        plug::assert_not_null(self);
+
+        MString string(value.c_str());
+
+        self.setString(string);
     }, R"pbdoc(Sets the plug's value as a string.)pbdoc")
 
     .def("source", [](MPlug & self) -> MPlug {
