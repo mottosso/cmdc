@@ -18,10 +18,12 @@
 #include <maya/MDagPath.h>
 #include <maya/MEulerRotation.h>
 #include <maya/MFn.h>
+#include <maya/MIntArray.h>
 #include <maya/MMatrix.h>
 #include <maya/MObjectHandle.h>
 #include <maya/MPoint.h>
 #include <maya/MPlug.h>
+#include <maya/MPlugArray.h>
 #include <maya/MPxData.h>
 #include <maya/MQuaternion.h>
 #include <maya/MSelectionList.h>
@@ -35,10 +37,12 @@
 // Function sets
 #include <maya/MFnDependencyNode.h>
 
+#include "util/atov.hpp"
+#include "util/plug.hpp"
 
 #define STRINGIFY(x) #x
 #define MACRO_STRINGIFY(x) STRINGIFY(x)
-#define CHECK_STATUS(status) if (!status) throw std::invalid_argument("Bad status")
+#define CHECK_STATUS(status) if (!status) { throw std::runtime_error(status.errorString().asChar());}
 
 namespace py = pybind11;
 
