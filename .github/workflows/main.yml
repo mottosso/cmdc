@@ -181,10 +181,8 @@ jobs:
     needs: [maya-win, maya-linux]
     runs-on: ubuntu-latest
 
-    on:
-      push:
-        tags:
-          - "*"
+    # Only run on e.g. v0.1
+    if: startsWith(github.ref, 'refs/tags/v')
 
     steps:
       - name: Checkout code
