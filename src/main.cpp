@@ -38,6 +38,7 @@
 #include <maya/MFnDependencyNode.h>
 
 #include "util/atov.hpp"
+#include "util/plug.hpp"
 
 #define STRINGIFY(x) #x
 #define MACRO_STRINGIFY(x) STRINGIFY(x)

@@ -11,9 +11,7 @@ plug.def(py::init<>())
     .def(py::self == MPlug())
 
     .def("array", [](MPlug & self) -> MPlug {
-        if (self.isNull()) {
-            throw std::invalid_argument("Accessed a null plug.");
-        }
+        plug::assert_not_null(self);
 
         if (!self.isElement()) {
             MString error_msg("Plug '^1s' is not an array element.");
@@ -81,9 +79,7 @@ plug.def(py::init<>())
     }, R"pbdoc(Retrieves the plug's value, as a string.)pbdoc")
 
     .def("attribute", [](MPlug & self) -> MObject {
-        if (self.isNull()) {
-            throw std::invalid_argument("Accessed a null plug.");
-        }
+        plug::assert_not_null(self);
 
         MStatus status;
         MObject result = self.attribute(&status);
@@ -96,9 +92,7 @@ plug.def(py::init<>())
     }, R"pbdoc(Returns the attribute currently referenced by this plug.)pbdoc")
 
     .def("child", [](MPlug & self, MObject attr) -> MPlug {
-        if (self.isNull()) {
-            throw std::invalid_argument("Accessed a null plug.");
-        }
+        plug::assert_not_null(self);
 
         if ((self.isCompound() && self.isArray()) || !self.isCompound()) {
             MString error_msg("Plug '^1s' is not a compound plug or is a compound array plug.");
@@ -142,9 +136,7 @@ plug.def(py::init<>())
     }, R"pbdoc(Returns a plug for the specified child attribute of this plug.)pbdoc")
 
     .def("child", [](MPlug & self, unsigned int index) -> MPlug {
-        if (self.isNull()) {
-            throw std::invalid_argument("Accessed a null plug.");
-        }
+        plug::assert_not_null(self);
 
         if ((self.isCompound() && self.isArray()) || !self.isCompound()) {
             MString error_msg("Plug '^1s' is not a compound plug or is a compound array plug.");
@@ -171,9 +163,7 @@ plug.def(py::init<>())
     }, R"pbdoc(Returns a plug for the specified child attribute of this plug.)pbdoc")
 
     .def("connectedTo", [](MPlug & self, bool asDst, bool asSrc) -> std::vector<MPlug> {
-        if (self.isNull()) {
-            throw std::invalid_argument("Accessed a null plug.");
-        }
+        plug::assert_not_null(self);
 
         MStatus status;
         MPlugArray results;
@@ -195,10 +185,8 @@ plug.def(py::init<>())
     }, R"pbdoc(Constructs a data handle for the plug.)pbdoc")
 
     .def("destinations", [](MPlug & self) -> std::vector<MPlug> {
-        if (self.isNull()) {
-            throw std::invalid_argument("Accessed a null plug.");
-        }
-        
+        plug::assert_not_null(self);
+
         MPlugArray results;
         MStatus status;
 
@@ -214,10 +202,7 @@ If this plug is not a source, a null plug is returned.
 This method will produce the networked version of the connected plug.)pbdoc")
 
     .def("destinationsWithConversions", [](MPlug & self) -> std::vector<MPlug> {
-
-        if (self.isNull()) {
-            throw std::invalid_argument("Accessed a null plug.");
-        }
+        plug::assert_not_null(self);
         
         MPlugArray results;
         MStatus status;
@@ -239,9 +224,7 @@ Note that the behavior of connectedTo() is identical to destinationsWithConversi
     }, R"pbdoc(Destroys a data handle previously constructed using constructHandle().)pbdoc")
 
     .def("elementByLogicalIndex", [](MPlug & self, unsigned int index) -> MPlug {
-        if (self.isNull()) {
-            throw std::invalid_argument("Accessed a null plug.");
-        }
+        plug::assert_not_null(self);
 
         if (!self.isArray()) {
             MString error_msg("Plug '^1s' is not an array plug.");
@@ -261,9 +244,7 @@ Note that the behavior of connectedTo() is identical to destinationsWithConversi
     }, R"pbdoc(Returns a plug for the element of this plug array having the specified logical index.)pbdoc")
 
     .def("elementByPhysicalIndex", [](MPlug & self, unsigned int index) -> MPlug {
-        if (self.isNull()) {
-            throw std::invalid_argument("Accessed a null plug.");
-        }
+        plug::assert_not_null(self);
 
         if (!self.isArray()) {
             MString error_msg("Plug '^1s' is not an array plug.");
@@ -290,9 +271,7 @@ Note that the behavior of connectedTo() is identical to destinationsWithConversi
     }, R"pbdoc(Returns a plug for the element of this plug array having the specified physical index. )pbdoc")
 
     .def("evaluateNumElements", [](MPlug & self) -> unsigned int {
-        if (self.isNull()) {
-            throw std::invalid_argument("Accessed a null plug.");
-        }
+        plug::assert_not_null(self);
 
         if (!self.isArray()) {
             MString error_msg("Plug '^1s' is not an array plug.");
@@ -312,9 +291,7 @@ Note that the behavior of connectedTo() is identical to destinationsWithConversi
     }, R"pbdoc(Like numElements() but evaluates all connected elements first to ensure that they are included in the count.)pbdoc")
 
     .def("getExistingArrayAttributeIndices", [](MPlug & self) -> std::vector<int> {
-        if (self.isNull()) {
-            throw std::invalid_argument("Accessed a null plug.");
-        }
+        plug::assert_not_null(self);
 
         if (!self.isArray()) {
             MString error_msg("Plug '^1s' is not an array plug.");
@@ -414,9 +391,7 @@ Note that the behavior of connectedTo() is identical to destinationsWithConversi
     }, R"pbdoc(True if plug is the source of a connection.)pbdoc")
 
     .def("logicalIndex", [](MPlug & self) -> unsigned int {
-       if (self.isNull()) {
-            throw std::invalid_argument("Accessed a null plug.");
-        }
+        plug::assert_not_null(self);
 
         if (!self.isElement()) {
             MString error_msg("Plug '^1s' is not an array element plug.");
@@ -453,9 +428,7 @@ Note that the behavior of connectedTo() is identical to destinationsWithConversi
     }, R"pbdoc(Returns the node that this plug belongs to.)pbdoc")
 
     .def("numChildren", [](MPlug & self) -> unsigned int {
-        if (self.isNull()) {
-            throw std::invalid_argument("Accessed a null plug.");
-        }
+        plug::assert_not_null(self);
 
         if (!self.isCompound()) {
             MString error_msg("Plug '^1s' is not a compound plug.");
@@ -483,9 +456,7 @@ Note that the behavior of connectedTo() is identical to destinationsWithConversi
     }, R"pbdoc(Returns the number of this plug's elements which have connections.)pbdoc")
 
     .def("numElements", [](MPlug & self) -> unsigned int {
-        if (self.isNull()) {
-            throw std::invalid_argument("Accessed a null plug.");
-        }
+        plug::assert_not_null(self);
 
         if (!self.isArray()) {
             MString error_msg("Plug '^1s' is not an array plug.");
@@ -505,9 +476,7 @@ Note that the behavior of connectedTo() is identical to destinationsWithConversi
     }, R"pbdoc(Returns the number of the plug's logical indices which are currently in use. Connected elements which have not yet been evaluated may not yet fully exist and may be excluded from the count.)pbdoc")
 
     .def("parent", [](MPlug & self) -> MPlug {
-        if (self.isNull()) {
-            throw std::invalid_argument("Accessed a null plug.");
-        }
+        plug::assert_not_null(self);
 
         if (!self.isChild()) {
             MString error_msg("Plug '^1s' is not a child plug.");
@@ -595,9 +564,7 @@ Note that the behavior of connectedTo() is identical to destinationsWithConversi
     }, R"pbdoc(Sets the plug's value as a string.)pbdoc")
 
     .def("source", [](MPlug & self) -> MPlug {
-        if (self.isNull()) {
-            throw std::invalid_argument("Accessed a null plug.");
-        }
+        plug::assert_not_null(self);
 
         MStatus status;
         MPlug result = self.source(&status);
@@ -612,9 +579,7 @@ If this plug is not a destination, a null plug is returned.
 This method will produce the networked version of the connectedplug.)pbdoc")
 
     .def("sourceWithConversion", [](MPlug & self) -> MPlug {
-       if (self.isNull()) {
-            throw std::invalid_argument("Accessed a null plug.");
-        }
+        plug::assert_not_null(self);
 
         MStatus status;
         MPlug result = self.sourceWithConversion(&status);
