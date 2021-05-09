@@ -339,8 +339,10 @@ Note that the behavior of connectedTo() is identical to destinationsWithConversi
         throw std::logic_error{"Function not yet implemented."};
     }, R"pbdoc(Returns a list of strings containing the setAttr commands (in MEL syntax) for this plug and all of its descendents.)pbdoc")
 
-    .def("info", [](MPlug & self) -> MString {
-        throw std::logic_error{"Function not yet implemented."};
+    .def("info", [](MPlug & self) -> std::string {
+        MString result = self.info();
+
+        return std::string(result.asChar());
     }, R"pbdoc(Description of the plug for debugging purposes, in the form node:attr1.attr2[].attr3...)pbdoc")
 
     .def("isArray", [](MPlug & self) -> bool {

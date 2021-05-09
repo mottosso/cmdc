@@ -26,6 +26,35 @@ def p(base, *args):
     return '.'.join(parts)
 
 
+class TestCommonMethods(unittest.TestCase):
+    """Tests for common MPlug methods bindings."""
+
+    node = None 
+
+    @classmethod 
+    def setUpClass(cls):
+        cmds.file(new=True, force=True)
+
+        node = cmds.createNode('network')
+
+        cmds.addAttr(node, ln='root', at='compound', nc=1)
+        cmds.addAttr(node, ln='branch', at='compound', nc=1, parent='root', multi=True)
+        cmds.addAttr(node, ln='leaf', parent='branch')
+        
+        cmds.setAttr(p(node, 'root', 'branch', 0, 'leaf'), 0.0)
+
+        cls.node = node 
+
+    def test_info(self):
+        """Test for MPlug::info binding."""
+
+        attr = p(self.node, 'root', 'branch', 0, 'leaf')
+        plug = cmdc.SelectionList().add(attr).getPlug(0)
+
+        # You would think it would return the full plug path, but it doesn't...
+        assert plug.info() == p(self.node, 'branch', 0, 'leaf')
+        
+
 class TestArrayMethods(unittest.TestCase):
     """Tests for MPlug methods bindings for array/element plugs."""
 
