@@ -138,13 +138,13 @@ Use the `numberOfShapesDirectlyBelow()` method to determine how many shapes are 
         return path;
     }, R"pbdoc(Returns the first path found to the given node.)pbdoc")
 
-    .def_static("getAllPathsTo", [](MObject node) -> std::vector<MDagPath> {
+    .def_static("getAllPathsBelow", [](MObject node) -> std::vector<MDagPath> {
         throw std::logic_error{"Function not yet implemented."};
     }, R"pbdoc(Returns all paths to the given node.)pbdoc")
 
-    .def("getDisplayStatus", [](MDagPath & self) -> int {
+    .def_static("getAllPathsTo", [](MObject node) -> std::vector<MDagPath> {
         throw std::logic_error{"Function not yet implemented."};
-    }, R"pbdoc(Returns the display status for this path.)pbdoc")
+    }, R"pbdoc(Returns all paths to the given node.)pbdoc")
 
     .def("getDrawOverrideInfo", [](MDagPath & self) -> MDAGDrawOverrideInfo {
         throw std::logic_error{"Function not yet implemented."};
@@ -278,6 +278,10 @@ Use the `numberOfShapesDirectlyBelow()` method to determine how many shapes are 
 
         return result;
     }, R"pbdoc(Returns the number of nodes on the path, not including the DAG's root node.)pbdoc")
+
+    .def("matchTransform", [](MDagPath & self) {
+        throw std::logic_error{"Function not yet implemented."};
+    }, R"pbdoc(Extends the path to the specified shape node parented directly beneath the transform at the current end of the path.)pbdoc")
 
     .def("node", [](MDagPath & self) -> MObject {
         if (!self.isValid()) {
