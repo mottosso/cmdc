@@ -240,11 +240,12 @@ jobs:
           cp ./cmdc.mod modules/
           zip -r cmdc.zip modules/
 
-      - name: Upload
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Pre-release
+        uses: "marvinpinto/action-automatic-releases@latest"
         with:
-          upload_url: ${{ needs.create_release.outputs.upload_url }}
-          asset_path: ./cmdc.zip
-          asset_content_type: application/zip
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          automatic_release_tag: "latest"
+          prerelease: true
+          title: "cmdc-prerelease"
+          files: |
+            cmdc.zip
