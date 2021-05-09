@@ -213,6 +213,9 @@ jobs:
     needs: [maya-win, maya-linux]
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v1
+
       - name: Download artifacts
         uses: actions/download-artifact@v2
 
@@ -234,8 +237,6 @@ jobs:
 
       - name: Create distribution
         run: |
-          pwd
-          ls
           cp ./cmdc.mod modules/
           zip -r cmdc.zip modules/
 
