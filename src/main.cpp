@@ -42,7 +42,7 @@
 
 #define STRINGIFY(x) #x
 #define MACRO_STRINGIFY(x) STRINGIFY(x)
-#define CHECK_STATUS(status) if (!status) throw std::invalid_argument("Bad status")
+#define CHECK_STATUS(status) if (!status) { throw std::runtime_error(status.errorString().asChar());}
 
 namespace py = pybind11;
 

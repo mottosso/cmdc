@@ -23,9 +23,7 @@ plug.def(py::init<>())
         MStatus status;
         MPlug result = self.array(&status);
 
-        if (!status) {
-            throw std::runtime_error(status.errorString().asChar());
-        }
+        CHECK_STATUS(status)
 
         return result;
     }, R"pbdoc(Returns a plug for the array of plugs of which this plug is an element.)pbdoc")
@@ -84,9 +82,7 @@ plug.def(py::init<>())
         MStatus status;
         MObject result = self.attribute(&status);
 
-        if (!status) {
-            throw std::runtime_error(status.errorString().asChar());
-        }
+        CHECK_STATUS(status)
 
         return result;    
     }, R"pbdoc(Returns the attribute currently referenced by this plug.)pbdoc")
@@ -128,9 +124,7 @@ plug.def(py::init<>())
             throw std::invalid_argument(error_msg.asChar());
         }
 
-        if (!status) {
-            throw std::runtime_error(status.errorString().asChar());
-        }
+        CHECK_STATUS(status)
 
         return result;
     }, R"pbdoc(Returns a plug for the specified child attribute of this plug.)pbdoc")
@@ -155,9 +149,7 @@ plug.def(py::init<>())
         MStatus status;
         MPlug result = self.child(index, &status);
 
-        if (!status) {
-            throw std::runtime_error(status.errorString().asChar());
-        }
+        CHECK_STATUS(status)
 
         return result;    
     }, R"pbdoc(Returns a plug for the specified child attribute of this plug.)pbdoc")
@@ -169,9 +161,7 @@ plug.def(py::init<>())
         MPlugArray results;
         self.connectedTo(results, asDst, asSrc, &status);
 
-        if (!status) {
-            throw std::runtime_error(status.errorString().asChar());
-        }
+        CHECK_STATUS(status)
 
         return atov::convert(results);   
     }, R"pbdoc(Returns an array of plugs which are connected to this one.)pbdoc")
@@ -192,9 +182,7 @@ plug.def(py::init<>())
 
         self.destinations(results, &status);
 
-        if (!status) {
-            throw std::runtime_error(status.errorString().asChar());
-        }
+        CHECK_STATUS(status)
 
         return atov::convert(results);  
     }, R"pbdoc(If this plug is a source, return the destination plugs connected to it.
@@ -209,9 +197,7 @@ This method will produce the networked version of the connected plug.)pbdoc")
 
         self.destinationsWithConversions(results, &status);
 
-        if (!status) {
-            throw std::runtime_error(status.errorString().asChar());
-        }
+        CHECK_STATUS(status)
 
         return atov::convert(results);  
     }, R"pbdoc(If this plug is a source, return the destination plugs connected to it.
@@ -235,10 +221,8 @@ Note that the behavior of connectedTo() is identical to destinationsWithConversi
 
         MStatus status;
         MPlug result = self.elementByLogicalIndex(index, &status);
-
-        if (!status) {
-            throw std::runtime_error(status.errorString().asChar());
-        }
+        
+        CHECK_STATUS(status)
 
         return result;
     }, R"pbdoc(Returns a plug for the element of this plug array having the specified logical index.)pbdoc")
@@ -263,9 +247,7 @@ Note that the behavior of connectedTo() is identical to destinationsWithConversi
         MStatus status;
         MPlug result = self.elementByPhysicalIndex(index, &status);
 
-        if (!status) {
-            throw std::runtime_error(status.errorString().asChar());
-        }
+        CHECK_STATUS(status)
 
         return result;
     }, R"pbdoc(Returns a plug for the element of this plug array having the specified physical index. )pbdoc")
@@ -283,9 +265,7 @@ Note that the behavior of connectedTo() is identical to destinationsWithConversi
         MStatus status;
         unsigned int result = self.evaluateNumElements(&status);
 
-        if (!status) {
-            throw std::runtime_error(status.errorString().asChar());
-        }
+        CHECK_STATUS(status)
 
         return result;     
     }, R"pbdoc(Like numElements() but evaluates all connected elements first to ensure that they are included in the count.)pbdoc")
@@ -305,9 +285,7 @@ Note that the behavior of connectedTo() is identical to destinationsWithConversi
         
         self.getExistingArrayAttributeIndices(results, &status);
 
-        if (!status) {
-            throw std::runtime_error(status.errorString().asChar());
-        }
+        CHECK_STATUS(status)
 
         return atov::convert(results);
     }, R"pbdoc(Returns an array of all the plug's logical indices which are currently in use.)pbdoc")
@@ -403,9 +381,7 @@ Note that the behavior of connectedTo() is identical to destinationsWithConversi
         MStatus status;
         unsigned int result = self.logicalIndex(&status);
 
-        if (!status) {
-            throw std::runtime_error(status.errorString().asChar());
-        }
+        CHECK_STATUS(status)
 
         return result; 
     }, R"pbdoc(Returns this plug's logical index within its parent array.)pbdoc")
@@ -420,9 +396,7 @@ Note that the behavior of connectedTo() is identical to destinationsWithConversi
         MStatus status;
         MObject result = self.node(&status);
 
-        if (!status) {
-            throw std::runtime_error(status.errorString().asChar());
-        }
+        CHECK_STATUS(status)
 
         return result; 
     }, R"pbdoc(Returns the node that this plug belongs to.)pbdoc")
@@ -440,9 +414,7 @@ Note that the behavior of connectedTo() is identical to destinationsWithConversi
         MStatus status;
         unsigned int result = self.numChildren(&status);
 
-        if (!status) {
-            throw std::runtime_error(status.errorString().asChar());
-        }
+        CHECK_STATUS(status)
 
         return result;  
     }, R"pbdoc(Returns the number of children this plug has.)pbdoc")
@@ -468,9 +440,7 @@ Note that the behavior of connectedTo() is identical to destinationsWithConversi
         MStatus status;
         unsigned int result = self.numElements(&status);
 
-        if (!status) {
-            throw std::runtime_error(status.errorString().asChar());
-        }
+        CHECK_STATUS(status)
 
         return result; 
     }, R"pbdoc(Returns the number of the plug's logical indices which are currently in use. Connected elements which have not yet been evaluated may not yet fully exist and may be excluded from the count.)pbdoc")
@@ -488,9 +458,7 @@ Note that the behavior of connectedTo() is identical to destinationsWithConversi
         MStatus status;
         MPlug result = self.parent(&status);
 
-        if (!status) {
-            throw std::runtime_error(status.errorString().asChar());
-        }
+        CHECK_STATUS(status)
 
         return result;     
     }, R"pbdoc(Returns a plug for the parent of this plug.)pbdoc")
@@ -569,9 +537,7 @@ Note that the behavior of connectedTo() is identical to destinationsWithConversi
         MStatus status;
         MPlug result = self.source(&status);
 
-        if (!status) {
-            throw std::runtime_error(status.errorString().asChar());
-        }
+        CHECK_STATUS(status)
 
         return result;      
     }, R"pbdoc(If this plug is a destination, return the source plug connected to it.
@@ -584,9 +550,7 @@ This method will produce the networked version of the connectedplug.)pbdoc")
         MStatus status;
         MPlug result = self.sourceWithConversion(&status);
 
-        if (!status) {
-            throw std::runtime_error(status.errorString().asChar());
-        }
+        CHECK_STATUS(status)
 
         return result;       
     }, R"pbdoc(If this plug is a destination, return the source plug connected to it.
