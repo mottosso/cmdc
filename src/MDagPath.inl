@@ -79,7 +79,29 @@ py::class_<MDagPath>(m, "DagPath")
         if (!status) {
             throw std::logic_error(status.errorString().asChar());
         }
-    }, R"pbdoc(Extends the path to the specified shape node parented directly beneath the transform at the current end of the path.)pbdoc")
+    }, R"pbdoc(If the object at the end of this path is a transform and there is a shape node directly beneath it in the hierarchy, then the path is extended to that geometry node.
+
+NOTE: This method will fail if there multiple shapes below the transform.)pbdoc")
+
+    .def("extendToShapeDirectlyBelow", [](MDagPath & self, unsigned int index) {
+        if (!self.isValid()) {
+            throw std::logic_error("Call on invalid DagPath.");
+        } 
+
+        unsigned int number_of_shapes;
+        self.numberOfShapesDirectlyBelow(number_of_shapes);
+        if (index >= number_of_shapes) {
+            throw std::out_of_range("Index out of range.");
+        }
+
+        MStatus status = self.extendToShapeDirectlyBelow(index);
+
+        if (!status) {
+            throw std::logic_error(status.errorString().asChar());
+        }
+    }, R"pbdoc(This method is used if the end of the path is a transform and there are shapes directly below the transform.
+The shape to extend to is set by passing in an appropriate index parameter.
+Use the `numberOfShapesDirectlyBelow()` method to determine how many shapes are below)pbdoc")
 
     .def("fullPathName", [](MDagPath & self) -> std::string {
         if (!self.isValid()) {
@@ -336,9 +358,24 @@ py::class_<MDagPath>(m, "DagPath")
     }, R"pbdoc(Extends the path to the specified child object, which must be parented directly beneath the object currently at the end of the path.)pbdoc")
 
     .def("set", [](MDagPath & self, MDagPath src) {
-        throw std::logic_error{"Function not yet implemented."};
+        MStatus status = self.set(src);
+
+        if (!status) {
+            throw std::logic_error(status.errorString().asChar());
+        }
     }, R"pbdoc(Replaces the current path held by this object with another.)pbdoc")
 
     .def("transform", [](MDagPath & self) -> MObject {
-        throw std::logic_error{"Function not yet implemented."};
+        if (!self.isValid()) {
+            throw std::logic_error("Call on invalid DagPath.");
+        }
+
+        MStatus status;
+        MObject result = self.transform();
+
+        if (!status) {
+            throw std::logic_error(status.errorString().asChar());
+        }
+
+        return result;
     }, R"pbdoc(Returns the last transform node on the path.)pbdoc");

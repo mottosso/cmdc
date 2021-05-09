@@ -103,6 +103,42 @@ def test_extendToShape():
         invalid_dag.extendToShape,
     )
 
+@nose.with_setup(teardown=new_scene)
+def test_extendToShapeDirectlyBelow():
+    transform = cmds.polyCube()[0]
+    cmds.duplicate("pCubeShape1")
+    shape1 = "pCubeShape1"
+    shape2 = "pCubeShape2"
+    cmds.parent(shape2, transform, shape=True, relative=True)
+    assert len(cmds.listRelatives(transform, shapes=True)) == 2
+
+    sel = cmdc.SelectionList().add(transform).add(shape1).add(shape2)
+
+    transform_dag = sel.getDagPath(0)
+    shape1_dag = sel.getDagPath(1)
+    transform_dag.extendToShapeDirectlyBelow(0)
+    assert transform_dag == shape1_dag
+
+    transform_dag = sel.getDagPath(0)
+    shape2_dag = sel.getDagPath(2)
+    transform_dag.extendToShapeDirectlyBelow(1)
+    assert transform_dag == shape2_dag
+
+    transform_dag = sel.getDagPath(0)
+    nose.tools.assert_raises(
+        IndexError,
+        transform_dag.extendToShapeDirectlyBelow,
+        2
+    )
+
+    invalid_dag = cmdc.DagPath()
+    nose.tools.assert_raises(
+        RuntimeError,
+        invalid_dag.extendToShapeDirectlyBelow,
+        0
+    )
+
+
 def test_fullPathName():
     sel = cmdc.SelectionList().add("persp").add("perspShape")
 
@@ -141,7 +177,6 @@ def test_getAPathTo():
         cmdc.DagPath.getAPathTo,
         invalid_obj 
     )
-
 
 def test_hasFn():
     sel = cmdc.SelectionList().add("persp").add("perspShape")
@@ -355,3 +390,28 @@ def test_push():
         cmdc.Object()
     )
 
+def test_set():
+    sel = cmdc.SelectionList().add("persp")
+
+    persp_dag = sel.getDagPath(0)
+
+    dag = cmdc.DagPath()
+    dag.set(persp_dag)
+    assert dag == persp_dag
+
+def test_transform():
+    sel = cmdc.SelectionList().add("persp").add("perspShape")
+
+    persp_obj = sel.getDependNode(0)
+
+    persp_dag = sel.getDagPath(0)
+    assert persp_dag.transform() == persp_obj
+
+    persp_shape_dag = sel.getDagPath(1)
+    assert persp_shape_dag.transform() == persp_obj
+
+    invalid_dag = cmdc.DagPath()
+    nose.tools.assert_raises(
+        RuntimeError,
+        invalid_dag.transform,
+    )
