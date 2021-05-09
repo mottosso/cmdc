@@ -12,13 +12,7 @@ plug.def(py::init<>())
 
     .def("array", [](MPlug & self) -> MPlug {
         plug::assert_not_null(self);
-
-        if (!self.isElement()) {
-            MString error_msg("Plug '^1s' is not an array element.");
-                    error_msg.format(error_msg, self.name());
-
-            throw pybind11::type_error(error_msg.asChar());
-        }
+        plug::assert_is_element(self);
 
         MStatus status;
         MPlug result = self.array(&status);
@@ -89,13 +83,8 @@ plug.def(py::init<>())
 
     .def("child", [](MPlug & self, MObject attr) -> MPlug {
         plug::assert_not_null(self);
-
-        if ((self.isCompound() && self.isArray()) || !self.isCompound()) {
-            MString error_msg("Plug '^1s' is not a compound plug or is a compound array plug.");
-                    error_msg.format(error_msg, self.name());
-
-            throw pybind11::type_error(error_msg.asChar());
-        }
+        plug::assert_is_compound(self);
+        plug::assert_is_not_array(self);
 
         MStatus status;
         MPlug result;
@@ -131,13 +120,8 @@ plug.def(py::init<>())
 
     .def("child", [](MPlug & self, unsigned int index) -> MPlug {
         plug::assert_not_null(self);
-
-        if ((self.isCompound() && self.isArray()) || !self.isCompound()) {
-            MString error_msg("Plug '^1s' is not a compound plug or is a compound array plug.");
-                    error_msg.format(error_msg, self.name());
-
-            throw pybind11::type_error(error_msg.asChar());
-        }
+        plug::assert_is_compound(self);
+        plug::assert_is_not_array(self);
 
         if (index >= self.numChildren()) {
             MString error_msg("Plug '^1s' only has '^2s' children.");
@@ -211,14 +195,8 @@ Note that the behavior of connectedTo() is identical to destinationsWithConversi
 
     .def("elementByLogicalIndex", [](MPlug & self, unsigned int index) -> MPlug {
         plug::assert_not_null(self);
-
-        if (!self.isArray()) {
-            MString error_msg("Plug '^1s' is not an array plug.");
-                    error_msg.format(error_msg, self.name());
-
-            throw pybind11::type_error(error_msg.asChar());
-        }
-
+        plug::assert_is_array(self);
+        
         MStatus status;
         MPlug result = self.elementByLogicalIndex(index, &status);
         
@@ -229,13 +207,7 @@ Note that the behavior of connectedTo() is identical to destinationsWithConversi
 
     .def("elementByPhysicalIndex", [](MPlug & self, unsigned int index) -> MPlug {
         plug::assert_not_null(self);
-
-        if (!self.isArray()) {
-            MString error_msg("Plug '^1s' is not an array plug.");
-                    error_msg.format(error_msg, self.name());
-
-            throw pybind11::type_error(error_msg.asChar());
-        }
+        plug::assert_is_array(self);
 
         if (index >= self.numElements()) {
             MString error_msg("Plug '^1s' only has '^2s' elements.");
@@ -254,13 +226,7 @@ Note that the behavior of connectedTo() is identical to destinationsWithConversi
 
     .def("evaluateNumElements", [](MPlug & self) -> unsigned int {
         plug::assert_not_null(self);
-
-        if (!self.isArray()) {
-            MString error_msg("Plug '^1s' is not an array plug.");
-                    error_msg.format(error_msg, self.name());
-
-            throw pybind11::type_error(error_msg.asChar());
-        }
+        plug::assert_is_array(self);
 
         MStatus status;
         unsigned int result = self.evaluateNumElements(&status);
@@ -272,13 +238,7 @@ Note that the behavior of connectedTo() is identical to destinationsWithConversi
 
     .def("getExistingArrayAttributeIndices", [](MPlug & self) -> std::vector<int> {
         plug::assert_not_null(self);
-
-        if (!self.isArray()) {
-            MString error_msg("Plug '^1s' is not an array plug.");
-                    error_msg.format(error_msg, self.name());
-
-            throw pybind11::type_error(error_msg.asChar());
-        }
+        plug::assert_is_array(self);
 
         MStatus status;
         MIntArray results;
@@ -370,13 +330,7 @@ Note that the behavior of connectedTo() is identical to destinationsWithConversi
 
     .def("logicalIndex", [](MPlug & self) -> unsigned int {
         plug::assert_not_null(self);
-
-        if (!self.isElement()) {
-            MString error_msg("Plug '^1s' is not an array element plug.");
-                    error_msg.format(error_msg, self.name());
-
-            throw pybind11::type_error(error_msg.asChar());
-        }
+        plug::assert_is_element(self);
 
         MStatus status;
         unsigned int result = self.logicalIndex(&status);
@@ -403,13 +357,7 @@ Note that the behavior of connectedTo() is identical to destinationsWithConversi
 
     .def("numChildren", [](MPlug & self) -> unsigned int {
         plug::assert_not_null(self);
-
-        if (!self.isCompound()) {
-            MString error_msg("Plug '^1s' is not a compound plug.");
-                    error_msg.format(error_msg, self.name());
-
-            throw pybind11::type_error(error_msg.asChar());
-        }
+        plug::assert_is_compound(self);
 
         MStatus status;
         unsigned int result = self.numChildren(&status);
@@ -429,13 +377,7 @@ Note that the behavior of connectedTo() is identical to destinationsWithConversi
 
     .def("numElements", [](MPlug & self) -> unsigned int {
         plug::assert_not_null(self);
-
-        if (!self.isArray()) {
-            MString error_msg("Plug '^1s' is not an array plug.");
-                    error_msg.format(error_msg, self.name());
-
-            throw pybind11::type_error(error_msg.asChar());
-        }
+        plug::assert_is_array(self);
 
         MStatus status;
         unsigned int result = self.numElements(&status);
