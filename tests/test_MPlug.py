@@ -257,6 +257,33 @@ class TestConnectionMethods(unittest.TestCase):
         cls.tgt_node = tgt_node
         cls.alt_node = alt_node
 
+    def test_connectedTo(self):
+        """Test for MPlug::connectedTo binding."""
+
+        src_node = cmds.createNode('network')
+        the_node = cmds.createNode('network')
+        dst_node_a = cmds.createNode('network')
+        dst_node_b = cmds.createNode('network')
+
+        cmds.addAttr(src_node, ln='attr', at='double')
+        cmds.addAttr(the_node, ln='attr', at='double')
+        cmds.addAttr(dst_node_a, ln='attr', at='double')
+        cmds.addAttr(dst_node_b, ln='attr', at='double')
+
+        cmds.connectAttr(p(src_node, 'attr'), p(the_node, 'attr'))
+        cmds.connectAttr(p(the_node, 'attr'), p(dst_node_a, 'attr'))
+        cmds.connectAttr(p(the_node, 'attr'), p(dst_node_b, 'attr'))
+
+        the_plug = cmdc.SelectionList().add(p(the_node, 'attr')).getPlug(0)
+
+        src_connections = the_plug.connectedTo(True, True)
+        src_input = the_plug.connectedTo(True, False)
+        src_outputs = the_plug.connectedTo(False, True)
+
+        assert len(src_connections) == 3
+        assert len(src_input) == 1
+        assert len(src_outputs) == 2
+
     def test_destinations(self):
         """Test for MPlug::destinations binding."""
 

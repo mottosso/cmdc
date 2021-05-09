@@ -170,8 +170,20 @@ plug.def(py::init<>())
         return result;    
     }, R"pbdoc(Returns a plug for the specified child attribute of this plug.)pbdoc")
 
-    .def("connectedTo", [](MPlug & self, std::vector<MPlug> array, bool asDst, bool asSrc) -> bool {
-        throw std::logic_error{"Function not yet implemented."};
+    .def("connectedTo", [](MPlug & self, bool asDst, bool asSrc) -> std::vector<MPlug> {
+        if (self.isNull()) {
+            throw std::invalid_argument("Accessed a null plug.");
+        }
+
+        MStatus status;
+        MPlugArray results;
+        self.connectedTo(results, asDst, asSrc, &status);
+
+        if (!status) {
+            throw std::runtime_error(status.errorString().asChar());
+        }
+
+        return atov::convert(results);   
     }, R"pbdoc(Returns an array of plugs which are connected to this one.)pbdoc")
 
     .def("connectionByPhysicalIndex", [](MPlug & self, unsigned int physicalIndex) -> MPlug {
