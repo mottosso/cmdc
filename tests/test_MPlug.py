@@ -387,7 +387,7 @@ def test_asType_methods():
 
     for (method_name, value, add_attr_kwargs, set_attr_kwargs) in [
         ('asBool', True, {'at': 'bool'}, {}),
-        ('asChar', (65, 'A'), {'at': 'char'}, {}),
+        ('asChar', ord('A'), {'at': 'char'}, {}),
         ('asDouble', 1.0, {'at': 'double'}, {}),
         ('asFloat', 1.0, {'at': 'float'}, {}),
         ('asInt', 5, {'at': 'long'}, {}),
@@ -407,26 +407,19 @@ def test_asType_methods():
 
 def check_asType_method(method_name, value, add_attr_kwargs, set_attr_kwargs):
     """Test for MPlug::as* bindings."""
-
-    # 'asChar' expects an int but returns a char in Python
-    if isinstance(value, tuple):
-        in_value, out_value = value 
-    else:
-        in_value = value
-        out_value = value 
  
     node = cmds.createNode('network')
 
     attr = p(node, 'attr')
 
     cmds.addAttr(node, ln='attr', **add_attr_kwargs)
-    cmds.setAttr(attr, in_value, **set_attr_kwargs)
+    cmds.setAttr(attr, value, **set_attr_kwargs)
 
     plug = cmdc.SelectionList().add(attr).getPlug(0)
     
     method = getattr(plug, method_name)
 
-    expected = out_value
+    expected = value
     actual = method()
 
     error_message = (
@@ -463,7 +456,7 @@ def test_setType_methods():
 
     for (method_name, value, add_attr_kwargs) in [
         ('setBool', True, {'at': 'bool'}),
-        ('setChar', ('A', 65), {'at': 'char'}),
+        ('setChar', ord('A'), {'at': 'char'}),
         ('setDouble', 1.0, {'at': 'double'}),
         ('setFloat', 1.0, {'at': 'float'}),
         ('setInt', 5, {'at': 'long'}),
@@ -485,13 +478,6 @@ def test_setType_methods():
 def check_setType_method(method_name, value, add_attr_kwargs):
     """Test for MPlug::set* bindings."""
 
-    # 'asChar' expects an int but returns a char in Python
-    if isinstance(value, tuple):
-        in_value, out_value = value 
-    else:
-        in_value = value
-        out_value = value 
- 
     node = cmds.createNode('network')
 
     attr = p(node, 'attr')
@@ -501,9 +487,9 @@ def check_setType_method(method_name, value, add_attr_kwargs):
     plug = cmdc.SelectionList().add(attr).getPlug(0)
     
     method = getattr(plug, method_name)
-    method(in_value)
+    method(value)
 
-    expected = out_value
+    expected = value
     actual = cmds.getAttr(attr)
 
     error_message = (

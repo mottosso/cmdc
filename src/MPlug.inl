@@ -28,10 +28,10 @@ plug.def(py::init<>())
         return self.asBool();
     }, R"pbdoc(Retrieves the plug's value, as a boolean.)pbdoc")
 
-    .def("asChar", [](MPlug & self) -> char {
+    .def("asChar", [](MPlug & self) -> int {
         plug::assert_not_null(self);
 
-        return self.asChar();
+        return (self.asChar());
     }, R"pbdoc(Retrieves the plug's value, as a single-byte integer.)pbdoc")
 
     .def("asDouble", [](MPlug & self) -> double {
@@ -447,10 +447,10 @@ Note that the behavior of connectedTo() is identical to destinationsWithConversi
         self.setBool(value);
     }, R"pbdoc(Sets the plug's value as a boolean.)pbdoc")
 
-    .def("setChar", [](MPlug & self, char value) {
+    .def("setChar", [](MPlug & self, int value) {
         plug::assert_not_null(self);
 
-        self.setChar(value);
+        self.setChar(char(value));
     }, R"pbdoc(Sets the plug's value as a single-byte integer.)pbdoc")
 
     .def("setDouble", [](MPlug & self, double value) {
