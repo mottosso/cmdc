@@ -11,7 +11,7 @@ import pybind11_stubgen
 
 module = pybind11_stubgen.ModuleStubsGenerator("cmdc")
 
-module.parse() # this throws a bunch of warning and then freezes after some point.
+module.parse()
 
 with open("build/cmdc.pyi", "w") as handle:
     handle.write("\n".join(module.to_lines()))
