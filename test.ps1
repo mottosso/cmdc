@@ -6,4 +6,4 @@ if (-not $args.count) {
  $directory = $args[0]
 }
 
-."$env:MAYA_LOCATION/bin/mayapy.exe" -m nose -xv $directory
+."$env:MAYA_LOCATION/bin/mayapy.exe" -B -m nose -xv $directory
