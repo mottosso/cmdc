@@ -1,11 +1,11 @@
-py::class_<MSelectionList> sel(m, "SelectionList");
-py::enum_<MSelectionList::MergeStrategy>(sel, "MergeStrategy")
+py::enum_<MSelectionList::MergeStrategy>(SelectionList, "MergeStrategy")
     .value("kMergeNormal", MSelectionList::MergeStrategy::kMergeNormal)
     .value("kXORWithList", MSelectionList::MergeStrategy::kXORWithList)
     .value("kRemoveFromList", MSelectionList::MergeStrategy::kRemoveFromList)
     .export_values();
 
- sel.def(py::init<>())
+SelectionList
+    .def(py::init<>())
 
     .def("__len__", [](MSelectionList & self) -> int {
         return self.length();
@@ -65,7 +65,9 @@ or a component (tuple of (MDagPath, MObject) ).)pbdoc")
         }
 
         return self;
-    }, R"pbdoc(add(Add the specified object(s) to the selection list.)pbdoc")
+    }, R"pbdoc(add(pattern) -> self
+
+Add the specified object(s) to the selection list.)pbdoc")
 
     .def("add", [](MSelectionList & self, std::string matchString, bool searchChildNamespacesToo = false) -> MSelectionList {
         throw std::logic_error{"Function not yet implemented."};
@@ -176,7 +178,7 @@ Raises IndexError if index is out of range.)pbdoc")
         }
 
         return atov::convert(strings);
-    }, R"pbdoc(getSelectionStrings(index=None) -> (string, string, ...)
+    }, R"pbdoc(getSelectionStrings(index=None) -> List[string]
 
 Returns a tuple containing the string representation of the
 specified item. For nodes, DAG paths, plugs and contiguous
@@ -201,7 +203,7 @@ list are returned. Raises IndexError if index is out of bounds.)pbdoc")
         }
 
         return atov::convert(strings);
-    }, R"pbdoc(getSelectionStrings(index=None) -> (string, string, ...)
+    }, R"pbdoc(getSelectionStrings(index=None) -> List[str]
 
 Returns a tuple containing the string representation of the
 specified item. For nodes, DAG paths, plugs and contiguous

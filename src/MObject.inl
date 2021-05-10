@@ -1,4 +1,4 @@
-py::class_<MObject>(m, "Object")
+Object
     .def(py::init<>())
     .def(py::init<const MObject &>())
 

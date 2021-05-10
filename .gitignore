@@ -1,5 +1,5 @@
 *.dist-info
-*.pyd
+*.py[id]
 build/**
 tmp/*
 *.pyc

@@ -1,5 +1,5 @@
 
-py::class_<MString>(m, "String")
+String
     .def(py::init<>())
     .def(py::init<const MString &>())
     .def(py::init<const char*>())
@@ -16,7 +16,7 @@ py::class_<MString>(m, "String")
     }
 );
 
-py::class_<MVector>(m, "Vector")
+Vector
     .def(py::init<>())
     .def(py::init<const double,
                   const double,
@@ -46,7 +46,7 @@ py::class_<MVector>(m, "Vector")
     }
 );
 
-py::class_<MPoint>(m, "Point")
+Point
     .def(py::init<>())
     .def(py::init<const double,
                   const double,
@@ -76,7 +76,7 @@ py::class_<MPoint>(m, "Point")
     }
 );
 
-py::class_<MMatrix>(m, "Matrix")
+Matrix
     .def(py::init<>())
     .def(py::init<const MMatrix &>())
 
@@ -109,7 +109,7 @@ py::class_<MMatrix>(m, "Matrix")
     }
 );
 
-py::class_<MQuaternion>(m, "Quaternion")
+Quaternion
     .def(py::init<const double,
                   const double,
                   const double,

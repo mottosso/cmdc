@@ -1,5 +1,5 @@
 
-py::class_<MFnDependencyNode>(m, "FnDependencyNode")
+FnDependencyNode
     .def(py::init<>())
     .def(py::init<const MObject &>())
 

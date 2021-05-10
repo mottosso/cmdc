@@ -1,5 +1,4 @@
-
-py::class_<MStatus>(m, "Status")
+Status
     .def(py::init<>())
     .def(py::init<const MStatus &>())
 
@@ -8,7 +7,7 @@ py::class_<MStatus>(m, "Status")
     }
 );
 
-py::class_<MTypeId>(m, "TypeId")
+TypeId
     .def(py::init<>())
     .def(py::init<const MTypeId &>())
     .def(py::init<const unsigned int>(),
@@ -31,8 +30,7 @@ py::class_<MTypeId>(m, "TypeId")
 );
 
 
-
-py::class_<MObjectHandle>(m, "ObjectHandle")
+ObjectHandle
     .def(py::init<>())
     .def(py::init<const MObject &>())
 
