@@ -9,17 +9,11 @@ SelectionList
 
     .def("__len__", [](MSelectionList & self) -> int {
         return self.length();
-    }, R"pbdoc(length() -> int
-
-Returns the number of items on the selection list.)pbdoc")
+    }, R"pbdoc(Returns the number of items on the selection list.)pbdoc")
 
     .def("add", [](MSelectionList & self, MDagPath object, MObject component = MObject::kNullObj, bool mergeWithExisting = false) -> MSelectionList {
         throw std::logic_error{"Function not yet implemented."};
-    }, R"pbdoc(add(pattern, searchChildNamespaces=False) -> self
-add(item, mergeWithExisting=True) -> self
-
-
-The first version adds to the list any nodes, DAG paths, components
+    }, R"pbdoc(The first version adds to the list any nodes, DAG paths, components
 or plugs which match the given the pattern string.
 
 The second version adds the specific item to the list, where the
@@ -28,11 +22,7 @@ or a component (tuple of (MDagPath, MObject) ).)pbdoc")
 
     .def("add", [](MSelectionList & self, MObject object, bool mergeWithExisting = false) -> MSelectionList {
         throw std::logic_error{"Function not yet implemented."};
-    }, R"pbdoc(add(pattern, searchChildNamespaces=False) -> self
-add(item, mergeWithExisting=True) -> self
-
-
-The first version adds to the list any nodes, DAG paths, components
+    }, R"pbdoc(The first version adds to the list any nodes, DAG paths, components
 or plugs which match the given the pattern string.
 
 The second version adds the specific item to the list, where the
@@ -41,11 +31,7 @@ or a component (tuple of (MDagPath, MObject) ).)pbdoc")
 
     .def("add", [](MSelectionList & self, MPlug plug, bool mergeWithExisting = false) -> MSelectionList {
         throw std::logic_error{"Function not yet implemented."};
-    }, R"pbdoc(add(pattern, searchChildNamespaces=False) -> self
-add(item, mergeWithExisting=True) -> self
-
-
-The first version adds to the list any nodes, DAG paths, components
+    }, R"pbdoc(The first version adds to the list any nodes, DAG paths, components
 or plugs which match the given the pattern string.
 
 The second version adds the specific item to the list, where the
@@ -65,17 +51,11 @@ or a component (tuple of (MDagPath, MObject) ).)pbdoc")
         }
 
         return self;
-    }, R"pbdoc(add(pattern) -> self
-
-Add the specified object(s) to the selection list.)pbdoc")
+    }, R"pbdoc(Add the specified object(s) to the selection list.)pbdoc")
 
     .def("add", [](MSelectionList & self, std::string matchString, bool searchChildNamespacesToo = false) -> MSelectionList {
         throw std::logic_error{"Function not yet implemented."};
-    }, R"pbdoc(add(pattern, searchChildNamespaces=False) -> self
-add(item, mergeWithExisting=True) -> self
-
-
-The first version adds to the list any nodes, DAG paths, components
+    }, R"pbdoc(The first version adds to the list any nodes, DAG paths, components
 or plugs which match the given the pattern string.
 
 The second version adds the specific item to the list, where the
@@ -84,11 +64,7 @@ or a component (tuple of (MDagPath, MObject) ).)pbdoc")
 
     .def("add", [](MSelectionList & self, MUuid uuid, bool mergeWithExisting = false) -> MSelectionList {
         throw std::logic_error{"Function not yet implemented."};
-    }, R"pbdoc(add(pattern, searchChildNamespaces=False) -> self
-add(item, mergeWithExisting=True) -> self
-
-
-The first version adds to the list any nodes, DAG paths, components
+    }, R"pbdoc(The first version adds to the list any nodes, DAG paths, components
 or plugs which match the given the pattern string.
 
 The second version adds the specific item to the list, where the
@@ -97,9 +73,7 @@ or a component (tuple of (MDagPath, MObject) ).)pbdoc")
 
     .def("clear", [](MSelectionList & self) {
         throw std::logic_error{"Function not yet implemented."};
-    }, R"pbdoc(clear() -> self
-
-Empties the selection list.)pbdoc")
+    }, R"pbdoc(Empties the selection list.)pbdoc")
 
     .def("getDagPath", [](MSelectionList & self, unsigned int index) -> MDagPath {
         if (index >= self.length()) {
@@ -178,9 +152,7 @@ Raises IndexError if index is out of range.)pbdoc")
         }
 
         return atov::convert(strings);
-    }, R"pbdoc(getSelectionStrings(index=None) -> List[string]
-
-Returns a tuple containing the string representation of the
+    }, R"pbdoc(Returns a tuple containing the string representation of the
 specified item. For nodes, DAG paths, plugs and contiguous
 components the tuple will only contain a single string, but for non-
 contiguous components there will be a separate string for each
@@ -203,9 +175,7 @@ list are returned. Raises IndexError if index is out of bounds.)pbdoc")
         }
 
         return atov::convert(strings);
-    }, R"pbdoc(getSelectionStrings(index=None) -> List[str]
-
-Returns a tuple containing the string representation of the
+    }, R"pbdoc(Returns a tuple containing the string representation of the
 specified item. For nodes, DAG paths, plugs and contiguous
 components the tuple will only contain a single string, but for non-
 contiguous components there will be a separate string for each
@@ -215,57 +185,42 @@ list are returned. Raises IndexError if index is out of bounds.)pbdoc")
 
     .def("hasItem", [](MSelectionList & self, MDagPath item, MObject component = MObject::kNullObj) -> bool {
         throw std::logic_error{"Function not yet implemented."};
-    }, R"pbdoc(hasItem(item) -> bool
-
-Returns True if the given item is on the selection list. For a
+    }, R"pbdoc(Returns True if the given item is on the selection list. For a
 component this means that all of the elements of the component must
 be on the list. A component is passed as a tuple containing the
 MDagPath of the DAG node and an MObject containing the component.)pbdoc")
 
     .def("hasItem", [](MSelectionList & self, MObject item) -> bool {
         throw std::logic_error{"Function not yet implemented."};
-    }, R"pbdoc(hasItem(item) -> bool
-
-Returns True if the given item is on the selection list. For a
+    }, R"pbdoc(Returns True if the given item is on the selection list. For a
 component this means that all of the elements of the component must
 be on the list. A component is passed as a tuple containing the
 MDagPath of the DAG node and an MObject containing the component.)pbdoc")
 
     .def("hasItem", [](MSelectionList & self, MPlug plug) -> bool {
         throw std::logic_error{"Function not yet implemented."};
-    }, R"pbdoc(hasItem(item) -> bool
-
-Returns True if the given item is on the selection list. For a
+    }, R"pbdoc(Returns True if the given item is on the selection list. For a
 component this means that all of the elements of the component must
 be on the list. A component is passed as a tuple containing the
 MDagPath of the DAG node and an MObject containing the component.)pbdoc")
 
     .def("hasItemPartly", [](MSelectionList & self, MDagPath item, MObject component) -> bool {
         throw std::logic_error{"Function not yet implemented."};
-    }, R"pbdoc(hasItemPartly(dagPath, component) -> bool
-
-Returns True if at least one of the component's elements is on the
+    }, R"pbdoc(Returns True if at least one of the component's elements is on the
 selection list. Raises TypeError if dagPath is invalid or component
 does not contain a component.)pbdoc")
 
     .def("intersect", [](MSelectionList & self, MSelectionList other, bool expandToLeaves = false) {
         throw std::logic_error{"Function not yet implemented."};
-    }, R"pbdoc(intersect(other, expandToLeaves=False) -> self
-
-Modify this list to contain the intersection of itself and the given list.)pbdoc")
+    }, R"pbdoc(Modify this list to contain the intersection of itself and the given list.)pbdoc")
 
     .def("isEmpty", [](MSelectionList & self) -> bool {
         return self.isEmpty();
-    }, R"pbdoc(isEmpty() -> bool
-
-Returns True if the selection list is empty.)pbdoc")
+    }, R"pbdoc(Returns True if the selection list is empty.)pbdoc")
 
     .def("merge", [](MSelectionList & self, MDagPath object, MObject component = MObject::kNullObj, MSelectionList::MergeStrategy strategy = MSelectionList::MergeStrategy::kMergeNormal) {
         throw std::logic_error{"Function not yet implemented."};
-    }, R"pbdoc(merge(other, strategy=kMergeNormal) -> self
-merge(dagPath, component, strategy=kMergeNormal) -> self
-
-The first version merges the items from another selection list in
+    }, R"pbdoc(The first version merges the items from another selection list in
 with those already on the list, using the given strategy.
 
 The second version merges the specified component with those already
@@ -273,10 +228,7 @@ on the list.)pbdoc")
 
     .def("merge", [](MSelectionList & self, MSelectionList other, MSelectionList::MergeStrategy strategy = MSelectionList::MergeStrategy::kMergeNormal) {
         throw std::logic_error{"Function not yet implemented."};
-    }, R"pbdoc(merge(other, strategy=kMergeNormal) -> self
-merge(dagPath, component, strategy=kMergeNormal) -> self
-
-The first version merges the items from another selection list in
+    }, R"pbdoc(The first version merges the items from another selection list in
 with those already on the list, using the given strategy.
 
 The second version merges the specified component with those already
@@ -284,41 +236,31 @@ on the list.)pbdoc")
 
     .def("remove", [](MSelectionList & self, unsigned int index) {
         throw std::logic_error{"Function not yet implemented."};
-    }, R"pbdoc(remove(index) -> self
-
-Removes the index'th item from the list. Raises IndexError if the
+    }, R"pbdoc(Removes the index'th item from the list. Raises IndexError if the
 index is out of range.)pbdoc")
 
     .def("replace", [](MSelectionList & self, unsigned int index, MDagPath item, MObject component = MObject::kNullObj) {
         throw std::logic_error{"Function not yet implemented."};
-    }, R"pbdoc(replace(index, newItem) -> self
-
-Replaces the index'th item on the list with a new item. A component
+    }, R"pbdoc(Replaces the index'th item on the list with a new item. A component
 is passed as a tuple containing the MDagPath of the DAG node and an
 MObject containing the component. Raises IndexError if the index is
 out of range.)pbdoc")
 
     .def("replace", [](MSelectionList & self, unsigned int index, MObject item) {
         throw std::logic_error{"Function not yet implemented."};
-    }, R"pbdoc(replace(index, newItem) -> self
-
-Replaces the index'th item on the list with a new item. A component
+    }, R"pbdoc(Replaces the index'th item on the list with a new item. A component
 is passed as a tuple containing the MDagPath of the DAG node and an
 MObject containing the component. Raises IndexError if the index is
 out of range.)pbdoc")
 
     .def("replace", [](MSelectionList & self, unsigned int index, MPlug plug) {
         throw std::logic_error{"Function not yet implemented."};
-    }, R"pbdoc(replace(index, newItem) -> self
-
-Replaces the index'th item on the list with a new item. A component
+    }, R"pbdoc(Replaces the index'th item on the list with a new item. A component
 is passed as a tuple containing the MDagPath of the DAG node and an
 MObject containing the component. Raises IndexError if the index is
 out of range.)pbdoc")
 
     .def("toggle", [](MSelectionList & self, MDagPath item, MObject component = MObject::kNullObj) {
         throw std::logic_error{"Function not yet implemented."};
-    }, R"pbdoc(toggle(dagPath, component) -> self
-
-Removes from the list those elements of the given component which
+    }, R"pbdoc(Removes from the list those elements of the given component which
 are already on it and adds those which are not.)pbdoc");
