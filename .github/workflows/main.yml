@@ -161,7 +161,7 @@ jobs:
           export XDG_RUNTIME_DIR=/var/tmp/runtime-root
           export MAYA_DISABLE_ADP=1
 
-      - name: Testests
+      - name: Tests
         run: |
           pwd
           ls
