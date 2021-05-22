@@ -143,9 +143,8 @@ def test_fullPathName():
     sel = cmdc.SelectionList().add("persp").add("perspShape")
 
     persp = sel.getDagPath(0)
-    persp_path_name =persp.fullPathName() 
+    persp_path_name = persp.fullPathName() 
     assert persp_path_name == "|persp"
-    assert isinstance(persp_path_name, str)
 
     persp_shape = sel.getDagPath(1)
     assert persp_shape.fullPathName() == "|persp|perspShape"
