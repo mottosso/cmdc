@@ -33,9 +33,13 @@
 #include <maya/MTypeId.h>
 #include <maya/MVector.h>
 #include <maya/MUuid.h>
+#include <maya/MBoundingBox.h>  // MFnDagNode
+#include <maya/MDagPathArray.h>  // MFnDagNode
+#include <maya/MObjectArray.h>  // MFnDagNode
 
 // Function sets
 #include <maya/MFnDependencyNode.h>
+#include <maya/MFnDagNode.h>
 
 #include "util/atov.hpp"
 #include "util/plug.hpp"
@@ -62,6 +66,7 @@ PYBIND11_MODULE(cmdc, m) {
     #include "MDagPath.inl"
     #include "MFn.inl"
     #include "MFnDependencyNode.inl"
+    #include "MFnDagNode.inl"
     #include "MObject.inl"
     #include "MPlug.inl"
     #include "MSelectionList.inl"
