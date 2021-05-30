@@ -312,6 +312,10 @@ def filter_header_lines(class_name, lines):
             skip_next_statement = True
             continue 
 
+        # OPENMAYA_PRIVATE appears to aways be at the endo f a header
+        if line.startswith('OPENMAYA_PRIVATE'): 
+            break
+
         try:
             # Remove trailing comments
             line = line[:line.index('//')].strip()
