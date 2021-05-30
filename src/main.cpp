@@ -14,12 +14,14 @@
 #include <maya/MColor.h>
 #include <maya/MDataBlock.h>
 #include <maya/MDataHandle.h>
+#include <maya/MDGModifier.h>
 #include <maya/MDistance.h>
 #include <maya/MDagPath.h>
 #include <maya/MEulerRotation.h>
 #include <maya/MFn.h>
 #include <maya/MIntArray.h>
 #include <maya/MMatrix.h>
+#include <maya/MNodeClass.h>
 #include <maya/MObjectHandle.h>
 #include <maya/MPoint.h>
 #include <maya/MPlug.h>
@@ -60,6 +62,7 @@ PYBIND11_MODULE(cmdc, m) {
 
     #include "Math.inl"
     #include "MDagPath.inl"
+    #include "MDGModifier.inl"
     #include "MFn.inl"
     #include "MFnDependencyNode.inl"
     #include "MObject.inl"
