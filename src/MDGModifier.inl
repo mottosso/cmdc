@@ -38,15 +38,47 @@ R"pbdoc(Adds an operation to the modifier that connects two plugs in the depende
 It is the user's responsibility to ensure that the source and destination attributes are of compatible types. 
 For instance, if the source attribute is a nurbs surface then the destination must also be a nurbs surface.)pbdoc")
 
-    .def("createNode", [](MDGModifier & self, MString type) -> MObject {
-        throw std::logic_error{"Function not yet implemented."};
+    .def("createNode", [](MDGModifier & self, std::string type) -> MObject {
+        MString type_name(type.c_str());
+
+        MStatus status;
+        MObject result = self.createNode(type_name, &status);
+
+        if (result.isNull())
+        {
+            MString error_msg("Cannot create unknown node type '^1s'.");
+                    error_msg.format(error_msg, type_name);
+            throw pybind11::type_error(error_msg.asChar());
+        } else if (result.hasFn(MFn::kDagNode)) { 
+            MString error_msg("Cannot create DAG node '^1s' - use DAGModifier instead.");
+                    error_msg.format(error_msg, type_name);
+            throw pybind11::type_error(error_msg.asChar());
+        }
+
+        return result;
     }, 
 R"pbdoc(Adds an operation to the modifier to create a node of the given type.
 The new node is created and returned but will not be added to the dependency graph until the modifier's doIt() method is called. 
 Raises TypeError if the named node type does not exist or if it is a DAG node type.)pbdoc")
 
     .def("createNode", [](MDGModifier & self, MTypeId typeId) -> MObject {
-        throw std::logic_error{"Function not yet implemented."};
+        MString type_id_str = MString() + typeId.id();
+
+        MStatus status;
+        MObject result = self.createNode(typeId, &status);
+
+        if (result.isNull())
+        {
+            MString error_msg("Cannot create unknown node with type ID '^1s'.");
+                    error_msg.format(error_msg, type_id_str);
+            throw pybind11::type_error(error_msg.asChar());
+        } else if (result.hasFn(MFn::kDagNode)) { 
+            MString error_msg("Cannot create DAG node with type ID '^1s' - use DAGModifier instead.");
+                    error_msg.format(error_msg, type_id_str);
+            throw pybind11::type_error(error_msg.asChar());
+        }
+
+        return result;
     }, 
 R"pbdoc(Adds an operation to the modifier to create a node of the given type. 
 The new node is created and returned but will not be added to the dependency graph until the modifier's doIt() method is called. 
@@ -73,7 +105,12 @@ doIt() should be called immediately after to ensure that the queue is emptied be
     }, R"pbdoc(Adds an operation to the modifier that breaks a connection between two plugs in the dependency graph.)pbdoc")
 
     .def("doIt", [](MDGModifier & self) {
-        throw std::logic_error{"Function not yet implemented."};
+        MStatus status = self.doIt();
+
+        if (!status)
+        {
+            throw std::exception(status.errorString().asChar());
+        }
     }, 
 R"pbdoc(Executes the modifier's operations. 
     
