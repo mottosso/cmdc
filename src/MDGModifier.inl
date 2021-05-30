@@ -109,7 +109,7 @@ doIt() should be called immediately after to ensure that the queue is emptied be
 
         if (!status)
         {
-            throw std::exception(status.errorString().asChar());
+            throw std::runtime_error(status.errorString().asChar());
         }
     }, 
 R"pbdoc(Executes the modifier's operations. 
