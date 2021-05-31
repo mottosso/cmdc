@@ -171,11 +171,59 @@ operation is added so that the queue is emptied. Then, deleteNode() can be calle
 doIt() should be called immediately after to ensure that the queue is emptied before any other operations are added to it.)pbdoc")
 
     .def("disconnect", [](MDGModifier & self, MObject sourceNode, MObject sourceAttr, MObject destNode, MObject destAttr) {
-        throw std::logic_error{"Function not yet implemented."};
+        if (sourceNode.isNull()) 
+        {
+            throw std::invalid_argument("Cannot disconnect - sourceNode is null.");
+        } else if (!sourceNode.hasFn(MFn::kDependencyNode)) {
+            MString error_msg("Cannot disconnect - sourceNode must be a 'node' object , not a '^1s' object.");
+                    error_msg.format(error_msg, sourceNode.apiTypeStr());
+            throw pybind11::type_error(error_msg.asChar());
+        }
+
+        if (sourceAttr.isNull())
+        {
+            throw std::invalid_argument("Cannot disconnect - sourceAttr is null.");
+        } else if (!sourceAttr.hasFn(MFn::kAttribute)) {
+            MString error_msg("Cannot add attribute - sourceAttr must be a 'kAttribute' object, not a(n) '^1s' object.");
+                    error_msg.format(error_msg, sourceAttr.apiTypeStr());
+            throw pybind11::type_error(error_msg.asChar());
+        } 
+
+        if (destNode.isNull()) 
+        {
+            throw std::invalid_argument("Cannot disconnect - destNode is null.");
+        } else if (!destNode.hasFn(MFn::kDependencyNode)) {
+            MString error_msg("Cannot disconnect - destNode must be a 'kDependencyNode' object , not a '^1s' object.");
+                    error_msg.format(error_msg, destNode.apiTypeStr());
+            throw pybind11::type_error(error_msg.asChar());
+        } 
+
+        if (destAttr.isNull())
+        {
+            throw std::invalid_argument("Cannot disconnect - destAttr is null.");
+        } else if (!destAttr.hasFn(MFn::kAttribute)) {
+            MString error_msg("Cannot add attribute - destAttr must be a 'kAttribute' object, not a(n) '^1s' object.");
+                    error_msg.format(error_msg, destAttr.apiTypeStr());
+            throw pybind11::type_error(error_msg.asChar());
+        }    
+        
+        MStatus status = self.disconnect(sourceNode, sourceAttr, destNode, destAttr);
+        CHECK_STATUS(status)
     }, R"pbdoc(Adds an operation to the modifier that breaks a connection between two plugs in the dependency graph.)pbdoc")
 
     .def("disconnect", [](MDGModifier & self, MPlug source, MPlug dest) {
-        throw std::logic_error{"Function not yet implemented."};
+        if (source.isNull()) 
+        {
+            throw std::invalid_argument("Cannot disconnect - source is null.");
+        } 
+
+        if (dest.isNull()) 
+        {
+            throw std::invalid_argument("Cannot disconnect - dest is null.");
+        }   
+
+        MStatus status = self.disconnect(source, dest);
+        CHECK_STATUS(status)    
     }, R"pbdoc(Adds an operation to the modifier that breaks a connection between two plugs in the dependency graph.)pbdoc")
 
     .def("doIt", [](MDGModifier & self) {
