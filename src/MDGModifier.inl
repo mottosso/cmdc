@@ -2,7 +2,27 @@ py::class_<MDGModifier>(m, "DGModifier")
     .def(py::init<>())
 
     .def("addAttribute", [](MDGModifier & self, MObject node, MObject attribute) {
-        throw std::logic_error{"Function not yet implemented."};
+        if (node.isNull()) 
+        {
+            throw std::invalid_argument("Cannot add attribute to a null object.");
+        } else if (!node.hasFn(MFn::kDependencyNode)) {
+            MString error_msg("Cannot add attribute - must specify a 'node' object, not a '^1s' object.");
+                    error_msg.format(error_msg, node.apiTypeStr());
+            throw pybind11::type_error(error_msg.asChar());
+        } 
+
+        if (attribute.isNull())
+        {
+            throw std::invalid_argument("Cannot add null attribute to an object.");
+        } else if (!node.hasFn(MFn::kAttribute)) {
+            MString error_msg("Cannot add attribute - must specify an 'attribute' object, not a(n) '^1s' object.");
+                    error_msg.format(error_msg, attribute.apiTypeStr());
+            throw pybind11::type_error(error_msg.asChar());
+        }
+
+        MStatus status = self.addAttribute(node, attribute);
+
+        CHECK_STATUS(status)
     }, 
 R"pbdoc(Adds an operation to the modifier to add a new dynamic attribute to the given dependency node. 
 If the attribute is a compound its children will ae added as well, so only the parent needs to be added using this method.)pbdoc")

@@ -1,18 +1,42 @@
 import cmdc
 import nose
 
+from nose.plugins.skip import SkipTest
+
 from maya import cmds
 from maya.api import OpenMaya
 
-from . import new_scene
+from . import as_obj, as_plug, new_scene
 
 
-def _node_type_id():
-    node = cmds.createNode('network')
-    node = OpenMaya.MSelectionList().add(node).getDependNode(0)
-    type_id = OpenMaya.MFnDependencyNode(node).typeId.id()
+def test_addAttribute_pass(): 
+    raise SkipTest("Cannot test DGModifier.addAttribute until MFnAttribute classes are implemented.")
 
-    return cmdc.TypeId(type_id)
+
+def test_addAttribute_fail():
+    node = as_obj(cmds.createNode('network'))
+    null = cmdc.Object()
+
+    attr = as_plug('persp.message').attribute()
+
+    for exc, doc, node, attr in (
+        [ValueError, 'a null object', null, null],
+        [ValueError, 'a null attribute', node, null],
+        [TypeError, 'a non-node object', attr, null],
+        [TypeError, 'a non-attribute object', node, node],
+    ):
+        test_addAttribute_fail.__doc__ = """Test MDGModifier::addAttribute errors if passed {}.""".format(doc)
+
+        yield _addAttribute_fail, exc, node, attr 
+
+
+def _addAttribute_fail(exception, node, attr):    
+    nose.tools.assert_raises(
+        exception,
+        cmdc.DGModifier().addAttribute,
+        node, attr
+    )
+
 
 @nose.with_setup(teardown=new_scene)
 def test_createNode_pass():
