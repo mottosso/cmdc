@@ -324,8 +324,28 @@ It is best to use multiple calls rather than batching multiple commands into a s
 They will still be undone together, as a single undo action by the user, 
 but Maya will better be able to recover if one of the commands fails.)pbdoc")
 
-    .def("removeAttribute", [](MDGModifier & self, MObject node, MObject attribute) {
-        throw std::logic_error{"Function not yet implemented."};
+    .def("removeAttribute", [](MDGModifier & self, MObject node, MObject attribute) {        
+        if (node.isNull()) 
+        {
+            throw std::invalid_argument("Cannot remove an attribute from a null node.");
+        } else if (!node.hasFn(MFn::kDependencyNode)) {
+            MString error_msg("Cannot remove attribute - node must be a 'node' object , not a '^1s' object.");
+                    error_msg.format(error_msg, node.apiTypeStr());
+            throw pybind11::type_error(error_msg.asChar());
+        }
+
+        if (attribute.isNull())
+        {
+            throw std::invalid_argument("Cannot remove a null attribute.");
+        } else if (!attribute.hasFn(MFn::kAttribute)) {
+            MString error_msg("Cannot remove attribute - 'attribute' must be a 'kAttribute' object, not a(n) '^1s' object.");
+                    error_msg.format(error_msg, attribute.apiTypeStr());
+            throw pybind11::type_error(error_msg.asChar());
+        } 
+
+        MStatus status = self.removeAttribute(node, attribute);
+
+        CHECK_STATUS(status)
     }, 
 R"pbdoc(Adds an operation to the modifier to remove a dynamic attribute from the given dependency node. 
 If the attribute is a compound its children will be removed as well, so only the parent needs to be removed using this method.  

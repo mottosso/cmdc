@@ -6,7 +6,7 @@ from nose.plugins.skip import SkipTest
 from maya import cmds
 from maya.api import OpenMaya
 
-from . import as_dag_path, as_obj, as_plug, new_scene
+from . import as_obj, as_plug, new_scene
 
 
 @nose.with_setup(teardown=new_scene)
@@ -266,7 +266,7 @@ def test_disconnect_fail():
         [ValueError, 'a null source plug', (nop_plug, dst_plug)],
         [ValueError, 'a null destination plug', (src_plug, nop_plug)],
     ):
-        test_disconnect_fail.__doc__ = """Test MDGModifier::disconnect raises exception if called with {}.""".format(doc)
+        test_disconnect_fail.__doc__ = """Test MDGModifier::disconnect raises error if called with {}.""".format(doc)
 
         yield _disconnect_fail, exc, args
 
@@ -275,4 +275,51 @@ def _disconnect_fail(exception, args):
         exception,
         cmdc.DGModifier().disconnect,
         *args
+    )
+
+
+@nose.with_setup(teardown=new_scene)
+def test_removeAttribute_pass():
+    """Test MDGModifier::removeAttribute if called with a valid attribute."""
+
+    node = cmds.createNode('network')
+    attr = node + '.test'
+
+    cmds.addAttr(node, ln='test')
+
+    plug = as_plug(attr)
+
+    mod = cmdc.DGModifier()
+    mod.removeAttribute(plug.node(), plug.attribute())
+
+    mod.doIt()
+    assert not cmds.objExists(attr), 'DGModifier.removeAttribute doIt failed'
+    
+    mod.undoIt()
+    assert cmds.objExists(attr), 'DGModifier.removeAttribute undoIt failed'
+
+
+def test_removeAttribute_fail():
+    node = cmds.createNode('network')
+    cmds.addAttr(node, ln='test')
+
+    plug = as_plug(node + '.test')
+    null = cmdc.Object()
+
+    for exc, doc, (node, attr) in (
+        [ValueError, "a null node", (null, null)],
+        [ValueError, "a null attribute", (plug.node(), null)],
+        [TypeError, "a non-node object", (plug.attribute(), null)],
+        [TypeError, "a non-attribute object", (plug.node(), plug.node())],
+    ):
+        test_removeAttribute_fail.__doc__ = """Test MDGModifier::removeAttribute raises an error if with {}.""".format(doc)
+
+        yield _removeAttribute_fail, exc, node, attr
+
+
+def _removeAttribute_fail(exception, node, attr):    
+    nose.tools.assert_raises(
+        exception,
+        cmdc.DGModifier().removeAttribute,
+        node, attr
     )
