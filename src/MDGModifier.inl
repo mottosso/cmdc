@@ -6,7 +6,7 @@ py::class_<MDGModifier>(m, "DGModifier")
         {
             throw std::invalid_argument("Cannot add attribute to a null object.");
         } else if (!node.hasFn(MFn::kDependencyNode)) {
-            MString error_msg("Cannot add attribute - must specify a 'node' object, not a '^1s' object.");
+            MString error_msg("Cannot add attribute - 'node' must be a 'kDependencyNode' object, not a '^1s' object.");
                     error_msg.format(error_msg, node.apiTypeStr());
             throw pybind11::type_error(error_msg.asChar());
         } 
@@ -15,7 +15,7 @@ py::class_<MDGModifier>(m, "DGModifier")
         {
             throw std::invalid_argument("Cannot add null attribute to an object.");
         } else if (!node.hasFn(MFn::kAttribute)) {
-            MString error_msg("Cannot add attribute - must specify an 'attribute' object, not a(n) '^1s' object.");
+            MString error_msg("Cannot add attribute - 'attribute' must be a 'kAttribute' object, not a(n) '^1s' object.");
                     error_msg.format(error_msg, attribute.apiTypeStr());
             throw pybind11::type_error(error_msg.asChar());
         }
@@ -45,14 +45,68 @@ They will still be undone together, as a single undo action by the user,
 but Maya will better be able to recover if one of the commands fails.)pbdoc")
 
     .def("connect", [](MDGModifier & self, MObject sourceNode, MObject sourceAttr, MObject destNode, MObject destAttr) {
-        throw std::logic_error{"Function not yet implemented."};
-    }, 
+        if (sourceNode.isNull()) 
+        {
+            throw std::invalid_argument("Cannot connect - sourceNode is null.");
+        } else if (!sourceNode.hasFn(MFn::kDependencyNode)) {
+            MString error_msg("Cannot connect - sourceNode must be a 'node' object , not a '^1s' object.");
+                    error_msg.format(error_msg, sourceNode.apiTypeStr());
+            throw pybind11::type_error(error_msg.asChar());
+        }
+
+        if (sourceAttr.isNull())
+        {
+            throw std::invalid_argument("Cannot connect - sourceAttr is null.");
+        } else if (!sourceAttr.hasFn(MFn::kAttribute)) {
+            MString error_msg("Cannot add attribute - sourceAttr must be a 'kAttribute' object, not a(n) '^1s' object.");
+                    error_msg.format(error_msg, sourceAttr.apiTypeStr());
+            throw pybind11::type_error(error_msg.asChar());
+        } 
+
+        if (destNode.isNull()) 
+        {
+            throw std::invalid_argument("Cannot connect - destNode is null.");
+        } else if (!destNode.hasFn(MFn::kDependencyNode)) {
+            MString error_msg("Cannot connect - destNode must be a 'kDependencyNode' object , not a '^1s' object.");
+                    error_msg.format(error_msg, destNode.apiTypeStr());
+            throw pybind11::type_error(error_msg.asChar());
+        } 
+
+        if (destAttr.isNull())
+        {
+            throw std::invalid_argument("Cannot connect - destAttr is null.");
+        } else if (!destAttr.hasFn(MFn::kAttribute)) {
+            MString error_msg("Cannot add attribute - destAttr must be a 'kAttribute' object, not a(n) '^1s' object.");
+                    error_msg.format(error_msg, destAttr.apiTypeStr());
+            throw pybind11::type_error(error_msg.asChar());
+        }    
+        
+        // TODO: Once the MFnAttribute classes are implemented, 
+        // add additional validation to ensure that the attributes can be connected  
+        MStatus status = self.connect(sourceNode, sourceAttr, destNode, destAttr);
+
+        CHECK_STATUS(status)
+        }, 
 R"pbdoc(Adds an operation to the modifier that connects two plugs in the dependency graph. 
 It is the user's responsibility to ensure that the source and destination attributes are of compatible types. 
 For instance, if the source attribute is a nurbs surface then the destination must also be a nurbs surface.)pbdoc")
 
     .def("connect", [](MDGModifier & self, MPlug source, MPlug dest) {
-        throw std::logic_error{"Function not yet implemented."};
+        if (source.isNull()) 
+        {
+            throw std::invalid_argument("Cannot connect - source is null.");
+        } 
+
+        if (dest.isNull()) 
+        {
+            throw std::invalid_argument("Cannot connect - dest is null.");
+        }   
+
+        // TODO: Once the MFnAttribute classes are implemented, 
+        // add additional validation to ensure that the attributes can be connected
+        MStatus status = self.connect(source, dest);
+
+        CHECK_STATUS(status)
     }, 
 R"pbdoc(Adds an operation to the modifier that connects two plugs in the dependency graph. 
 It is the user's responsibility to ensure that the source and destination attributes are of compatible types. 
@@ -252,7 +306,12 @@ There should be no function sets attached to the attribute at the time of the ca
     }, R"pbdoc(Adds an operation to the modifier to set the lockState of a node.)pbdoc")
 
     .def("undoIt", [](MDGModifier & self) {
-        throw std::logic_error{"Function not yet implemented."};
+        MStatus status = self.undoIt();
+
+        if (!status)
+        {
+            throw std::runtime_error(status.errorString().asChar());
+        }
     }, R"pbdoc(Undoes all of the operations that have been given to this modifier. It is only valid to call this method after the doIt() method has been called.)pbdoc")
 
     .def("unlinkExtensionAttributeFromPlugin", [](MDGModifier & self, MObject mPlugin, MObject mAttribute) {
