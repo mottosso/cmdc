@@ -6,7 +6,7 @@ from nose.plugins.skip import SkipTest
 from maya import cmds
 from maya.api import OpenMaya
 
-from . import as_obj, as_plug, new_scene
+from . import as_dag_path, as_obj, as_plug, new_scene
 
 
 @nose.with_setup(teardown=new_scene)
@@ -153,6 +153,49 @@ def _createNode_pass(arg):
 
     assert not node.isNull(), "Created node is not valid."
     assert len(add_nodes) == 1, "`ls` did not return new node."
+
+
+
+def test_deleteNode_pass():
+    """Test MDGModifier::createNode if called with a valid node."""
+
+    node = cmds.createNode('network')
+    obj = as_obj(node)
+    
+    mod = cmdc.DGModifier()
+    mod.deleteNode(obj)
+
+    mod.doIt()
+    assert not cmds.objExists(node), 'DGModifier.deleteNode doIt failed'
+
+    mod.undoIt()
+    assert cmds.objExists(node), 'DGModifier.deleteNode undoIt failed'
+
+
+def test_deleteNode_fail():
+    for exc, name, value in (
+        [ValueError, 'null object', cmdc.Object()],
+        [TypeError, 'non-node object', as_plug('persp.message').attribute()],
+        [TypeError, 'DAG object', as_obj(cmds.createNode('transform'))],
+    ):
+        test_deleteNode_fail.__doc__ = """Test MDGModifier::deleteNode raises error if called with a(n) {}.""".format(name)
+
+        yield _deleteNode_fail, exc, value
+
+
+@nose.with_setup(teardown=new_scene)
+def _deleteNode_fail(exception, arg):
+    old_nodes = cmds.ls(long=True)
+
+    nose.tools.assert_raises(
+        exception, 
+        cmdc.DGModifier().deleteNode, 
+        arg
+    )
+
+    new_nodes = cmds.ls(long=True)
+
+    assert len(old_nodes) == len(new_nodes), "DGModifier.deleteNode modified the scene graph."
 
 
 

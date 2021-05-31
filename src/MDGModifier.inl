@@ -159,7 +159,22 @@ The new node is created and returned but will not be added to the dependency gra
 Raises TypeError if the named node type does not exist or if it is a DAG node type.)pbdoc")
 
     .def("deleteNode", [](MDGModifier & self, MObject node) {
-        throw std::logic_error{"Function not yet implemented."};
+        if (node.isNull()) 
+        {
+            throw std::invalid_argument("Cannot delete a null object.");
+        } else if (!node.hasFn(MFn::kDependencyNode)) {
+            MString error_msg("Cannot delete a(n) '^1s' object.");
+                    error_msg.format(error_msg, node.apiTypeStr());
+            throw pybind11::type_error(error_msg.asChar());
+        } else if (node.hasFn(MFn::kDagNode)) {
+            MString error_msg("Cannot delete a(n) DAG object - use DAGModifier instead.");
+                    error_msg.format(error_msg, node.apiTypeStr());
+            throw pybind11::type_error(error_msg.asChar());
+        }
+    
+        MStatus status = self.deleteNode(node);
+
+        CHECK_STATUS(status)
     }, 
 R"pbdoc(Adds an operation to the modifier which deletes the specified node from the dependency graph. 
 
