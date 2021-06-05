@@ -18,6 +18,13 @@ def teardown():
     maya.standalone.uninitialize()
 
 
+def assert_equals(expected, actual, error_message):
+    if isinstance(expected, float):
+        assert abs(expected - actual) <= 1e-5, error_message
+    else:
+        assert expected == actual, error_message
+
+
 def as_obj(arg):
     """Return the Maya Object for the given node."""
 

@@ -6,7 +6,7 @@ from nose.plugins.skip import SkipTest
 from maya import cmds
 from maya.api import OpenMaya
 
-from . import as_obj, as_plug, new_scene
+from . import assert_equals, as_obj, as_plug, new_scene
 
 
 @nose.with_setup(teardown=new_scene)
@@ -275,6 +275,63 @@ def _disconnect_fail(exception, args):
         exception,
         cmdc.DGModifier().disconnect,
         *args
+    )
+
+
+def test_newPlugValue():
+    """Test MDGModifier::newPlugValue*."""
+
+    identity = lambda x: x 
+
+    for value, method_name, add_attr_kwargs in (
+        [True, 'newPlugValueBool', {'at': 'bool'}],
+        [ord('A'), 'newPlugValueChar', {'at': 'char'}],
+        [42.0, 'newPlugValueDouble', {'at': 'double'}],
+        [42.0, 'newPlugValueFloat', {'at': 'float'}],
+        [42, 'newPlugValueInt', {'at': 'long'}],
+        # TODO: Enable when bindings are available
+        # [None, 'newPlugValueMAngle', {'at': 'doubleAngle'}, {}],
+        # [None, 'newPlugValueMDistance', {'at': 'doubleLinear'}, {}],
+        # [None, 'newPlugValueMTime', {'at': 'time'}, {}],
+        [2, 'newPlugValueShort', {'at': 'enum', 'enumName': 'a:b:c:d'}],
+        ["Hello, World!", 'newPlugValueString', {'dt': 'string'}],
+    ):
+        test_newPlugValue.__doc__ = """Test MDGModifier::{}.""".format(method_name)
+
+        yield _newPlugValue, value, method_name, add_attr_kwargs
+
+
+def _newPlugValue(new_value, method_name, add_attr_kwargs):
+    node = cmds.createNode('network')
+    cmds.addAttr(node, longName='test', **add_attr_kwargs)
+    attr = node + '.test'
+    
+    old_value = new_value.__class__(cmds.getAttr(attr))
+
+    plug = as_plug(attr)
+
+    mod = cmdc.DGModifier()
+    mod_fn = getattr(mod, method_name)
+    mod_fn(plug, new_value)
+    mod.doIt()
+
+    # My kingdom for fStrings
+    doit_value = new_value.__class__(cmds.getAttr(attr))
+    assert_equals(
+        new_value, doit_value, 
+        'DGModifier.{} doIt failed to set the value - expected: {}, actual: {}'.format(
+            method_name, new_value, doit_value
+        )
+    )
+
+    mod.undoIt()
+
+    undo_value = new_value.__class__(cmds.getAttr(attr))
+    assert_equals(
+        old_value, undo_value, 
+        'DGModifier.{} undo failed to set the value - expected: {}, actual: {}'.format(
+            method_name, old_value, undo_value
+        )
     )
 
 

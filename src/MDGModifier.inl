@@ -267,48 +267,92 @@ Thus it's not possible to link a child attribute to a plugin by itself.
 
 Note that the link is established immediately and is not affected by the modifier's doIt() or undoIt() methods.)pbdoc")
 
-    .def("newPlugValue", [](MDGModifier & self, MPlug plug) -> MObject {
-        throw std::logic_error{"Function not yet implemented."};
+    .def("newPlugValue", [](MDGModifier & self, MPlug plug, MObject value) {
+        plug::assert_not_null(plug);
+
+        MStatus status = self.newPlugValue(plug, value);
+
+        CHECK_STATUS(status);
     }, R"pbdoc(Adds an operation to the modifier to set the value of a plug, where value is an MObject data wrapper, such as created by the various MFn*Data classes.)pbdoc")
 
-    .def("newPlugValueBool", [](MDGModifier & self, MPlug plug, bool plugValue) {
-        throw std::logic_error{"Function not yet implemented."};
+    .def("newPlugValueBool", [](MDGModifier & self, MPlug plug, bool value) {
+        plug::assert_not_null(plug);
+
+        MStatus status = self.newPlugValueBool(plug, value);
+
+        CHECK_STATUS(status);
     }, R"pbdoc(Adds an operation to the modifier to set a value onto a bool plug.)pbdoc")
 
-    .def("newPlugValueChar", [](MDGModifier & self, MPlug plug, char plugValue) {
-        throw std::logic_error{"Function not yet implemented."};
+    .def("newPlugValueChar", [](MDGModifier & self, MPlug plug, int value) {
+        plug::assert_not_null(plug);
+
+        MStatus status = self.newPlugValueChar(plug, value);
+
+        CHECK_STATUS(status);
     }, R"pbdoc(Adds an operation to the modifier to set a value onto a char (single byte signed integer) plug.)pbdoc")
 
-    .def("newPlugValueDouble", [](MDGModifier & self, MPlug plug, double plugValue) {
-        throw std::logic_error{"Function not yet implemented."};
+    .def("newPlugValueDouble", [](MDGModifier & self, MPlug plug, double value) {
+        plug::assert_not_null(plug);
+
+        MStatus status = self.newPlugValueDouble(plug, value);
+
+        CHECK_STATUS(status);
     }, R"pbdoc(Adds an operation to the modifier to set a value onto a double-precision float plug.)pbdoc")
 
-    .def("newPlugValueFloat", [](MDGModifier & self, MPlug plug, float plugValue) {
-        throw std::logic_error{"Function not yet implemented."};
+    .def("newPlugValueFloat", [](MDGModifier & self, MPlug plug, float value) {
+        plug::assert_not_null(plug);
+
+        MStatus status = self.newPlugValueFloat(plug, value);
+
+        CHECK_STATUS(status);
     }, R"pbdoc(Adds an operation to the modifier to set a value onto a single-precision float plug.)pbdoc")
 
-    .def("newPlugValueInt", [](MDGModifier & self, MPlug plug, int plugValue) {
-        throw std::logic_error{"Function not yet implemented."};
+    .def("newPlugValueInt", [](MDGModifier & self, MPlug plug, int value) {
+        plug::assert_not_null(plug);
+
+        MStatus status = self.newPlugValueInt(plug, value);
+
+        CHECK_STATUS(status);
     }, R"pbdoc(Adds an operation to the modifier to set a value onto an int plug.)pbdoc")
 
-    .def("newPlugValueMAngle", [](MDGModifier & self, MPlug plug, MAngle plugValue) {
-        throw std::logic_error{"Function not yet implemented."};
+    .def("newPlugValueMAngle", [](MDGModifier & self, MPlug plug, MAngle value) {
+        plug::assert_not_null(plug);
+
+        MStatus status = self.newPlugValueMAngle(plug, value);
+
+        CHECK_STATUS(status);
     }, R"pbdoc(Adds an operation to the modifier to set a value onto an angle plug.)pbdoc")
 
-    .def("newPlugValueMDistance", [](MDGModifier & self, MPlug plug, MDistance plugValue) {
-        throw std::logic_error{"Function not yet implemented."};
+    .def("newPlugValueMDistance", [](MDGModifier & self, MPlug plug, MDistance value) {
+        plug::assert_not_null(plug);
+
+        MStatus status = self.newPlugValueMDistance(plug, value);
+
+        CHECK_STATUS(status);
     }, R"pbdoc(Adds an operation to the modifier to set a value onto a distance plug.)pbdoc")
 
-    .def("newPlugValueMTime", [](MDGModifier & self, MPlug plug, MTime plugValue) {
-        throw std::logic_error{"Function not yet implemented."};
+    .def("newPlugValueMTime", [](MDGModifier & self, MPlug plug, MTime value) {
+        plug::assert_not_null(plug);
+
+        MStatus status = self.newPlugValueMTime(plug, value);
+
+        CHECK_STATUS(status);
     }, R"pbdoc(Adds an operation to the modifier to set a value onto a time plug.)pbdoc")
 
-    .def("newPlugValueShort", [](MDGModifier & self, MPlug plug, short plugValue) {
-        throw std::logic_error{"Function not yet implemented."};
+    .def("newPlugValueShort", [](MDGModifier & self, MPlug plug, short value) {
+        plug::assert_not_null(plug);
+
+        MStatus status = self.newPlugValueShort(plug, value);
+
+        CHECK_STATUS(status);
     }, R"pbdoc(Adds an operation to the modifier to set a value onto a short integer plug.)pbdoc")
 
-    .def("newPlugValueString", [](MDGModifier & self, MPlug plug, MString plugValue) {
-        throw std::logic_error{"Function not yet implemented."};
+    .def("newPlugValueString", [](MDGModifier & self, MPlug plug, std::string value) {
+        plug::assert_not_null(plug);
+
+        MStatus status = self.newPlugValueString(plug, MString(value.c_str()));
+
+        CHECK_STATUS(status);
     }, R"pbdoc(Adds an operation to the modifier to set a value onto a string plug.)pbdoc")
 
     .def("pythonCommandToExecute", [](MDGModifier & self, MString command) {
