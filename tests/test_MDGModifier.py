@@ -380,3 +380,26 @@ def _removeAttribute_fail(exception, node, attr):
         cmdc.DGModifier().removeAttribute,
         node, attr
     )
+
+
+def test_setNodeLockState():
+    """Test MDGModifier::setNodeLockState."""
+    
+    node = cmds.createNode('network')
+    node_obj = as_obj(node)
+    null_obj = cmdc.Object()
+    
+    mod = cmdc.DGModifier()
+    mod.setNodeLockState(node_obj, True)
+    
+    mod.doIt()
+    assert cmds.lockNode(node, query=True, lock=True)[0], 'DGModifier.setNodeLockState doIt failed'
+    
+    mod.undoIt()
+    assert not cmds.lockNode(node, query=True, lock=True)[0], 'DGModifier.setNodeLockState undo failed'
+
+    nose.tools.assert_raises(
+        TypeError,
+        cmdc.DGModifier().setNodeLockState,
+        null_obj
+    )

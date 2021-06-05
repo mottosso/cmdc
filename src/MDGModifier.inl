@@ -471,7 +471,18 @@ There should be no function sets attached to the attribute at the time of the ca
     }, R"pbdoc(Adds an operation to the modifer to rename a node.)pbdoc")
 
     .def("setNodeLockState", [](MDGModifier & self, MObject node, bool newState) {
-        throw std::logic_error{"Function not yet implemented."};
+        if (node.isNull()) 
+        {
+            throw std::invalid_argument("Cannot un/lock a null node.");
+        } else if (!node.hasFn(MFn::kDependencyNode)) {
+            MString error_msg("Cannot un/lock object - 'node' must be a 'kDependencyNode' object , not a '^1s' object.");
+                    error_msg.format(error_msg, node.apiTypeStr());
+            throw pybind11::type_error(error_msg.asChar());
+        }
+
+        MStatus status = self.setNodeLockState(node, newState);
+
+        CHECK_STATUS(status)
     }, R"pbdoc(Adds an operation to the modifier to set the lockState of a node.)pbdoc")
 
     .def("undoIt", [](MDGModifier & self) {
