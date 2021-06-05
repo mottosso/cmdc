@@ -256,8 +256,29 @@ then only the operations which were added since the previous doIt() call will be
 
 If undoIt() has been called then the next call to doIt() will do all operations.)pbdoc")
 
-    .def("linkExtensionAttributeToPlugin", [](MDGModifier & self, MObject plugin, MObject attribute) {
-        throw std::logic_error{"Function not yet implemented."};
+    .def("linkExtensionAttributeToPlugin", [](MDGModifier & self, MObject plugin, MObject attribute) {        
+        if (plugin.isNull())
+        {
+            throw std::invalid_argument("Cannot link extension attribute from a null plugin.");
+        } else if (!plugin.hasFn(MFn::kPlugin))
+        {
+            MString error_msg("Cannot link extension attribute from plugin - must specify a 'kPlugin' object, not a '^1s' object.");
+                    error_msg.format(error_msg, plugin.apiTypeStr());
+            throw pybind11::type_error(error_msg.asChar());
+        }
+
+        if (attribute.isNull())
+        {
+            throw std::invalid_argument("Cannot link null extension attribute from a plugin.");
+        } else if (!attribute.hasFn(MFn::kAttribute)) {
+            MString error_msg("Cannot link extension attribute - 'attribute' must be a 'kAttribute' object, not a(n) '^1s' object.");
+                    error_msg.format(error_msg, attribute.apiTypeStr());
+            throw pybind11::type_error(error_msg.asChar());
+        }
+
+        MStatus status = self.linkExtensionAttributeToPlugin(plugin, attribute);
+
+        CHECK_STATUS(status)
     }, 
 R"pbdoc(The plugin can call this method to indicate that the extension attribute defines part of the plugin, regardless of the node type to which it attaches itself. 
 
@@ -398,7 +419,18 @@ The attribute MObject passed in will be set to kNullObj.
 There should be no function sets attached to the attribute at the time of the call as their behaviour may become unpredictable.)pbdoc")
 
     .def("removeExtensionAttribute", [](MDGModifier & self, MNodeClass nodeClass, MObject attribute) {
-        throw std::logic_error{"Function not yet implemented."};
+        if (attribute.isNull())
+        {
+            throw std::invalid_argument("Cannot remove null extension attribute.");
+        } else if (!attribute.hasFn(MFn::kAttribute)) {
+            MString error_msg("Cannot remove extension attribute - 'attribute' must be a 'kAttribute' object, not a(n) '^1s' object.");
+                    error_msg.format(error_msg, attribute.apiTypeStr());
+            throw pybind11::type_error(error_msg.asChar());
+        }
+
+        MStatus status = self.removeExtensionAttribute(nodeClass, attribute);
+
+        CHECK_STATUS(status)
     }, 
 R"pbdoc(Adds an operation to the modifier to remove an extension attribute from the given node class. 
 If the attribute is a compound its children will be removed as well, so only the parent needs to be removed using this method. 
@@ -407,8 +439,18 @@ The attribute MObject passed in will be set to kNullObj.
 There should be no function sets attached to the attribute at the time of the call as their behaviour may become unpredictable.)pbdoc")
 
     .def("removeExtensionAttributeIfUnset", [](MDGModifier & self, MNodeClass nodeClass, MObject attribute) {
-        throw std::logic_error{"Function not yet implemented."};
-    }, 
+        if (attribute.isNull())
+        {
+            throw std::invalid_argument("Cannot remove null extension attribute (if unset).");
+        } else if (!attribute.hasFn(MFn::kAttribute)) {
+            MString error_msg("Cannot remove extension attribute (if unset) - 'attribute' must be a 'kAttribute' object, not a(n) '^1s' object.");
+                    error_msg.format(error_msg, attribute.apiTypeStr());
+            throw pybind11::type_error(error_msg.asChar());
+        }
+
+        MStatus status = self.removeExtensionAttribute(nodeClass, attribute);
+
+        CHECK_STATUS(status)    }, 
 R"pbdoc(Adds an operation to the modifier to remove an extension attribute from the given node class,
 but only if there are no nodes in the graph with non-default values for this attribute. 
 If the attribute is a compound its children will be removed as well, so only the parent needs to be removed using this method. 
@@ -441,8 +483,29 @@ There should be no function sets attached to the attribute at the time of the ca
         }
     }, R"pbdoc(Undoes all of the operations that have been given to this modifier. It is only valid to call this method after the doIt() method has been called.)pbdoc")
 
-    .def("unlinkExtensionAttributeFromPlugin", [](MDGModifier & self, MObject mPlugin, MObject mAttribute) {
-        throw std::logic_error{"Function not yet implemented."};
+    .def("unlinkExtensionAttributeFromPlugin", [](MDGModifier & self, MObject plugin, MObject attribute) {
+        if (plugin.isNull())
+        {
+            throw std::invalid_argument("Cannot unlink extension attribute from a null plugin.");
+        } else if (!plugin.hasFn(MFn::kPlugin))
+        {
+            MString error_msg("Cannot unlink extension attribute from plugin - must specify a 'kPlugin' object, not a '^1s' object.");
+                    error_msg.format(error_msg, plugin.apiTypeStr());
+            throw pybind11::type_error(error_msg.asChar());
+        }
+
+        if (attribute.isNull())
+        {
+            throw std::invalid_argument("Cannot unlink null extension attribute from a plugin.");
+        } else if (!attribute.hasFn(MFn::kAttribute)) {
+            MString error_msg("Cannot unlink extension attribute - 'attribute' must be a 'kAttribute' object, not a(n) '^1s' object.");
+                    error_msg.format(error_msg, attribute.apiTypeStr());
+            throw pybind11::type_error(error_msg.asChar());
+        }
+
+        MStatus status = self.unlinkExtensionAttributeFromPlugin(plugin, attribute);
+
+        CHECK_STATUS(status)
     }, 
 R"pbdoc(The plugin can call this method to indicate that it no longer requires an extension attribute for its operation. 
 This requirement is used when the plugin is checked to see if it is in use, or if is able to be unloaded, or if it is required as part of a stored file. 
