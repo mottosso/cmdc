@@ -41,6 +41,13 @@ def _addAttribute_fail(exception, node, attr):
 
 
 @nose.with_setup(teardown=new_scene)
+def test_addExtensionAttribute_pass(): 
+    """Test MDGModifier::addExtensionAttribute binding."""
+
+    raise SkipTest("Cannot test DGModifier.addExtensionAttribute until MFnAttribute classes are implemented.")
+
+
+@nose.with_setup(teardown=new_scene)
 def test_connect_pass(): 
     src_plug = as_plug(cmds.createNode('transform') + '.visibility')
     dst_plug = as_plug(cmds.createNode('transform') + '.visibility')
@@ -380,6 +387,13 @@ def _removeAttribute_fail(exception, node, attr):
         cmdc.DGModifier().removeAttribute,
         node, attr
     )
+
+
+@nose.with_setup(teardown=new_scene)
+def test_removeExtensionAttribute_pass(): 
+    """Test MDGModfifier::removeExtensionAttribute binding."""
+
+    raise SkipTest("Cannot test DGModifier.removeExtensionAttribute until MFnAttribute classes are implemented.")
 
 
 def test_setNodeLockState():

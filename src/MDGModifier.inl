@@ -28,8 +28,18 @@ R"pbdoc(Adds an operation to the modifier to add a new dynamic attribute to the 
 If the attribute is a compound its children will ae added as well, so only the parent needs to be added using this method.)pbdoc")
 
     .def("addExtensionAttribute", [](MDGModifier & self, MNodeClass nodeClass, MObject attribute) {
-        throw std::logic_error{"Function not yet implemented."};
-    }, 
+        if (attribute.isNull())
+        {
+            throw std::invalid_argument("Cannot add null extension attribute.");
+        } else if (!attribute.hasFn(MFn::kAttribute)) {
+            MString error_msg("Cannot add extension attribute - 'attribute' must be a 'kAttribute' object, not a(n) '^1s' object.");
+                    error_msg.format(error_msg, attribute.apiTypeStr());
+            throw pybind11::type_error(error_msg.asChar());
+        }
+
+        MStatus status = self.addExtensionAttribute(nodeClass, attribute);
+
+        CHECK_STATUS(status)    }, 
 R"pbdoc(Adds an operation to the modifier to add a new extension attribute to the given node class. 
 If the attribute is a compound its children will be added as well, so only the parent needs to be added using this method.)pbdoc")
 
