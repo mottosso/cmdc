@@ -476,8 +476,24 @@ There should be no function sets attached to the attribute at the time of the ca
         throw std::logic_error{"Function not yet implemented."};
     }, R"pbdoc(Adds an operation to the modifer that renames a dynamic attribute on the given dependency node.)pbdoc")
 
-    .def("renameNode", [](MDGModifier & self, MObject node, MString newName) {
-        throw std::logic_error{"Function not yet implemented."};
+    .def("renameNode", [](MDGModifier & self, MObject node, std::string newName) {
+        if (node.isNull()) 
+        {
+            throw std::invalid_argument("Cannot rename a null node.");
+        } else if (!node.hasFn(MFn::kDependencyNode)) {
+            MString error_msg("Cannot rename object - 'node' must be a 'kDependencyNode' object , not a '^1s' object.");
+                    error_msg.format(error_msg, node.apiTypeStr());
+            throw pybind11::type_error(error_msg.asChar());
+        }
+
+        if (newName.empty())
+        {
+            throw std::invalid_argument("Cannot rename a node to an empty string.");
+        }
+
+        MStatus status = self.renameNode(node, MString(newName.c_str()));
+
+        CHECK_STATUS(status)
     }, R"pbdoc(Adds an operation to the modifer to rename a node.)pbdoc")
 
     .def("setNodeLockState", [](MDGModifier & self, MObject node, bool newState) {

@@ -396,6 +396,45 @@ def test_removeExtensionAttribute_pass():
     raise SkipTest("Cannot test DGModifier.removeExtensionAttribute until MFnAttribute classes are implemented.")
 
 
+
+
+@nose.with_setup(teardown=new_scene)
+def test_renameNode(): 
+    """Test MDGModfifier::renameNode binding."""
+    
+    node = cmds.createNode('network')
+    node_obj = as_obj(node)
+    null_obj = cmdc.Object()
+
+    fn_node = cmdc.FnDependencyNode(node_obj)    
+    old_name, new_name = node, 'foobar123'
+
+    mod = cmdc.DGModifier()
+    mod.renameNode(node_obj, new_name)
+    
+    mod.doIt()
+    assert fn_node.name() == new_name, 'DGModifier.renameNode doIt failed'
+    
+    mod.undoIt()
+    assert fn_node.name() == old_name, 'DGModifier.renameNode undo failed'
+
+    mod.renameNode(node_obj, 'invalid name')
+    mod.doIt()
+    assert fn_node.name() == 'invalid_name', 'DGModifier.renameNode doIt failed with an invalid node name'
+
+    nose.tools.assert_raises(
+        ValueError,
+        cmdc.DGModifier().renameNode,
+        node_obj, ''
+    )
+
+    nose.tools.assert_raises(
+        ValueError,
+        cmdc.DGModifier().renameNode,
+        null_obj, 'foobar'
+    )
+
+
 def test_setNodeLockState():
     """Test MDGModifier::setNodeLockState."""
     
