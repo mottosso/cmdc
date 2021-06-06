@@ -1,6 +1,62 @@
-### Bullet Points
+The goal of cmdc is to not to be a drop-in replacement of Maya Python API 2.0, but a better version of it.
 
-- No returning of MStatus, instead throw an exception
+In practice, it means you will be able to drop-in replace it, but will likely require tweaks to your code in order to get it running. Hopefully, you should never again have to suffer the Maya Python API 2.0 and instead gain complete control over what and how the Python API works.
+
+<br>
+
+### Functional
+
+- No M-prefix
+- No MString arguments or return values, instead use std::string
+- No MStatus arguments or return values, instead throw an exception
+- Keyword arguments SHALL be preserved, via e.g. `py::arg`
+- Default argument values SHALL be preserved, via e.g. `py::arg("name") = 1.0`
+- [Properties SHALL NOT Compute](#properties-cannot-compute)
+- [Anonymous enums SHALL be cast to unsigned int](anonymous-enums-shall-be-cast-to-unsigned-int)
+
+> [Reference](https://developer.lsst.io/pybind11/style.html#id37)
+
+<br>
+
+### Properties Cannot Compute
+
+The Maya Python API 2.0 uses Python `@property` for any function call that takes no arguments, returns a value and cannot throw an exception.
+
+```py
+bbox = mesh.boundingBox()
+
+# C++
+print(bbox.width())
+
+# Python property
+print(bbox.width)
+```
+
+But this not only differs from the C++ documentation it also makes it ambiguous what is a function and what is not. How is the user to know whether whether it takes any optional arguments or is able to throw an exception?
+
+As such, `@property` is reserved to *static* attributes only, and cannot compute. Not even the `width` of a bounding box.
+
+### Anonymous enums SHALL be cast to unsigned int
+
+Maya uses anonymous enums in places.
+
+```cpp
+// MFnDagNode.h
+class MFnDagNode : public MFnDependencyNode {
+public:
+    enum {
+        kNextPos = 0xff
+    };
+```
+
+These should be `static_cast` to an `unsigned int`, as they cannot (?) be wrapped to Python.
+
+```cpp
+py::class_<MFnDagNode>(m, "FnDagNode")
+    .def_property_readonly_static("kNextPos", [](py::object /* self */) {
+        return static_cast<unsigned int>(MFnDagNode::kNextPos); 
+    })
+```
 
 <br>
 
