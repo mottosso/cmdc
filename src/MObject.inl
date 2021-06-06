@@ -1,4 +1,6 @@
 py::class_<MObject>(m, "Object")
+    .def_property_readonly_static("kNullObj", [](py::object /* self */) { return MObject::kNullObj; })
+
     .def(py::init<>())
     .def(py::init<const MObject &>())
 
@@ -22,5 +24,14 @@ py::class_<MObject>(m, "Object")
         ret += self.apiTypeStr();
         ret += ")>";
         return ret;
+    }
+);
+
+py::class_<MObjectHandle>(m, "ObjectHandle")
+    .def(py::init<>())
+    .def(py::init<const MObject &>())
+
+    .def("__repr__", [](const MObjectHandle &a) {
+        return "<cmdc.ObjectHandle()>";
     }
 );

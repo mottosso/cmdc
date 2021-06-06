@@ -31,12 +31,19 @@ py::class_<MTypeId>(m, "TypeId")
 );
 
 
-
-py::class_<MObjectHandle>(m, "ObjectHandle")
+py::class_<MString>(m, "String")
     .def(py::init<>())
-    .def(py::init<const MObject &>())
+    .def(py::init<const MString &>())
+    .def(py::init<const char*>())
 
-    .def("__repr__", [](const MObjectHandle &a) {
-        return "<cmdc.ObjectHandle()>";
+    .def(py::self += MString())
+    .def(py::self += char())
+    .def(py::self += double())
+    .def(py::self += int())
+    // .def(py::self += unsigned int())  # Not supported with GCC?
+    .def(py::self += float())
+
+    .def("__repr__", [](const MString &a) {
+        return "<cmdc.String()>";
     }
 );

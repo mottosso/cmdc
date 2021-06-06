@@ -3,3 +3,4 @@
 build/**
 tmp/*
 *.pyc
+MFn.Types.inl
