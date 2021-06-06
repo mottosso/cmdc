@@ -2,3 +2,4 @@
 *.pyd
 build/**
 tmp/*
+*.pyc

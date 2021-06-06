@@ -1,13 +1,12 @@
-import atexit
+from maya import standalone, cmds
 
-import maya.standalone 
-from maya import cmds
 
 import cmdc
 
 
 def setup():
-    maya.standalone.initialize()
+    standalone.initialize()
+
 
 
 def new_scene():
@@ -15,7 +14,7 @@ def new_scene():
 
 
 def teardown():
-    maya.standalone.uninitialize()
+  standalone.uninitialize()
 
 
 def assert_equals(expected, actual, error_message):
