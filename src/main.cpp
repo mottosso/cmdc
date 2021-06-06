@@ -33,9 +33,13 @@
 #include <maya/MTypeId.h>
 #include <maya/MVector.h>
 #include <maya/MUuid.h>
+#include <maya/MBoundingBox.h>
+#include <maya/MDagPathArray.h>  // MFnDagNode
+#include <maya/MObjectArray.h>  // MFnDagNode
 
 // Function sets
 #include <maya/MFnDependencyNode.h>
+#include <maya/MFnDagNode.h>
 
 #include "util/atov.hpp"
 #include "util/plug.hpp"
@@ -59,13 +63,15 @@ PYBIND11_MODULE(cmdc, m) {
     )pbdoc";
 
     #include "Math.inl"
-    #include "MDagPath.inl"
     #include "MFn.inl"
-    #include "MFnDependencyNode.inl"
+    #include "Types.inl"
     #include "MObject.inl"
+    #include "MDagPath.inl"
+    #include "MFnDependencyNode.inl"
+    #include "MFnDagNode.inl"
+    #include "MBoundingBox.inl"
     #include "MPlug.inl"
     #include "MSelectionList.inl"
-    #include "Types.inl"
 
 #ifdef VERSION_INFO
     m.attr("__version__") = MACRO_STRINGIFY(VERSION_INFO);
