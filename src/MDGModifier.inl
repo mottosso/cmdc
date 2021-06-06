@@ -469,7 +469,12 @@ The attribute MObject passed in will be set to kNullObj.
 There should be no function sets attached to the attribute at the time of the call as their behaviour may become unpredictable.)pbdoc")
 
     .def("removeMultiInstance", [](MDGModifier & self, MPlug plug, bool breakConnections) {
-        throw std::logic_error{"Function not yet implemented."};
+        plug::assert_not_null(plug);
+        plug::assert_is_element(plug);
+
+        MStatus status = self.removeMultiInstance(plug, breakConnections);
+
+        CHECK_STATUS(status);
     }, R"pbdoc(Adds an operation to the modifier to remove an element of a multi (array) plug.)pbdoc")
 
     .def("renameAttribute", [](MDGModifier & self, MObject node, MObject attribute, std::string shortName, std::string longName) {

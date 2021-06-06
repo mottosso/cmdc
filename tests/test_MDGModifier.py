@@ -397,6 +397,62 @@ def test_removeExtensionAttribute_pass():
 
 
 
+@nose.with_setup(teardown=new_scene)
+def test_removeMultiInstance_pass(): 
+    """Test MDGModfifier::removeMultiInstance binding."""
+
+    node = cmds.createNode('network')
+
+    cmds.addAttr(node, ln='pass', multi=True)
+
+    plug_obj = as_plug(node + '.pass')
+    null_obj = cmdc.Plug()
+
+    cmds.setAttr(node + '.pass[0]', 1.0)
+    cmds.setAttr(node + '.pass[1]', 1.0)
+    cmds.setAttr(node + '.pass[2]', 1.0)
+
+    index_obj = plug_obj.elementByLogicalIndex(1)
+
+    mod = cmdc.DGModifier()
+    mod.removeMultiInstance(index_obj, True)
+    
+    mod.doIt()
+    assert plug_obj.getExistingArrayAttributeIndices() == [0, 2], 'DGMOdifier.removeMultiInstance doIt failed'
+
+    mod.undoIt()
+    assert plug_obj.getExistingArrayAttributeIndices() == [0, 1, 2], 'DGMOdifier.removeMultiInstance undoIt failed'
+
+
+
+
+@nose.with_setup(teardown=new_scene)
+def test_removeMultiInstance_fail(): 
+    """Test MDGModfifier::removeMultiInstance binding error handling."""
+
+    node = cmds.createNode('network')
+
+    cmds.addAttr(node, ln='fail')
+
+    plug_obj = as_plug(node + '.fail')
+    null_obj = cmdc.Plug()
+
+    for exception, doc, plug_obj in (
+        [ValueError, 'a null plug', null_obj],
+        [TypeError, 'a non-element plug', plug_obj],
+    ):
+        test_removeMultiInstance_fail.__doc__ = """Test MDGModifier::removeMultiInstance raises an error if called with {}.""".format(doc)
+
+        yield _removeMultiInstance_fail, exception, plug_obj
+
+
+def _removeMultiInstance_fail(exception, plug_obj):
+    nose.tools.assert_raises(
+        exception,
+        cmdc.DGModifier().removeMultiInstance,
+        plug_obj, True
+    )
+
 
 @nose.with_setup(teardown=new_scene)
 def test_renameAttribute(): 
