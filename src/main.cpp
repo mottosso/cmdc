@@ -41,6 +41,7 @@
 
 #include "util/atov.hpp"
 #include "util/plug.hpp"
+#include "util/obj.hpp"
 
 #define STRINGIFY(x) #x
 #define MACRO_STRINGIFY(x) STRINGIFY(x)
