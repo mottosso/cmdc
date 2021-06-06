@@ -376,7 +376,7 @@ def test_removeAttribute_fail():
         [TypeError, "a non-node object", (plug.attribute(), null)],
         [TypeError, "a non-attribute object", (plug.node(), plug.node())],
     ):
-        test_removeAttribute_fail.__doc__ = """Test MDGModifier::removeAttribute raises an error if with {}.""".format(doc)
+        test_removeAttribute_fail.__doc__ = """Test MDGModifier::removeAttribute raises an error if called with {}.""".format(doc)
 
         yield _removeAttribute_fail, exc, node, attr
 
@@ -396,6 +396,60 @@ def test_removeExtensionAttribute_pass():
     raise SkipTest("Cannot test DGModifier.removeExtensionAttribute until MFnAttribute classes are implemented.")
 
 
+
+
+@nose.with_setup(teardown=new_scene)
+def test_renameAttribute(): 
+    """Test MDGModfifier::renameAttribute binding."""
+    
+    node = cmds.createNode('network')
+
+    cmds.addAttr(node, ln='fizz')
+
+    plug = as_plug(node + '.fizz')
+
+    node_obj = plug.node()
+    attr_obj = plug.attribute()
+    null_obj = cmdc.Object()
+
+    mod = cmdc.DGModifier()
+    mod.renameAttribute(node_obj, attr_obj, 'buzz', 'buzz')
+    
+    mod.doIt()
+    assert plug.name() == node + '.buzz', 'DGModifier.renameAttribute doIt failed'
+    
+    mod.undoIt()
+    assert plug.name() == node + '.fizz', 'DGModifier.renameAttribute undo failed'
+
+
+@nose.with_setup(teardown=new_scene)
+def test_renameAttribute_fail(): 
+    """Test MDGModfifier::renameAttribute binding error handling."""
+    
+    node = cmds.createNode('network')
+    cmds.addAttr(node, ln='fizz')
+    plug = as_plug(node + '.fizz')
+
+    node_obj = plug.node()
+    attr_obj = plug.attribute()
+    null_obj = cmdc.Object()
+
+    for exception, doc, (node, attr, short_name, long_name) in (
+        [ValueError, "a null node", (null_obj, attr_obj, '', '')],
+        [ValueError, "a null attribute", (node_obj, null_obj, '', '')],
+        [ValueError, "an empty short name", (node_obj, attr_obj, '', '')],
+        [ValueError, "an empty long name", (node_obj, attr_obj, 'buzz', '')],
+    ):
+        test_renameAttribute_fail.__doc__ = """Test MDGModifier::renameAttribute raises an error if called with {}.""".format(doc)
+        yield _renameAttribute_fail, exception, node, attr, short_name, long_name
+
+
+def _renameAttribute_fail(exception, node_obj, attr_obj, short_name, long_name):
+    nose.tools.assert_raises(
+        exception,
+        cmdc.DGModifier().renameAttribute,
+        node_obj, attr_obj, short_name, long_name
+    )
 
 
 @nose.with_setup(teardown=new_scene)

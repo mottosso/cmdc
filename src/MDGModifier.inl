@@ -472,8 +472,38 @@ There should be no function sets attached to the attribute at the time of the ca
         throw std::logic_error{"Function not yet implemented."};
     }, R"pbdoc(Adds an operation to the modifier to remove an element of a multi (array) plug.)pbdoc")
 
-    .def("renameAttribute", [](MDGModifier & self, MObject node, MObject attribute, MString shortName, MString longName) {
-        throw std::logic_error{"Function not yet implemented."};
+    .def("renameAttribute", [](MDGModifier & self, MObject node, MObject attribute, std::string shortName, std::string longName) {
+        if (node.isNull()) 
+        {
+            throw std::invalid_argument("Cannot rename an attribute from a null node.");
+        } else if (!node.hasFn(MFn::kDependencyNode)) {
+            MString error_msg("Cannot rename attribute - node must be a 'node' object , not a '^1s' object.");
+                    error_msg.format(error_msg, node.apiTypeStr());
+            throw pybind11::type_error(error_msg.asChar());
+        }
+
+        if (attribute.isNull())
+        {
+            throw std::invalid_argument("Cannot rename a null attribute.");
+        } else if (!attribute.hasFn(MFn::kAttribute)) {
+            MString error_msg("Cannot rename attribute - 'attribute' must be a 'kAttribute' object, not a(n) '^1s' object.");
+                    error_msg.format(error_msg, attribute.apiTypeStr());
+            throw pybind11::type_error(error_msg.asChar());
+        } 
+
+        if (shortName.empty() || longName.empty())
+        {
+            throw std::invalid_argument("Cannot rename an attribute to an empty string.");
+        }
+
+        // TODO: When MFnAttribute is implement, raise a TypeError if `attribute` is not dynamic.
+        // TODO: Regex to restrict names to [a-zA-Z0-9_]?
+        // TODO: Do short/long name have length constraints?
+
+        MStatus status = self.renameAttribute(node, attribute, MString(shortName.c_str()), MString(longName.c_str()));
+
+        CHECK_STATUS(status)
+
     }, R"pbdoc(Adds an operation to the modifer that renames a dynamic attribute on the given dependency node.)pbdoc")
 
     .def("renameNode", [](MDGModifier & self, MObject node, std::string newName) {
