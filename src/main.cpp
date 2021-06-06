@@ -14,12 +14,14 @@
 #include <maya/MColor.h>
 #include <maya/MDataBlock.h>
 #include <maya/MDataHandle.h>
+#include <maya/MDGModifier.h>
 #include <maya/MDistance.h>
 #include <maya/MDagPath.h>
 #include <maya/MEulerRotation.h>
 #include <maya/MFn.h>
 #include <maya/MIntArray.h>
 #include <maya/MMatrix.h>
+#include <maya/MNodeClass.h>
 #include <maya/MObjectHandle.h>
 #include <maya/MPoint.h>
 #include <maya/MPlug.h>
@@ -43,6 +45,7 @@
 
 #include "util/atov.hpp"
 #include "util/plug.hpp"
+#include "util/obj.hpp"
 
 #define STRINGIFY(x) #x
 #define MACRO_STRINGIFY(x) STRINGIFY(x)
@@ -63,10 +66,11 @@ PYBIND11_MODULE(cmdc, m) {
     )pbdoc";
 
     #include "Math.inl"
+    #include "MDagPath.inl"
+    #include "MDGModifier.inl"
     #include "MFn.inl"
     #include "Types.inl"
     #include "MObject.inl"
-    #include "MDagPath.inl"
     #include "MFnDependencyNode.inl"
     #include "MFnDagNode.inl"
     #include "MBoundingBox.inl"

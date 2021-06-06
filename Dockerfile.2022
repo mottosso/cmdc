@@ -1,0 +1,36 @@
+# Build locally for Linux on any platform, e.g. Windows
+FROM mottosso/maya:2022
+
+RUN yum install centos-release-scl -y && \
+    yum install devtoolset-7 bc -y
+
+# Download devkit
+ENV DEVKIT_LOCATION=/root/devkitBase
+ENV DEVKIT "https://autodesk-adn-transfer.s3.us-west-2.amazonaws.com/ADN%20Extranet/M%26E/Maya/devkit%202022/Autodesk_Maya_2022_DEVKIT_Linux.tgz"
+RUN wget $DEVKIT -O "/root/devkit.tgz" && \
+    tar -xvf /root/devkit.tgz $pwd
+
+# Setup Test Environment
+RUN mayapy -m pip install --user \
+        nose==1.3.7 \
+        nose-exclude==0.5.0 \
+        coverage==5.5 \
+        flaky==3.7.0 \
+        six==1.16.0 \
+        sphinx==1.8.5 \
+        sphinxcontrib-napoleon==0.7
+
+# Since 2019, this sucker throws an
+# unnecessary warning if not declared.
+RUN mkdir -p /var/tmp/runtime-root
+ENV XDG_RUNTIME_DIR /var/tmp/runtime-root
+ENV MAYA_DISABLE_ADP 1
+
+# The local /build directory
+ENV PYTHONPATH=/workspace/build
+
+WORKDIR /workspace
+
+COPY docker_entrypoint.sh /usr/bin/entrypoint.sh
+RUN chmod +x /usr/bin/entrypoint.sh
+ENTRYPOINT [ "/usr/bin/entrypoint.sh" ]
