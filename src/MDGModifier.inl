@@ -43,8 +43,15 @@ If the attribute is a compound its children will ae added as well, so only the p
 R"pbdoc(Adds an operation to the modifier to add a new extension attribute to the given node class. 
 If the attribute is a compound its children will be added as well, so only the parent needs to be added using this method.)pbdoc")
 
-    .def("commandToExecute", [](MDGModifier & self, MString command) {
-        throw std::logic_error{"Function not yet implemented."};
+    .def("commandToExecute", [](MDGModifier & self, std::string command) {
+        if (command.empty())
+        {
+            throw std::invalid_argument("Cannot execute an empty MEL command.");
+        }
+
+        MStatus status = self.commandToExecute(MString(command.c_str()));
+
+        CHECK_STATUS(status);
     }, 
 R"pbdoc(Adds an operation to the modifier to execute a MEL command. 
 The command should be fully undoable otherwise unexpected results may occur. 
@@ -386,8 +393,15 @@ Note that the link is established immediately and is not affected by the modifie
         CHECK_STATUS(status);
     }, R"pbdoc(Adds an operation to the modifier to set a value onto a string plug.)pbdoc")
 
-    .def("pythonCommandToExecute", [](MDGModifier & self, MString command) {
-        throw std::logic_error{"Function not yet implemented."};
+    .def("pythonCommandToExecute", [](MDGModifier & self, std::string command) {
+        if (command.empty())
+        {
+            throw std::invalid_argument("Cannot execute an empty Python command.");
+        }
+
+        MStatus status = self.pythonCommandToExecute(MString(command.c_str()));
+
+        CHECK_STATUS(status);
     },     
 R"pbdoc(Adds an operation to the modifier to execute a Python command, 
 which can be passed as either a Python callable or a string containing the text of the Python code to be executed. 

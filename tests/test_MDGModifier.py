@@ -11,6 +11,8 @@ from . import assert_equals, as_obj, as_plug, new_scene
 
 @nose.with_setup(teardown=new_scene)
 def test_addAttribute_pass(): 
+    """Test MDGModifier::addAttribute binding."""
+
     raise SkipTest("Cannot test DGModifier.addAttribute until MFnAttribute classes are implemented.")
 
 
@@ -45,6 +47,26 @@ def test_addExtensionAttribute_pass():
     """Test MDGModifier::addExtensionAttribute binding."""
 
     raise SkipTest("Cannot test DGModifier.addExtensionAttribute until MFnAttribute classes are implemented.")
+
+
+@nose.with_setup(teardown=new_scene)
+def test_commandToExecute(): 
+    """Test MDGModifier::commandToExecute binding."""
+
+    mod = cmdc.DGModifier()
+    mod.commandToExecute('createNode -name "foobar" "transform";')
+    
+    mod.doIt()
+    assert cmds.objExists('foobar'), 'DGModifier::commandToExecute doIt failed'
+
+    mod.undoIt()
+    assert not cmds.objExists('foobar'), 'DGModifier::commandToExecute undo failed'    
+    
+    nose.tools.assert_raises(
+        ValueError,
+        cmdc.DGModifier().commandToExecute,
+        ''
+    )
 
 
 @nose.with_setup(teardown=new_scene)
@@ -339,6 +361,26 @@ def _newPlugValue(new_value, method_name, add_attr_kwargs):
         'DGModifier.{} undo failed to set the value - expected: {}, actual: {}'.format(
             method_name, old_value, undo_value
         )
+    )
+
+
+@nose.with_setup(teardown=new_scene)
+def test_pythonCommandToExecute(): 
+    """Test MDGModifier::pythonCommandToExecute binding."""
+
+    mod = cmdc.DGModifier()
+    mod.pythonCommandToExecute('from maya import cmds; cmds.createNode("transform", name="foobar")')
+
+    mod.doIt()
+    assert cmds.objExists('foobar'), 'DGModifier::pythonCommandToExecute doIt failed'
+
+    mod.undoIt()
+    assert not cmds.objExists('foobar'), 'DGModifier::pythonCommandToExecute undo failed'    
+    
+    nose.tools.assert_raises(
+        ValueError,
+        cmdc.DGModifier().commandToExecute,
+        ''
     )
 
 
