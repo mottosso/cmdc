@@ -2,11 +2,11 @@ py::class_<MDGModifier>(m, "DGModifier")
     .def(py::init<>())
 
     .def("addAttribute", [](MDGModifier & self, MObject node, MObject attribute) {
-        validate::object::assert_not_null(node, "Cannot add attribute to a null object.");
-        validate::object::assert_has_fn(node, MFn::kDependencyNode, "Cannot add attribute - 'node' must be a 'kDependencyNode' object, not a(n) '^1s' object.");
+        validate::is_not_null(node, "Cannot add attribute to a null object.");
+        validate::has_fn(node, MFn::kDependencyNode, "Cannot add attribute - 'node' must be a 'kDependencyNode' object, not a(n) '^1s' object.");
 
-        validate::object::assert_not_null(attribute, "Cannot add null attribute to a node.");
-        validate::object::assert_has_fn(attribute, MFn::kAttribute, "Cannot add attribute - 'attribute' must be a 'kAttribute' object, not a(n) '^1s' object.");
+        validate::is_not_null(attribute, "Cannot add null attribute to a node.");
+        validate::has_fn(attribute, MFn::kAttribute, "Cannot add attribute - 'attribute' must be a 'kAttribute' object, not a(n) '^1s' object.");
     
         MStatus status = self.addAttribute(node, attribute);
 
@@ -16,8 +16,8 @@ R"pbdoc(Adds an operation to the modifier to add a new dynamic attribute to the 
 If the attribute is a compound its children will ae added as well, so only the parent needs to be added using this method.)pbdoc")
 
     .def("addExtensionAttribute", [](MDGModifier & self, MNodeClass nodeClass, MObject attribute) {
-        validate::object::assert_not_null(attribute, "Cannot add null extension attribute.");
-        validate::object::assert_has_fn(attribute, MFn::kAttribute, "Cannot add extension attribute - 'attribute' must be a 'kAttribute' object, not a(n) '^1s' object.");
+        validate::is_not_null(attribute, "Cannot add null extension attribute.");
+        validate::has_fn(attribute, MFn::kAttribute, "Cannot add extension attribute - 'attribute' must be a 'kAttribute' object, not a(n) '^1s' object.");
 
         MStatus status = self.addExtensionAttribute(nodeClass, attribute);
 
@@ -44,17 +44,17 @@ They will still be undone together, as a single undo action by the user,
 but Maya will better be able to recover if one of the commands fails.)pbdoc")
 
     .def("connect", [](MDGModifier & self, MObject sourceNode, MObject sourceAttr, MObject destNode, MObject destAttr) {
-        validate::object::assert_not_null(sourceNode, "Cannot connect - sourceNode is null.");
-        validate::object::assert_has_fn(sourceNode, MFn::kDependencyNode, "Cannot connect - 'sourceNode' must be a 'node' object , not a '^1s' object.");
+        validate::is_not_null(sourceNode, "Cannot connect - sourceNode is null.");
+        validate::has_fn(sourceNode, MFn::kDependencyNode, "Cannot connect - 'sourceNode' must be a 'node' object , not a '^1s' object.");
 
-        validate::object::assert_not_null(sourceAttr, "Cannot connect - 'sourceAttr' is null.");
-        validate::object::assert_has_fn(sourceAttr, MFn::kAttribute, "Cannot connect - 'sourceAttr' must be a 'kAttribute' object, not a(n) '^1s' object.");
+        validate::is_not_null(sourceAttr, "Cannot connect - 'sourceAttr' is null.");
+        validate::has_fn(sourceAttr, MFn::kAttribute, "Cannot connect - 'sourceAttr' must be a 'kAttribute' object, not a(n) '^1s' object.");
 
-        validate::object::assert_not_null(destNode, "Cannot connect - 'destNode' is null.");
-        validate::object::assert_has_fn(destNode, MFn::kDependencyNode, "Cannot connect - 'destNode' must be a 'kDependencyNode' object , not a '^1s' object.");
+        validate::is_not_null(destNode, "Cannot connect - 'destNode' is null.");
+        validate::has_fn(destNode, MFn::kDependencyNode, "Cannot connect - 'destNode' must be a 'kDependencyNode' object , not a '^1s' object.");
     
-        validate::object::assert_not_null(destAttr, "Cannot connect - 'destAttr' is null.");
-        validate::object::assert_has_fn(destAttr, MFn::kAttribute, "Cannot connect - 'destAttr' must be a 'kAttribute' object, not a(n) '^1s' object.");
+        validate::is_not_null(destAttr, "Cannot connect - 'destAttr' is null.");
+        validate::has_fn(destAttr, MFn::kAttribute, "Cannot connect - 'destAttr' must be a 'kAttribute' object, not a(n) '^1s' object.");
         
         // TODO: Once the MFnAttribute classes are implemented, 
         // add additional validation to ensure that the attributes can be connected  
@@ -134,8 +134,8 @@ The new node is created and returned but will not be added to the dependency gra
 Raises TypeError if the named node type does not exist or if it is a DAG node type.)pbdoc")
 
     .def("deleteNode", [](MDGModifier & self, MObject node) {
-        validate::object::assert_not_null(node, "Cannot delete a null object.");
-        validate::object::assert_has_fn(node, MFn::kDependencyNode, "Cannot delete a(n) '^1s' object.");
+        validate::is_not_null(node, "Cannot delete a null object.");
+        validate::has_fn(node, MFn::kDependencyNode, "Cannot delete a(n) '^1s' object.");
         
         if (node.hasFn(MFn::kDagNode)) {
             MString error_msg("Cannot delete a(n) DAG object - use DAGModifier instead.");
@@ -157,17 +157,17 @@ operation is added so that the queue is emptied. Then, deleteNode() can be calle
 doIt() should be called immediately after to ensure that the queue is emptied before any other operations are added to it.)pbdoc")
 
     .def("disconnect", [](MDGModifier & self, MObject sourceNode, MObject sourceAttr, MObject destNode, MObject destAttr) {
-        validate::object::assert_not_null(sourceNode, "Cannot disconnect - sourceNode is null.");
-        validate::object::assert_has_fn(sourceNode, MFn::kDependencyNode, "Cannot disconnect - 'sourceNode' must be a 'node' object , not a '^1s' object.");
+        validate::is_not_null(sourceNode, "Cannot disconnect - sourceNode is null.");
+        validate::has_fn(sourceNode, MFn::kDependencyNode, "Cannot disconnect - 'sourceNode' must be a 'node' object , not a '^1s' object.");
 
-        validate::object::assert_not_null(sourceAttr, "Cannot disconnect - 'sourceAttr' is null.");
-        validate::object::assert_has_fn(sourceAttr, MFn::kAttribute, "Cannot disconnect - 'sourceAttr' must be a 'kAttribute' object, not a(n) '^1s' object.");
+        validate::is_not_null(sourceAttr, "Cannot disconnect - 'sourceAttr' is null.");
+        validate::has_fn(sourceAttr, MFn::kAttribute, "Cannot disconnect - 'sourceAttr' must be a 'kAttribute' object, not a(n) '^1s' object.");
 
-        validate::object::assert_not_null(destNode, "Cannot disconnect - 'destNode' is null.");
-        validate::object::assert_has_fn(destNode, MFn::kDependencyNode, "Cannot disconnect - 'destNode' must be a 'kDependencyNode' object , not a '^1s' object.");
+        validate::is_not_null(destNode, "Cannot disconnect - 'destNode' is null.");
+        validate::has_fn(destNode, MFn::kDependencyNode, "Cannot disconnect - 'destNode' must be a 'kDependencyNode' object , not a '^1s' object.");
     
-        validate::object::assert_not_null(destAttr, "Cannot disconnect - 'destAttr' is null.");
-        validate::object::assert_has_fn(destAttr, MFn::kAttribute, "Cannot disconnect - 'destAttr' must be a 'kAttribute' object, not a(n) '^1s' object.");
+        validate::is_not_null(destAttr, "Cannot disconnect - 'destAttr' is null.");
+        validate::has_fn(destAttr, MFn::kAttribute, "Cannot disconnect - 'destAttr' must be a 'kAttribute' object, not a(n) '^1s' object.");
           
         
         MStatus status = self.disconnect(sourceNode, sourceAttr, destNode, destAttr);
@@ -202,11 +202,11 @@ then only the operations which were added since the previous doIt() call will be
 If undoIt() has been called then the next call to doIt() will do all operations.)pbdoc")
 
     .def("linkExtensionAttributeToPlugin", [](MDGModifier & self, MObject plugin, MObject attribute) {        
-        validate::object::assert_not_null(plugin, "Cannot link extension attribute to a null plugin.");
-        validate::object::assert_has_fn(plugin, MFn::kPlugin, "Cannot link extension attribute to plugin - must specify a 'kPlugin' object, not a '^1s' object.");
+        validate::is_not_null(plugin, "Cannot link extension attribute to a null plugin.");
+        validate::has_fn(plugin, MFn::kPlugin, "Cannot link extension attribute to plugin - must specify a 'kPlugin' object, not a '^1s' object.");
     
-        validate::object::assert_not_null(attribute, "Cannot link null extension attribute from a plugin.");
-        validate::object::assert_has_fn(attribute, MFn::kAttribute, "Cannot link extension attribute - 'attribute' must be a 'kAttribute' object, not a(n) '^1s' object.");
+        validate::is_not_null(attribute, "Cannot link null extension attribute from a plugin.");
+        validate::has_fn(attribute, MFn::kAttribute, "Cannot link extension attribute - 'attribute' must be a 'kAttribute' object, not a(n) '^1s' object.");
 
         MStatus status = self.linkExtensionAttributeToPlugin(plugin, attribute);
 
@@ -329,11 +329,11 @@ They will still be undone together, as a single undo action by the user,
 but Maya will better be able to recover if one of the commands fails.)pbdoc")
 
     .def("removeAttribute", [](MDGModifier & self, MObject node, MObject attribute) {            
-        validate::object::assert_not_null(node, "Cannot remove an attribute from a null node.");
-        validate::object::assert_has_fn(node, MFn::kDependencyNode, "Cannot remove attribute - node must be a 'node' object , not a '^1s' object.");
+        validate::is_not_null(node, "Cannot remove an attribute from a null node.");
+        validate::has_fn(node, MFn::kDependencyNode, "Cannot remove attribute - node must be a 'node' object , not a '^1s' object.");
 
-        validate::object::assert_not_null(attribute, "Cannot remove a null attribute.");
-        validate::object::assert_has_fn(attribute, MFn::kAttribute, "Cannot remove attribute - 'attribute' must be a 'kAttribute' object, not a(n) '^1s' object.");
+        validate::is_not_null(attribute, "Cannot remove a null attribute.");
+        validate::has_fn(attribute, MFn::kAttribute, "Cannot remove attribute - 'attribute' must be a 'kAttribute' object, not a(n) '^1s' object.");
 
         MStatus status = self.removeAttribute(node, attribute);
 
@@ -346,8 +346,8 @@ The attribute MObject passed in will be set to kNullObj.
 There should be no function sets attached to the attribute at the time of the call as their behaviour may become unpredictable.)pbdoc")
 
     .def("removeExtensionAttribute", [](MDGModifier & self, MNodeClass nodeClass, MObject attribute) {
-        validate::object::assert_not_null(attribute, "Cannot remove null extension attribute.");
-        validate::object::assert_has_fn(attribute, MFn::kAttribute, "Cannot remove extension attribute - 'attribute' must be a 'kAttribute' object, not a(n) '^1s' object.");
+        validate::is_not_null(attribute, "Cannot remove null extension attribute.");
+        validate::has_fn(attribute, MFn::kAttribute, "Cannot remove extension attribute - 'attribute' must be a 'kAttribute' object, not a(n) '^1s' object.");
 
         MStatus status = self.removeExtensionAttribute(nodeClass, attribute);
 
@@ -360,8 +360,8 @@ The attribute MObject passed in will be set to kNullObj.
 There should be no function sets attached to the attribute at the time of the call as their behaviour may become unpredictable.)pbdoc")
 
     .def("removeExtensionAttributeIfUnset", [](MDGModifier & self, MNodeClass nodeClass, MObject attribute) {
-        validate::object::assert_not_null(attribute, "Cannot remove null extension attribute (if unset).");
-        validate::object::assert_has_fn(attribute, MFn::kAttribute, "Cannot remove extension attribute (if unset) - 'attribute' must be a 'kAttribute' object, not a(n) '^1s' object.");
+        validate::is_not_null(attribute, "Cannot remove null extension attribute (if unset).");
+        validate::has_fn(attribute, MFn::kAttribute, "Cannot remove extension attribute (if unset) - 'attribute' must be a 'kAttribute' object, not a(n) '^1s' object.");
 
         MStatus status = self.removeExtensionAttribute(nodeClass, attribute);
 
@@ -384,11 +384,11 @@ There should be no function sets attached to the attribute at the time of the ca
     }, R"pbdoc(Adds an operation to the modifier to remove an element of a multi (array) plug.)pbdoc")
 
     .def("renameAttribute", [](MDGModifier & self, MObject node, MObject attribute, std::string shortName, std::string longName) {
-        validate::object::assert_not_null(node, "Cannot rename an attribute from a null node.");
-        validate::object::assert_has_fn(node, MFn::kDependencyNode, "Cannot rename attribute - node must be a 'node' object , not a '^1s' object.");
+        validate::is_not_null(node, "Cannot rename an attribute from a null node.");
+        validate::has_fn(node, MFn::kDependencyNode, "Cannot rename attribute - node must be a 'node' object , not a '^1s' object.");
  
-        validate::object::assert_not_null(attribute, "Cannot rename a null attribute.");
-        validate::object::assert_has_fn(attribute, MFn::kAttribute, "Cannot rename attribute - 'attribute' must be a 'kAttribute' object, not a(n) '^1s' object.");
+        validate::is_not_null(attribute, "Cannot rename a null attribute.");
+        validate::has_fn(attribute, MFn::kAttribute, "Cannot rename attribute - 'attribute' must be a 'kAttribute' object, not a(n) '^1s' object.");
 
         if (shortName.empty() || longName.empty())
         {
@@ -406,8 +406,8 @@ There should be no function sets attached to the attribute at the time of the ca
     }, R"pbdoc(Adds an operation to the modifer that renames a dynamic attribute on the given dependency node.)pbdoc")
 
     .def("renameNode", [](MDGModifier & self, MObject node, std::string newName) {
-        validate::object::assert_not_null(node, "Cannot rename a null node.");
-        validate::object::assert_has_fn(node, MFn::kDependencyNode, "Cannot rename object - 'node' must be a 'kDependencyNode' object , not a '^1s' object.");
+        validate::is_not_null(node, "Cannot rename a null node.");
+        validate::has_fn(node, MFn::kDependencyNode, "Cannot rename object - 'node' must be a 'kDependencyNode' object , not a '^1s' object.");
 
         if (newName.empty())
         {
@@ -420,8 +420,8 @@ There should be no function sets attached to the attribute at the time of the ca
     }, R"pbdoc(Adds an operation to the modifer to rename a node.)pbdoc")
 
     .def("setNodeLockState", [](MDGModifier & self, MObject node, bool newState) {
-        validate::object::assert_not_null(node, "Cannot un/lock a null node.");
-        validate::object::assert_has_fn(node, MFn::kDependencyNode, "Cannot un/lock object - 'node' must be a 'kDependencyNode' object , not a '^1s' object.");
+        validate::is_not_null(node, "Cannot un/lock a null node.");
+        validate::has_fn(node, MFn::kDependencyNode, "Cannot un/lock object - 'node' must be a 'kDependencyNode' object , not a '^1s' object.");
 
         MStatus status = self.setNodeLockState(node, newState);
 
@@ -435,11 +435,11 @@ There should be no function sets attached to the attribute at the time of the ca
     }, R"pbdoc(Undoes all of the operations that have been given to this modifier. It is only valid to call this method after the doIt() method has been called.)pbdoc")
 
     .def("unlinkExtensionAttributeFromPlugin", [](MDGModifier & self, MObject plugin, MObject attribute) {
-        validate::object::assert_not_null(plugin, "Cannot unlink extension attribute from a null plugin.");
-        validate::object::assert_has_fn(plugin, MFn::kPlugin, "Cannot unlink extension attribute from plugin - must specify a 'kPlugin' object, not a '^1s' object.");
+        validate::is_not_null(plugin, "Cannot unlink extension attribute from a null plugin.");
+        validate::has_fn(plugin, MFn::kPlugin, "Cannot unlink extension attribute from plugin - must specify a 'kPlugin' object, not a '^1s' object.");
 
-        validate::object::assert_not_null(attribute, "Cannot unlink null extension attribute from a plugin.");
-        validate::object::assert_has_fn(attribute, MFn::kAttribute, "Cannot unlink extension attribute - 'attribute' must be a 'kAttribute' object, not a(n) '^1s' object.");
+        validate::is_not_null(attribute, "Cannot unlink null extension attribute from a plugin.");
+        validate::has_fn(attribute, MFn::kAttribute, "Cannot unlink extension attribute - 'attribute' must be a 'kAttribute' object, not a(n) '^1s' object.");
 
         MStatus status = self.unlinkExtensionAttributeFromPlugin(plugin, attribute);
 
