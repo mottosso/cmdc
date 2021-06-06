@@ -71,7 +71,6 @@ PYBIND11_MODULE(cmdc, m) {
     #include "MFn.inl"
     #include "Types.inl"
     #include "MObject.inl"
-    #include "MDagPath.inl"
     #include "MFnDependencyNode.inl"
     #include "MFnDagNode.inl"
     #include "MBoundingBox.inl"

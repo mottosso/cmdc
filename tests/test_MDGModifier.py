@@ -202,10 +202,12 @@ def test_deleteNode_pass():
 
 
 def test_deleteNode_fail():
+    non_node_obj = cmdc.Object()
+
     for exc, name, value in (
         [ValueError, 'null object', cmdc.Object()],
         [TypeError, 'non-node object', as_plug('persp.message').attribute()],
-        [TypeError, 'DAG object', as_obj(cmds.createNode('transform'))],
+        [TypeError, 'DAG object', as_obj('persp')],
     ):
         test_deleteNode_fail.__doc__ = """Test MDGModifier::deleteNode raises error if called with a(n) {}.""".format(name)
 
