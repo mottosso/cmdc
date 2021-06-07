@@ -172,27 +172,27 @@ FnDagNode
     .def("create", [](MFnDagNode& self, std::string type, MObject parent = MObject::kNullObj) -> MObject {
         return self.create(type.c_str(), parent);
     }, py::arg("type"),
-       py::arg("parent") = MObject::kNullObj,
+       py::arg_v("parent", MObject::kNullObj, "Object.kNullObj"),
        _doc_create)
 
     .def("create", [](MFnDagNode& self, std::string type, std::string name, MObject parent = MObject::kNullObj) -> MObject {
         return self.create(type.c_str(), name.c_str(), parent);
     }, py::arg("type"),
        py::arg("name"),
-       py::arg("parent") = MObject::kNullObj,
+       py::arg_v("parent", MObject::kNullObj, "Object.kNullObj"),
        _doc_create)
 
     .def("create", [](MFnDagNode& self, MTypeId typeId, MObject parent = MObject::kNullObj) -> MObject {
         return self.create(typeId, parent);
     }, py::arg("type"),
-       py::arg("parent") = MObject::kNullObj,
+       py::arg_v("parent", MObject::kNullObj, "Object.kNullObj"),
        _doc_create)
 
     .def("create", [](MFnDagNode& self, MTypeId typeId, std::string name, MObject parent = MObject::kNullObj) -> MObject {
         return self.create(typeId, name.c_str(), parent);
     }, py::arg("type"),
        py::arg("name"),
-       py::arg("parent") = MObject::kNullObj,
+       py::arg_v("parent", MObject::kNullObj, "Object.kNullObj"),
        _doc_create)
 
     .def("dagPath", [](MFnDagNode& self) -> MDagPath {
