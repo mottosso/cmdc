@@ -71,8 +71,7 @@ None of the newly created nodes will be added to the DAG until the modifier's do
         CHECK_STATUS(status)
 
         return result;
-    },  // py::arg("typeId"),
-        // py::arg("parent") = MObject::kNullObj,
+    },
 R"pbdoc(Adds an operation to the modifier to create a DAG node of the specified type. 
     
 If a parent DAG node is provided the new node will be parented under it. 
@@ -87,7 +86,36 @@ and it is the transform node which will be returned by the method, not the child
 None of the newly created nodes will be added to the DAG until the modifier's doIt() method is called.)pbdoc")
 
     .def("reparentNode", [](MDagModifier & self, MObject node, MObject newParent = MObject::kNullObj) {
-        throw std::logic_error{"Function not yet implemented."};
+        validate::is_not_null(node, "Cannot reparent a null object.");
+        validate::has_fn(
+            node, MFn::kDagNode, 
+            "Cannot reparent - 'node' must be a 'kDagNode' object , not a '^1s' object."
+        );
+
+        if (!newParent.isNull())
+        {
+            validate::has_fn(
+                newParent, MFn::kDagNode, 
+                "Cannot reparent - 'parent' must be a 'kDagNode' object , not a '^1s' object."
+            );
+            
+            MFnDagNode fn(newParent);
+
+            if (fn.isChildOf(node))
+            {
+                throw std::invalid_argument("Cannot parent a transform to one of its children.");
+            }
+        }
+
+        if (node == newParent)
+        {
+            throw std::invalid_argument("Cannot parent a transform to itself.");
+        }
+
+
+        MStatus status = self.reparentNode(node, newParent);
+
+        CHECK_STATUS(status)
     }, 
 R"pbdoc(Adds an operation to the modifier to reparent a DAG node under a specified parent.
 
