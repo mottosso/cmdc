@@ -1,4 +1,6 @@
-py::class_<MDagModifier>(m, "DagModifier", "DGModifier")
+#include "MDGModifier.inl"
+
+py::class_<MDagModifier, MDGModifier>(m, "DagModifier")
     .def(py::init<>())
 
     .def("createNode", [](MDagModifier & self, std::string type, MObject parent = MObject::kNullObj) -> MObject {

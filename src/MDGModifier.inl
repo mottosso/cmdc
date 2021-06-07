@@ -1,3 +1,5 @@
+#ifndef DGMODIFIER_INL
+#define DGMODIFIER_INL
 py::class_<MDGModifier>(m, "DGModifier")
     .def(py::init<>())
 
@@ -519,3 +521,4 @@ For compound attributes only the topmost parent attribute may be passed in and a
 Thus it's not possible to unlink a child attribute from a plugin by itself. 
 
 Note that the link is broken immediately and is not affected by the modifier's doIt() or undoIt() methods.)pbdoc");
+#endif // DGMODIFIER_INL

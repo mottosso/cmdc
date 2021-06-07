@@ -9,9 +9,6 @@ from maya.api import OpenMaya
 from . import assert_equals, as_obj, as_plug, new_scene
 
 def test_createNode():
-    raise SkipTest("Cannot test DAGModifier.createNode - not sure how to subclass from DGModifier.")
-
-
     node = as_obj(cmds.createNode('transform'))
     type_id = cmdc.FnDependencyNode(node).typeId()
 
