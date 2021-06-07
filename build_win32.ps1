@@ -128,19 +128,6 @@ $clean_duration = $t4 - $t3
 
 Write-Host "(4) Finished in $clean_duration ms"
 Write-Host "(4) ----------------------------"
-Write-Host "(5) Generating typing stubs.."
 
-."$env:MAYA_LOCATION/bin/mayapy.exe" -m pybind11_stubgen -o build cmdc
-
-if (!$?) {
-    [System.Environment]::Exit(1)
-}
-
-$t5 = $stopwatch.ElapsedMilliseconds
-$stub_generation_duration = $t5 - $t4
-
-Write-Host "(5) Finished in $stub_generation_duration ms"
-Write-Host "(5) ----------------------------"
-
-$total_duration = $t5 - $t0
+$total_duration = $t4 - $t0
 Write-Host "Successfully created .\build\cmdc.pyd in $total_duration ms"
