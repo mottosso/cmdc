@@ -70,6 +70,6 @@ FnDependencyNode
     })
 
     .def("__repr__", [](const MObject &a) {
-        return "<cmdc.Object()>";
+        return "<cmdc.FnDependencyNode()>";
     }
 );

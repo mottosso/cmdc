@@ -3,3 +3,6 @@
 build/**
 tmp/*
 *.pyc
+MFn.Types.inl
+devkit.tgz
+devkitBase

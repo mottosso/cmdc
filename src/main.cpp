@@ -14,12 +14,14 @@
 #include <maya/MColor.h>
 #include <maya/MDataBlock.h>
 #include <maya/MDataHandle.h>
+#include <maya/MDGModifier.h>
 #include <maya/MDistance.h>
 #include <maya/MDagPath.h>
 #include <maya/MEulerRotation.h>
 #include <maya/MFn.h>
 #include <maya/MIntArray.h>
 #include <maya/MMatrix.h>
+#include <maya/MNodeClass.h>
 #include <maya/MObjectHandle.h>
 #include <maya/MPoint.h>
 #include <maya/MPlug.h>
@@ -33,12 +35,17 @@
 #include <maya/MTypeId.h>
 #include <maya/MVector.h>
 #include <maya/MUuid.h>
+#include <maya/MBoundingBox.h>
+#include <maya/MDagPathArray.h>  // MFnDagNode
+#include <maya/MObjectArray.h>  // MFnDagNode
 
 // Function sets
 #include <maya/MFnDependencyNode.h>
+#include <maya/MFnDagNode.h>
 
 #include "util/atov.hpp"
 #include "util/plug.hpp"
+#include "util/obj.hpp"
 
 #define STRINGIFY(x) #x
 #define MACRO_STRINGIFY(x) STRINGIFY(x)
@@ -62,12 +69,15 @@ PYBIND11_MODULE(cmdc, m) {
 
     #include "Math.inl"
     #include "MDagPath.inl"
+    #include "MDGModifier.inl"
     #include "MFn.inl"
-    #include "MFnDependencyNode.inl"
+    #include "Types.inl"
     #include "MObject.inl"
+    #include "MFnDependencyNode.inl"
+    #include "MFnDagNode.inl"
+    #include "MBoundingBox.inl"
     #include "MPlug.inl"
     #include "MSelectionList.inl"
-    #include "Types.inl"
 
 #ifdef VERSION_INFO
     m.attr("__version__") = MACRO_STRINGIFY(VERSION_INFO);

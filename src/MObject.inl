@@ -1,4 +1,5 @@
 Object
+    .def_property_readonly_static("kNullObj", [](py::object /* self */) { return MObject::kNullObj; })
     .def(py::init<>())
     .def(py::init<const MObject &>())
 
@@ -22,5 +23,14 @@ Object
         ret += self.apiTypeStr();
         ret += ")>";
         return ret;
+    }
+);
+
+ObjectHandle
+    .def(py::init<>())
+    .def(py::init<const MObject &>())
+
+    .def("__repr__", [](const MObjectHandle &a) {
+        return "<cmdc.ObjectHandle()>";
     }
 );

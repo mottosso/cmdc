@@ -12,12 +12,14 @@ def test_equality():
     b = sel.getDagPath(0)
     assert a == b
 
+
 def test_inequality():
     sel = cmdc.SelectionList().add("persp").add("perspShape")
 
     a = sel.getDagPath(0)
     b = sel.getDagPath(1)
     assert a != b
+
 
 def test_apiType():
     sel = cmdc.SelectionList().add("persp")
@@ -28,12 +30,13 @@ def test_apiType():
     invalid_dag = cmdc.DagPath()
     assert invalid_dag.apiType() == cmdc.Fn.kInvalid
 
+
 def test_child():
     sel = cmdc.SelectionList().add("persp").add("perspShape")
 
     dag_with_child = sel.getDagPath(0)
     assert isinstance(dag_with_child.child(0), cmdc.Object)
-    
+
     dag_without_children = sel.getDagPath(1)
     nose.tools.assert_raises(
         IndexError,
@@ -47,6 +50,7 @@ def test_child():
         invalid_dag.child,
         0
     )
+
 
 def test_childCount():
     sel = cmdc.SelectionList().add("persp").add("perspShape")
@@ -62,6 +66,7 @@ def test_childCount():
         RuntimeError,
         invalid_dag.childCount,
     )
+
 
 def test_exclusiveMatrix():
     sel = cmdc.SelectionList().add("persp").add("perspShape")
@@ -103,6 +108,7 @@ def test_extendToShape():
         invalid_dag.extendToShape,
     )
 
+
 @nose.with_setup(teardown=new_scene)
 def test_extendToShapeDirectlyBelow():
     transform = cmds.polyCube()[0]
@@ -143,7 +149,7 @@ def test_fullPathName():
     sel = cmdc.SelectionList().add("persp").add("perspShape")
 
     persp = sel.getDagPath(0)
-    persp_path_name = persp.fullPathName() 
+    persp_path_name = persp.fullPathName()
     assert persp_path_name == "|persp"
 
     persp_shape = sel.getDagPath(1)
@@ -155,12 +161,13 @@ def test_fullPathName():
         invalid_dag.fullPathName,
     )
 
+
 def test_getAPathTo():
     sel = cmdc.SelectionList().add("persp").add("time1")
 
     persp_obj = sel.getDependNode(0)
     persp_dag = sel.getDagPath(0)
-    result = cmdc.DagPath.getAPathTo(persp_obj) 
+    result = cmdc.DagPath.getAPathTo(persp_obj)
     assert result == persp_dag
 
     time_obj = sel.getDependNode(1)
@@ -174,8 +181,9 @@ def test_getAPathTo():
     nose.tools.assert_raises(
         RuntimeError,
         cmdc.DagPath.getAPathTo,
-        invalid_obj 
+        invalid_obj
     )
+
 
 def test_hasFn():
     sel = cmdc.SelectionList().add("persp").add("perspShape")
@@ -192,6 +200,7 @@ def test_hasFn():
         invalid_dag.hasFn,
         cmdc.Fn.kTransform
     )
+
 
 def test_inclusiveMatrix():
     sel = cmdc.SelectionList().add("persp").add("perspShape")
@@ -218,6 +227,7 @@ def test_inclusiveMatrixInverse():
         invalid_dag.inclusiveMatrixInverse,
     )
 
+
 @nose.with_setup(teardown=new_scene)
 def test_instancenumber():
     sel = cmdc.SelectionList().add("|persp|perspShape")
@@ -240,6 +250,7 @@ def test_instancenumber():
         invalid_dag.instanceNumber,
     )
 
+
 @nose.with_setup(teardown=new_scene)
 def test_isInstanced():
     sel = cmdc.SelectionList().add("perspShape")
@@ -255,6 +266,7 @@ def test_isInstanced():
         RuntimeError,
         invalid_dag.isInstanced,
     )
+
 
 @nose.with_setup(teardown=new_scene)
 def test_isTemplated():
@@ -276,6 +288,7 @@ def test_isTemplated():
         invalid_dag.isTemplated,
     )
 
+
 def test_isValid():
     sel = cmdc.SelectionList().add("persp")
     persp = sel.getDagPath(0)
@@ -283,6 +296,7 @@ def test_isValid():
 
     invalid_dag = cmdc.DagPath()
     assert not invalid_dag.isValid()
+
 
 @nose.with_setup(teardown=new_scene)
 def test_isVisible():
@@ -300,6 +314,7 @@ def test_isVisible():
         invalid_dag.isVisible,
     )
 
+
 def test_length():
     sel = cmdc.SelectionList().add("persp").add("perspShape")
 
@@ -315,6 +330,7 @@ def test_length():
         invalid_dag.length,
     )
 
+
 def test_node():
     sel = cmdc.SelectionList().add("persp")
 
@@ -327,6 +343,7 @@ def test_node():
         RuntimeError,
         invalid_dag.length,
     )
+
 
 def test_numberOfShapesDirectlyBelow():
     sel = cmdc.SelectionList().add("persp").add("perspShape")
@@ -343,6 +360,7 @@ def test_numberOfShapesDirectlyBelow():
         invalid_dag.numberOfShapesDirectlyBelow,
     )
 
+
 def test_partialPathName():
     sel = cmdc.SelectionList().add("persp").add("perspShape")
 
@@ -358,6 +376,7 @@ def test_partialPathName():
         invalid_dag.partialPathName,
     )
 
+
 def test_pop():
     sel = cmdc.SelectionList().add("persp").add("perspShape")
 
@@ -371,6 +390,7 @@ def test_pop():
         RuntimeError,
         invalid_dag.pop,
     )
+
 
 def test_push():
     sel = cmdc.SelectionList().add("persp").add("perspShape")
@@ -389,6 +409,7 @@ def test_push():
         cmdc.Object()
     )
 
+
 def test_set():
     sel = cmdc.SelectionList().add("persp")
 
@@ -397,6 +418,7 @@ def test_set():
     dag = cmdc.DagPath()
     dag.set(persp_dag)
     assert dag == persp_dag
+
 
 def test_transform():
     sel = cmdc.SelectionList().add("persp").add("perspShape")

@@ -108,8 +108,10 @@ This should build on any platform, for any Maya with Python available. Including
 
 ```pwsh
 $env:DEVKIT_LOCATION="C:\github\maya-devkit\2020.2\windows"
-.\build_win32.ps1 2020
+pwsh .\build_win32.ps1 2020
 ```
+
+> **NOTE**: Keep `pwsh` to avoid existing your terminal on failure
 
 **Linux**
 
@@ -127,4 +129,48 @@ $env:DEVKIT_LOCATION="C:\github\maya-devkit\2020.2\linux"
 cd cmdc
 docker build -t cmdc .
 .\docker_build_linux.ps1 2020
+```
+
+<br>
+
+### Contributing
+
+Interested in helping out? Here's how to do it.
+
+1. Get a free compiler, like [Visual Studio 2019]()
+1. Download a Maya devkit, such as [this one]()
+2. Clone this repository
+3. Write your header file
+4. Submit a pull-request
+5. Profit
+
+**FAQ**
+
+> Do I need to know C++?
+
+Not really! What we're doing here is mostly busy-work, filling in the many functions exposed by the Maya API. Most if not all trickery has already been done in other functions, so copy/paste is a valid option.
+
+> I don't have any other questions?
+
+Great, then here's what's next.
+
+```bash
+# Tell cmdc about where your devkit is
+$env:DEVKIT_LOCATION="C:\github\mayaexamples\maya-devkit\2020.2\windows"
+
+# Clone the big jeeves out of this repository
+git clone https://github.com/mottosso/cmdc.git
+
+cd cmdc
+
+# Either write your own header from scratch..
+# ..or generate some boiler plate of your favourite header!
+mayapy ./scripts/parse_header.py MFnDagNode.h
+```
+
+From here, you'll have a freshly generated header file, ready to fill in. As you fill things in, you build it like this.
+
+
+```bash
+
 ```
