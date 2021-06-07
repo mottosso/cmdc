@@ -87,31 +87,55 @@ None of the newly created nodes will be added to the DAG until the modifier's do
 
     .def("reparentNode", [](MDagModifier & self, MObject node, MObject newParent = MObject::kNullObj) {
         validate::is_not_null(node, "Cannot reparent a null object.");
-        validate::has_fn(
-            node, MFn::kDagNode, 
-            "Cannot reparent - 'node' must be a 'kDagNode' object , not a '^1s' object."
-        );
 
+        if (!node.hasFn(MFn::kDagNode))
+        {
+            MString error_msg("Cannot parent '^1s' to '^2s' - must specify a 'kDagNode' object , not a '^3s' object.");
+                    error_msg.format(
+                        error_msg,
+                        MFnDependencyNode(node).name(), 
+                        newParent.isNull() ? "the world" : MFnDependencyNode(newParent).name(),
+                        node.apiTypeStr()
+                    );
+            throw pybind11::type_error(error_msg.asChar());
+        }
         if (!newParent.isNull())
         {
-            validate::has_fn(
-                newParent, MFn::kDagNode, 
-                "Cannot reparent - 'parent' must be a 'kDagNode' object , not a '^1s' object."
-            );
+            if (!newParent.hasFn(MFn::kDagNode))
+            {
+                MString error_msg("Cannot parent '^1s' to '^2s' - must specify a 'kDagNode' object , not a '^3s' object.");
+                        error_msg.format(
+                            error_msg,
+                            MFnDependencyNode(node).name(), 
+                            newParent.isNull() ? "the world" : MFnDependencyNode(newParent).name(),
+                            newParent.apiTypeStr()
+                        );
+                throw pybind11::type_error(error_msg.asChar());
+            }
             
             MFnDagNode fn(newParent);
 
             if (fn.isChildOf(node))
             {
-                throw std::invalid_argument("Cannot parent a transform to one of its children.");
+                MString error_msg("Cannot parent '^1s' to one of its children, '^2s'.");
+                        error_msg.format(
+                            error_msg,
+                            MFnDagNode(node).partialPathName(), 
+                            MFnDagNode(newParent).partialPathName()
+                        );
+                throw std::invalid_argument(error_msg.asChar());
             }
         }
 
         if (node == newParent)
         {
-            throw std::invalid_argument("Cannot parent a transform to itself.");
+            MString error_msg("Cannot parent '^1s' to itself.");
+                    error_msg.format(
+                        error_msg,
+                        MFnDagNode(node).partialPathName()
+                    );
+            throw std::invalid_argument(error_msg.asChar());
         }
-
 
         MStatus status = self.reparentNode(node, newParent);
 
