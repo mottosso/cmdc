@@ -1,4 +1,4 @@
-py::class_<MBoundingBox>(m, "BoundingBox")
+BoundingBox
     .def(py::init<>())
 
     .def("center", [](MBoundingBox& self) -> MPoint {

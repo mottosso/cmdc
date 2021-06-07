@@ -1,4 +1,4 @@
-py::class_<MDGModifier>(m, "DGModifier")
+DGModifier
     .def(py::init<>())
 
     .def("addAttribute", [](MDGModifier & self, MObject node, MObject attribute) {
