@@ -68,7 +68,7 @@ echo "(2) Finished in $compile_duration ms"
 echo "(2) ----------------------------"
 echo "(3) Cleaning.."
 
-python ./scripts/mfn.py clean
+python ./scripts/mfn.py clear
 
 t3=$(date +%s.%N)
 clean_duration=$(echo "(($t3 - $t2) * 1000)/1" | bc)
