@@ -30,7 +30,8 @@ py::class_<MDagModifier, MDGModifier>(m, "DagModifier")
         CHECK_STATUS(status)
 
         return result;
-    }, R"pbdoc(Adds an operation to the modifier to create a DAG node of the specified type. 
+    }, 
+R"pbdoc(Adds an operation to the modifier to create a DAG node of the specified type. 
 If a parent DAG node is provided the new node will be parented under it. 
 If no parent is provided and the new DAG node is a transform type then it will be parented under the world. 
 In both of these cases, the method returns the new DAG node.
@@ -43,6 +44,14 @@ and it is the transform node which will be returned by the method, not the child
 None of the newly created nodes will be added to the DAG until the modifier's doIt() method is called.)pbdoc")
 
     .def("createNode", [](MDagModifier & self, MTypeId typeId, MObject parent = MObject::kNullObj) -> MObject {
+        if (!parent.isNull())
+        {
+            validate::has_fn(
+                parent, MFn::kDagNode, 
+                "Cannot createNode - 'parent' must be a 'kDagNode' object , not a '^1s' object."
+            );
+        }
+
         MString type_id_str = MString() + typeId.id();
 
         MStatus status;
@@ -62,7 +71,8 @@ None of the newly created nodes will be added to the DAG until the modifier's do
         CHECK_STATUS(status)
 
         return result;
-    }, 
+    },  // py::arg("typeId"),
+        // py::arg("parent") = MObject::kNullObj,
 R"pbdoc(Adds an operation to the modifier to create a DAG node of the specified type. 
     
 If a parent DAG node is provided the new node will be parented under it. 
