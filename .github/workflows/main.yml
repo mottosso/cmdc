@@ -178,7 +178,7 @@ jobs:
         if: ${{ matrix.generate_stubs }}
         run: |
           mayapy -m pip install --user \
-            pybind11-stubgen==0.8.7 \
+            pybind11-stubgen==0.8.7 && \
           mayapy ./scripts/generate_stubs.py
 
       - name: Artifacts
