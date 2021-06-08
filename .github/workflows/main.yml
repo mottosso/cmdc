@@ -99,7 +99,7 @@ jobs:
            image: "2018.7"  # For docker
            pip: "2.7/get-pip.py"
            devkit: "https://autodesk-adn-transfer.s3.us-west-2.amazonaws.com/ADN%20Extranet/M%26E/Maya/devkit%202018/Autodesk_Maya_2018_7_Update_DEVKIT_Linux.tgz"
-           generate_stubs: false
+           generate_stubs: false # stubs generation only works with python 3
          - maya: "2019.3"
            image: "2019"
            pip: "2.7/get-pip.py"
@@ -179,6 +179,7 @@ jobs:
         run: |
           mayapy -m pip install --user \
             pybind11-stubgen==0.8.7 && \
+          export PYTHONPATH=$(pwd)/build
           mayapy ./scripts/generate_stubs.py
 
       - name: Artifacts
