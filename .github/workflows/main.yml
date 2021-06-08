@@ -186,7 +186,9 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: linux-${{ matrix.maya }}
-          path: build/cmdc.so
+          path: |
+            build/cmdc.so
+            build/cmdc.pyi
 
 
   # maya-osx:
