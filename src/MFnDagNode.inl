@@ -95,7 +95,7 @@ FnDagNode
         }
 
         return std::unique_ptr<MFnDagNode>(new MFnDagNode(object));
-    }))
+    }), py::arg("object"))
 
     .def(py::init([](MDagPath& dagPath) {
         MStatus status;
@@ -111,7 +111,7 @@ FnDagNode
         }
 
         return std::unique_ptr<MFnDagNode>(new MFnDagNode(dagPath));
-    }))
+    }), py::arg("dagPath"))
 
     .def("__repr__", [](const MObject &a) {
         return "<cmdc.FnDagNode()>";
@@ -163,7 +163,8 @@ FnDagNode
 
     .def("child", [](MFnDagNode& self, unsigned int i) -> MObject {
         return self.child(i);
-    }, _doc_child)
+    }, py::arg("child"),
+       _doc_child)
 
     .def("childCount", [](MFnDagNode& self) -> int {
         return self.childCount();
@@ -240,7 +241,9 @@ FnDagNode
 
 
 
-    }, _doc_getConnectedSetsAndMembers)
+    }, py::arg("instanceNumber"),
+       py::arg("renderableSetsOnly"),
+       _doc_getConnectedSetsAndMembers)
 
     .def("getPath", [](MFnDagNode& self) -> MDagPath {
         MDagPath path;
@@ -309,7 +312,8 @@ FnDagNode
 
     .def("parent", [](MFnDagNode& self, unsigned int i) -> MObject {
         return self.parent(i);
-    }, _doc_parent)
+    }, py::arg("i"),
+       _doc_parent)
 
     .def("parentCount", [](MFnDagNode& self) -> int {
         return self.parentCount();
@@ -342,7 +346,8 @@ FnDagNode
             );
         }
 
-    }, _doc_removeChild)
+    }, py::arg("child"),
+       _doc_removeChild)
 
     .def("removeChildAt", [](MFnDagNode& self, unsigned int index) {
         return self.removeChildAt(index);
@@ -355,7 +360,8 @@ FnDagNode
             "Node does not exist or "
             "no valid pointer to Node"
         );
-    }, _doc_setObject)
+    }, py::arg("object"),
+       _doc_setObject)
 
     .def("setObject", [](MFnDagNode& self, MDagPath path) {
         if (!self.setObject(path)) throw std::runtime_error(
