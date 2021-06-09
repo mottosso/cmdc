@@ -1,7 +1,9 @@
+#define _doc_create R"pbdoc(Creates a new dependency node with the given type.)pbdoc"
+#define _doc_findPlug R"pbdoc(Attempt to find a plug for the given attribute.)pbdoc"
 
 FnDependencyNode
     .def(py::init<>())
-    .def(py::init<const MObject &>())
+    .def(py::init<const MObject &>(), py::arg("object"))
 
     .def("create", [](MFnDependencyNode& self,
                       const std::string type) -> MObject {
@@ -9,8 +11,8 @@ FnDependencyNode
         MObject obj = self.create(type.c_str(), &status);
         CHECK_STATUS(status);
         return obj;
-    }, R"pbdoc(Creates a new dependency node with the given type.)pbdoc",
-        py::arg("type"))
+    }, py::arg("type"),
+       _doc_create)
 
     .def("create", [](MFnDependencyNode& self,
                       const std::string type,
@@ -19,9 +21,9 @@ FnDependencyNode
         MObject obj = self.create(type.c_str(), name.c_str(), &status);
         CHECK_STATUS(status);
         return obj;
-    }, R"pbdoc(Creates a new dependency node with the given type.)pbdoc",
-        py::arg("type"),
-        py::arg("name"))
+    }, py::arg("type"),
+       py::arg("name"),
+       _doc_create)
 
     .def("findPlug", [](MFnDependencyNode& self,
                       const std::string attrName,
@@ -30,9 +32,9 @@ FnDependencyNode
         MPlug obj = self.findPlug(attrName.c_str(), wantNetworkedPlug, &status);
         CHECK_STATUS(status);
         return obj;
-    }, R"pbdoc(Attempt to find a plug for the given attribute.)pbdoc",
-        py::arg("attrName"),
-        py::arg("wantNetworkedPlug") = true)
+    }, py::arg("attrName"),
+       py::arg("wantNetworkedPlug") = true,
+       _doc_findPlug)
 
     .def("name", [](MFnDependencyNode& self) -> std::string {
         MStatus status;
