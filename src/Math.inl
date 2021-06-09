@@ -2,20 +2,23 @@ Vector
     .def(py::init<>())
     .def(py::init<const double,
                   const double,
-                  const double>())
-    .def(py::init<const MVector &>())
+                  const double>(),
+                  py::arg("x"),
+                  py::arg("y"),
+                  py::arg("z"))
+    .def(py::init<const MVector &>(), py::arg("src"))
     .def_readwrite("x", &MVector::x)
     .def_readwrite("y", &MVector::y)
     .def_readwrite("z", &MVector::z)
 
-    .def(py::self + py::self)
-    .def(py::self - py::self)
-    .def(py::self += py::self)
-    .def(py::self -= py::self)
-    .def(py::self *= double())
-    .def(py::self /= double())
-    .def(py::self * double())
-    .def(py::self / double())
+    .def(py::self + py::self, py::arg("other"))
+    .def(py::self - py::self, py::arg("other"))
+    .def(py::self += py::self, py::arg("other"))
+    .def(py::self -= py::self, py::arg("other"))
+    .def(py::self *= double(), py::arg("other"))
+    .def(py::self /= double(), py::arg("other"))
+    .def(py::self * double(), py::arg("other"))
+    .def(py::self / double(), py::arg("other"))
 
     .def("__neg__",   [](MVector v) { return -v; }, py::is_operator())
 
@@ -33,20 +36,24 @@ Point
     .def(py::init<const double,
                   const double,
                   const double,
-                  const double>())
-    .def(py::init<const MPoint &>())
+                  const double>(),
+                  py::arg("x"),
+                  py::arg("y"),
+                  py::arg("z"),
+                  py::arg("w"))
+    .def(py::init<const MPoint &>(), py::arg("src"))
     .def_readwrite("x", &MPoint::x)
     .def_readwrite("y", &MPoint::y)
     .def_readwrite("z", &MPoint::z)
     .def_readwrite("w", &MPoint::w)
 
-    .def(py::self + py::self)
-    .def(py::self - py::self)
-    .def(py::self += py::self)
-    .def(py::self -= py::self)
-    .def(py::self *= double())
-    .def(py::self * double())
-    .def(py::self / double())
+    .def(py::self + py::self, py::arg("other"))
+    .def(py::self - py::self, py::arg("other"))
+    .def(py::self += py::self, py::arg("other"))
+    .def(py::self -= py::self, py::arg("other"))
+    .def(py::self *= double(), py::arg("other"))
+    .def(py::self * double(), py::arg("other"))
+    .def(py::self / double(), py::arg("other"))
 
     // Support print()
     .def("__repr__", [](const MPoint &a) {
@@ -60,21 +67,21 @@ Point
 
 Matrix
     .def(py::init<>())
-    .def(py::init<const MMatrix &>())
+    .def(py::init<const MMatrix &>(), py::arg("src"))
 
-    .def(py::self += MMatrix())
-    .def(py::self + MMatrix())
-    .def(py::self -= MMatrix())
-    .def(py::self - MMatrix())
-    .def(py::self *= MMatrix())
-    .def(py::self * MMatrix())
-    .def(py::self *= double()) 
-    .def(py::self * double()) 
-    .def(py::self == MMatrix())
-    .def(py::self != MMatrix())
+    .def(py::self += MMatrix(), py::arg("other"))
+    .def(py::self + MMatrix(), py::arg("other"))
+    .def(py::self -= MMatrix(), py::arg("other"))
+    .def(py::self - MMatrix(), py::arg("other"))
+    .def(py::self *= MMatrix(), py::arg("other"))
+    .def(py::self * MMatrix(), py::arg("other"))
+    .def(py::self *= double(), py::arg("other"))
+    .def(py::self * double(), py::arg("other"))
+    .def(py::self == MMatrix(), py::arg("other"))
+    .def(py::self != MMatrix(), py::arg("other"))
 
-    .def(py::self *= MQuaternion())
-    .def(py::self * MQuaternion())
+    .def(py::self *= MQuaternion(), py::arg("other"))
+    .def(py::self * MQuaternion(), py::arg("other"))
 
     .def("inverse", &MMatrix::inverse)
     .def("adjoint", &MMatrix::adjoint)
@@ -95,9 +102,15 @@ Quaternion
     .def(py::init<const double,
                   const double,
                   const double,
-                  const double>())
-    .def(py::init<const MQuaternion&>())
-    .def(py::init<const MVector&, const MVector&>())
+                  const double>(),
+                  py::arg("x"),
+                  py::arg("y"),
+                  py::arg("z"),
+                  py::arg("w"))
+    .def(py::init<const MQuaternion&>(), py::arg("src"))
+    .def(py::init<const MVector&, const MVector&>(),
+         py::arg("a"),
+         py::arg("b"))
     .def(py::init<const double, const MVector>(),
          py::arg("angle"),
          py::arg("axis"))
