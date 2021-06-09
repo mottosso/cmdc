@@ -1,3 +1,119 @@
+#define _doc_addAttribute R"pbdoc(Adds an operation to the modifier to add a new dynamic attribute to the given dependency node.\
+If the attribute is a compound its children will ae added as well, so only the parent needs to be added using this method.)pbdoc"
+
+#define _doc_addExtensionAttribute R"pbdoc(Adds an operation to the modifier to add a new extension attribute to the given node class.\
+If the attribute is a compound its children will be added as well, so only the parent needs to be added using this method.)pbdoc"
+
+#define _doc_commandToExecute R"pbdoc(Adds an operation to the modifier to execute a MEL command.\
+The command should be fully undoable otherwise unexpected results may occur.\
+If  the command contains no undoable portions whatsoever, the call to doIt() may fail,\
+but only after executing the command. It is best to use multiple commandToExecute() calls\
+rather than batching multiple commands into a single call to commandToExecute().\
+They will still be undone together, as a single undo action by the user,\
+but Maya will better be able to recover if one of the commands fails.)pbdoc"
+
+#define _doc_connect R"pbdoc(Adds an operation to the modifier that connects two plugs in the dependency graph.\
+It is the user's responsibility to ensure that the source and destination attributes are of compatible types.\
+For instance, if the source attribute is a nurbs surface then the destination must also be a nurbs surface.)pbdoc"
+
+#define _doc_createNode R"pbdoc(Adds an operation to the modifier to create a node of the given type.\
+The new node is created and returned but will not be added to the dependency graph until the modifier's doIt() method is called.\
+Raises TypeError if the named node type does not exist or if it is a DAG node type.)pbdoc"
+
+#define _doc_deleteNode R"pbdoc(Adds an operation to the modifier which deletes the specified node from the dependency graph.\
+\
+If deleteNode() is called to delete nodes in a graph while other items are also in the queue,\
+it might end up deleting the nodes before all the other tasks in the queue.\
+\
+In order to prevent unexpected outcomes, the modifier's doIt() should be called before the deleteNode\
+operation is added so that the queue is emptied. Then, deleteNode() can be called and added to the queue.\
+doIt() should be called immediately after to ensure that the queue is emptied before any other operations are added to it.)pbdoc"
+
+#define _doc_disconnect R"pbdoc(Adds an operation to the modifier that breaks a connection between two plugs in the dependency graph.)pbdoc"
+
+#define _doc_doIt R"pbdoc(Executes the modifier's operations.\
+\
+If doIt() is called multiple times in a row, without any intervening calls to undoIt(),\
+then only the operations which were added since the previous doIt() call will be executed.\
+\
+If undoIt() has been called then the next call to doIt() will do all operations.)pbdoc"
+
+#define _doc_linkExtensionAttributeToPlugin R"pbdoc(The plugin can call this method to indicate that the extension attribute defines part of the plugin, regardless of the node type to which it attaches itself.\
+\
+This requirement is used when the plugin is checked to see if it is in use or if is able to be unloaded or if it is required as part of a stored file.\
+For compound attributes only the topmost parent attribute may be passed in and all of its children will be included, recursively.\
+Thus it's not possible to link a child attribute to a plugin by itself.\
+\
+Note that the link is established immediately and is not affected by the modifier's doIt() or undoIt() methods.)pbdoc"
+
+#define _doc_newPlugValue R"pbdoc(Adds an operation to the modifier to set the value of a plug, where value is an MObject data wrapper, such as created by the various MFn*Data classes.)pbdoc"
+
+#define _doc_newPlugValueBool R"pbdoc(Adds an operation to the modifier to set a value onto a bool plug.)pbdoc"
+
+#define _doc_newPlugValueChar R"pbdoc(Adds an operation to the modifier to set a value onto a char (single byte signed integer) plug.)pbdoc"
+
+#define _doc_newPlugValueDouble R"pbdoc(Adds an operation to the modifier to set a value onto a double-precision float plug.)pbdoc"
+
+#define _doc_newPlugValueFloat R"pbdoc(Adds an operation to the modifier to set a value onto a single-precision float plug.)pbdoc"
+
+#define _doc_newPlugValueInt R"pbdoc(Adds an operation to the modifier to set a value onto an int plug.)pbdoc"
+
+#define _doc_newPlugValueMAngle R"pbdoc(Adds an operation to the modifier to set a value onto an angle plug.)pbdoc"
+
+#define _doc_newPlugValueMDistance R"pbdoc(Adds an operation to the modifier to set a value onto a distance plug.)pbdoc"
+
+#define _doc_newPlugValueMTime R"pbdoc(Adds an operation to the modifier to set a value onto a time plug.)pbdoc"
+
+#define _doc_newPlugValueShort R"pbdoc(Adds an operation to the modifier to set a value onto a short integer plug.)pbdoc"
+
+#define _doc_newPlugValueString R"pbdoc(Adds an operation to the modifier to set a value onto a string plug.)pbdoc"
+
+#define _doc_pythonCommandToExecute R"pbdoc(Adds an operation to the modifier to execute a Python command,\
+which can be passed as either a Python callable or a string containing the text of the Python code to be executed.\
+\
+The command should be fully undoable otherwise unexpected results may occur.\
+\
+If the command contains no undoable portions whatsoever, the call to doIt() may fail, but only after executing the command.\
+It is best to use multiple calls rather than batching multiple commands into a single call to pythonCommandToExecute().\
+They will still be undone together, as a single undo action by the user,\
+but Maya will better be able to recover if one of the commands fails.)pbdoc"
+
+#define _doc_removeAttribute R"pbdoc(Adds an operation to the modifier to remove a dynamic attribute from the given dependency node.\
+If the attribute is a compound its children will be removed as well, so only the parent needs to be removed using this method.\
+The attribute MObject passed in will be set to kNullObj.\
+\
+There should be no function sets attached to the attribute at the time of the call as their behaviour may become unpredictable.)pbdoc"
+
+#define _doc_removeExtensionAttribute R"pbdoc(Adds an operation to the modifier to remove an extension attribute from the given node class.\
+If the attribute is a compound its children will be removed as well, so only the parent needs to be removed using this method.\
+The attribute MObject passed in will be set to kNullObj.\
+\
+There should be no function sets attached to the attribute at the time of the call as their behaviour may become unpredictable.)pbdoc"
+
+#define _doc_removeExtensionAttributeIfUnset R"pbdoc(Adds an operation to the modifier to remove an extension attribute from the given node class,\
+but only if there are no nodes in the graph with non-default values for this attribute.\
+If the attribute is a compound its children will be removed as well, so only the parent needs to be removed using this method.\
+The attribute MObject passed in will be set to kNullObj.\
+\
+There should be no function sets attached to the attribute at the time of the call as their behaviour may become unpredictable.)pbdoc"
+
+#define _doc_removeMultiInstance R"pbdoc(Adds an operation to the modifier to remove an element of a multi (array) plug.)pbdoc"
+
+#define _doc_renameAttribute R"pbdoc(Adds an operation to the modifer that renames a dynamic attribute on the given dependency node.)pbdoc"
+
+#define _doc_renameNode R"pbdoc(Adds an operation to the modifer to rename a node.)pbdoc"
+
+#define _doc_setNodeLockState R"pbdoc(Adds an operation to the modifier to set the lockState of a node.)pbdoc"
+
+#define _doc_undoIt R"pbdoc(Undoes all of the operations that have been given to this modifier. It is only valid to call this method after the doIt() method has been called.)pbdoc"
+
+#define _doc_unlinkExtensionAttributeFromPlugin R"pbdoc(The plugin can call this method to indicate that it no longer requires an extension attribute for its operation.\
+This requirement is used when the plugin is checked to see if it is in use, or if is able to be unloaded, or if it is required as part of a stored file.\
+For compound attributes only the topmost parent attribute may be passed in and all of its children will be unlinked, recursively.\
+Thus it's not possible to unlink a child attribute from a plugin by itself.\
+\
+Note that the link is broken immediately and is not affected by the modifier's doIt() or undoIt() methods.)pbdoc"
+
 DGModifier
     .def(py::init<>())
 
@@ -17,9 +133,9 @@ DGModifier
         MStatus status = self.addAttribute(node, attribute);
 
         CHECK_STATUS(status)
-    }, 
-R"pbdoc(Adds an operation to the modifier to add a new dynamic attribute to the given dependency node. 
-If the attribute is a compound its children will ae added as well, so only the parent needs to be added using this method.)pbdoc")
+    }, py::arg("node"),
+       py::arg("attribute"),
+       _doc_addAttribute)
 
     .def("addExtensionAttribute", [](MDGModifier & self, MNodeClass nodeClass, MObject attribute) {
         validate::is_not_null(attribute, "Cannot add null extension attribute.");
@@ -30,9 +146,10 @@ If the attribute is a compound its children will ae added as well, so only the p
 
         MStatus status = self.addExtensionAttribute(nodeClass, attribute);
 
-        CHECK_STATUS(status)    }, 
-R"pbdoc(Adds an operation to the modifier to add a new extension attribute to the given node class. 
-If the attribute is a compound its children will be added as well, so only the parent needs to be added using this method.)pbdoc")
+        CHECK_STATUS(status)
+    }, py::arg("nodeClass"),
+       py::arg("attribute"),
+       _doc_addExtensionAttribute)
 
     .def("commandToExecute", [](MDGModifier & self, std::string command) {
         if (command.empty())
@@ -43,14 +160,8 @@ If the attribute is a compound its children will be added as well, so only the p
         MStatus status = self.commandToExecute(MString(command.c_str()));
 
         CHECK_STATUS(status);
-    }, 
-R"pbdoc(Adds an operation to the modifier to execute a MEL command. 
-The command should be fully undoable otherwise unexpected results may occur. 
-If  the command contains no undoable portions whatsoever, the call to doIt() may fail, 
-but only after executing the command. It is best to use multiple commandToExecute() calls 
-rather than batching multiple commands into a single call to commandToExecute(). 
-They will still be undone together, as a single undo action by the user, 
-but Maya will better be able to recover if one of the commands fails.)pbdoc")
+    }, py::arg("command"),
+       _doc_commandToExecute)
 
     .def("connect", [](MDGModifier & self, MObject sourceNode, MObject sourceAttr, MObject destNode, MObject destAttr) {
         validate::is_not_null(sourceNode, "Cannot connect - sourceNode is null.");
@@ -82,10 +193,11 @@ but Maya will better be able to recover if one of the commands fails.)pbdoc")
         MStatus status = self.connect(sourceNode, sourceAttr, destNode, destAttr);
 
         CHECK_STATUS(status)
-        }, 
-R"pbdoc(Adds an operation to the modifier that connects two plugs in the dependency graph. 
-It is the user's responsibility to ensure that the source and destination attributes are of compatible types. 
-For instance, if the source attribute is a nurbs surface then the destination must also be a nurbs surface.)pbdoc")
+        }, py::arg("sourceNode"),
+           py::arg("sourceAttr"),
+           py::arg("destNode"),
+           py::arg("destAttr"),
+           _doc_connect)
 
     .def("connect", [](MDGModifier & self, MPlug source, MPlug dest) {
         if (source.isNull()) 
@@ -103,10 +215,9 @@ For instance, if the source attribute is a nurbs surface then the destination mu
         MStatus status = self.connect(source, dest);
 
         CHECK_STATUS(status)
-    }, 
-R"pbdoc(Adds an operation to the modifier that connects two plugs in the dependency graph. 
-It is the user's responsibility to ensure that the source and destination attributes are of compatible types. 
-For instance, if the source attribute is a nurbs surface then the destination must also be a nurbs surface.)pbdoc")
+    }, py::arg("source"),
+       py::arg("dest"),
+       _doc_connect)
 
     .def("createNode", [](MDGModifier & self, std::string type) -> MObject {
         MString type_name(type.c_str());
@@ -126,10 +237,8 @@ For instance, if the source attribute is a nurbs surface then the destination mu
         }
 
         return result;
-    }, 
-R"pbdoc(Adds an operation to the modifier to create a node of the given type.
-The new node is created and returned but will not be added to the dependency graph until the modifier's doIt() method is called. 
-Raises TypeError if the named node type does not exist or if it is a DAG node type.)pbdoc")
+    }, py::arg("type"),
+       _doc_createNode)
 
     .def("createNode", [](MDGModifier & self, MTypeId typeId) -> MObject {
         MString type_id_str = MString() + typeId.id();
@@ -149,10 +258,8 @@ Raises TypeError if the named node type does not exist or if it is a DAG node ty
         }
 
         return result;
-    }, 
-R"pbdoc(Adds an operation to the modifier to create a node of the given type. 
-The new node is created and returned but will not be added to the dependency graph until the modifier's doIt() method is called. 
-Raises TypeError if the named node type does not exist or if it is a DAG node type.)pbdoc")
+    }, py::arg("typeId"),
+       _doc_createNode)
 
     .def("deleteNode", [](MDGModifier & self, MObject node) {
         validate::is_not_null(node, "Cannot delete a null object.");
@@ -167,15 +274,8 @@ Raises TypeError if the named node type does not exist or if it is a DAG node ty
         MStatus status = self.deleteNode(node);
 
         CHECK_STATUS(status)
-    }, 
-R"pbdoc(Adds an operation to the modifier which deletes the specified node from the dependency graph. 
-
-If deleteNode() is called to delete nodes in a graph while other items are also in the queue, 
-it might end up deleting the nodes before all the other tasks in the queue. 
-
-In order to prevent unexpected outcomes, the modifier's doIt() should be called before the deleteNode 
-operation is added so that the queue is emptied. Then, deleteNode() can be called and added to the queue. 
-doIt() should be called immediately after to ensure that the queue is emptied before any other operations are added to it.)pbdoc")
+    }, py::arg("node"),
+       _doc_deleteNode)
 
     .def("disconnect", [](MDGModifier & self, MObject sourceNode, MObject sourceAttr, MObject destNode, MObject destAttr) {
         validate::is_not_null(sourceNode, "Cannot disconnect - sourceNode is null.");
@@ -204,7 +304,11 @@ doIt() should be called immediately after to ensure that the queue is emptied be
         
         MStatus status = self.disconnect(sourceNode, sourceAttr, destNode, destAttr);
         CHECK_STATUS(status)
-    }, R"pbdoc(Adds an operation to the modifier that breaks a connection between two plugs in the dependency graph.)pbdoc")
+    }, py::arg("sourceNode"),
+       py::arg("sourceAttr"),
+       py::arg("destNode"),
+       py::arg("destAttr"), 
+       _doc_disconnect)
 
     .def("disconnect", [](MDGModifier & self, MPlug source, MPlug dest) {
         if (source.isNull()) 
@@ -219,19 +323,16 @@ doIt() should be called immediately after to ensure that the queue is emptied be
 
         MStatus status = self.disconnect(source, dest);
         CHECK_STATUS(status)    
-    }, R"pbdoc(Adds an operation to the modifier that breaks a connection between two plugs in the dependency graph.)pbdoc")
+    }, py::arg("source"),
+       py::arg("dest"), 
+       _doc_disconnect)
 
     .def("doIt", [](MDGModifier & self) {
         MStatus status = self.doIt();
 
         CHECK_STATUS(status)
     }, 
-R"pbdoc(Executes the modifier's operations. 
-    
-If doIt() is called multiple times in a row, without any intervening calls to undoIt(), 
-then only the operations which were added since the previous doIt() call will be executed. 
-
-If undoIt() has been called then the next call to doIt() will do all operations.)pbdoc")
+    _doc_doIt)
 
     .def("linkExtensionAttributeToPlugin", [](MDGModifier & self, MObject plugin, MObject attribute) {        
         validate::is_not_null(plugin, "Cannot link extension attribute to a null plugin.");
@@ -249,14 +350,9 @@ If undoIt() has been called then the next call to doIt() will do all operations.
         MStatus status = self.linkExtensionAttributeToPlugin(plugin, attribute);
 
         CHECK_STATUS(status)
-    }, 
-R"pbdoc(The plugin can call this method to indicate that the extension attribute defines part of the plugin, regardless of the node type to which it attaches itself. 
-
-This requirement is used when the plugin is checked to see if it is in use or if is able to be unloaded or if it is required as part of a stored file. 
-For compound attributes only the topmost parent attribute may be passed in and all of its children will be included, recursively. 
-Thus it's not possible to link a child attribute to a plugin by itself. 
-
-Note that the link is established immediately and is not affected by the modifier's doIt() or undoIt() methods.)pbdoc")
+    }, py::arg("plugin"),
+       py::arg("attribute"),
+       _doc_linkExtensionAttributeToPlugin)
 
     .def("newPlugValue", [](MDGModifier & self, MPlug plug, MObject value) {
         plug::assert_not_null(plug);
@@ -264,7 +360,9 @@ Note that the link is established immediately and is not affected by the modifie
         MStatus status = self.newPlugValue(plug, value);
 
         CHECK_STATUS(status);
-    }, R"pbdoc(Adds an operation to the modifier to set the value of a plug, where value is an MObject data wrapper, such as created by the various MFn*Data classes.)pbdoc")
+    }, py::arg("plug"),
+       py::arg("value"), 
+       _doc_newPlugValue)
 
     .def("newPlugValueBool", [](MDGModifier & self, MPlug plug, bool value) {
         plug::assert_not_null(plug);
@@ -272,7 +370,9 @@ Note that the link is established immediately and is not affected by the modifie
         MStatus status = self.newPlugValueBool(plug, value);
 
         CHECK_STATUS(status);
-    }, R"pbdoc(Adds an operation to the modifier to set a value onto a bool plug.)pbdoc")
+    }, py::arg("plug"),
+       py::arg("value"),
+       _doc_newPlugValueBool)
 
     .def("newPlugValueChar", [](MDGModifier & self, MPlug plug, int value) {
         plug::assert_not_null(plug);
@@ -280,7 +380,9 @@ Note that the link is established immediately and is not affected by the modifie
         MStatus status = self.newPlugValueChar(plug, value);
 
         CHECK_STATUS(status);
-    }, R"pbdoc(Adds an operation to the modifier to set a value onto a char (single byte signed integer) plug.)pbdoc")
+    }, py::arg("plug"),
+       py::arg("value"), 
+       _doc_newPlugValueChar)
 
     .def("newPlugValueDouble", [](MDGModifier & self, MPlug plug, double value) {
         plug::assert_not_null(plug);
@@ -288,7 +390,9 @@ Note that the link is established immediately and is not affected by the modifie
         MStatus status = self.newPlugValueDouble(plug, value);
 
         CHECK_STATUS(status);
-    }, R"pbdoc(Adds an operation to the modifier to set a value onto a double-precision float plug.)pbdoc")
+    }, py::arg("plug"),
+       py::arg("value"),
+       _doc_newPlugValueDouble)
 
     .def("newPlugValueFloat", [](MDGModifier & self, MPlug plug, float value) {
         plug::assert_not_null(plug);
@@ -296,7 +400,9 @@ Note that the link is established immediately and is not affected by the modifie
         MStatus status = self.newPlugValueFloat(plug, value);
 
         CHECK_STATUS(status);
-    }, R"pbdoc(Adds an operation to the modifier to set a value onto a single-precision float plug.)pbdoc")
+    }, py::arg("plug"),
+       py::arg("value"),
+       _doc_newPlugValueFloat)
 
     .def("newPlugValueInt", [](MDGModifier & self, MPlug plug, int value) {
         plug::assert_not_null(plug);
@@ -304,7 +410,9 @@ Note that the link is established immediately and is not affected by the modifie
         MStatus status = self.newPlugValueInt(plug, value);
 
         CHECK_STATUS(status);
-    }, R"pbdoc(Adds an operation to the modifier to set a value onto an int plug.)pbdoc")
+    }, py::arg("plug"),
+       py::arg("value"),
+    _doc_newPlugValueInt)
 
     .def("newPlugValueMAngle", [](MDGModifier & self, MPlug plug, MAngle value) {
         plug::assert_not_null(plug);
@@ -312,7 +420,9 @@ Note that the link is established immediately and is not affected by the modifie
         MStatus status = self.newPlugValueMAngle(plug, value);
 
         CHECK_STATUS(status);
-    }, R"pbdoc(Adds an operation to the modifier to set a value onto an angle plug.)pbdoc")
+    }, py::arg("plug"),
+       py::arg("value"),
+       _doc_newPlugValueMAngle)
 
     .def("newPlugValueMDistance", [](MDGModifier & self, MPlug plug, MDistance value) {
         plug::assert_not_null(plug);
@@ -320,7 +430,9 @@ Note that the link is established immediately and is not affected by the modifie
         MStatus status = self.newPlugValueMDistance(plug, value);
 
         CHECK_STATUS(status);
-    }, R"pbdoc(Adds an operation to the modifier to set a value onto a distance plug.)pbdoc")
+    }, py::arg("plug"),
+       py::arg("value"),
+       _doc_newPlugValueMDistance)
 
     .def("newPlugValueMTime", [](MDGModifier & self, MPlug plug, MTime value) {
         plug::assert_not_null(plug);
@@ -328,15 +440,19 @@ Note that the link is established immediately and is not affected by the modifie
         MStatus status = self.newPlugValueMTime(plug, value);
 
         CHECK_STATUS(status);
-    }, R"pbdoc(Adds an operation to the modifier to set a value onto a time plug.)pbdoc")
+    }, py::arg("plug"),
+       py::arg("value"),
+       _doc_newPlugValueMTime)
 
     .def("newPlugValueShort", [](MDGModifier & self, MPlug plug, short value) {
         plug::assert_not_null(plug);
 
         MStatus status = self.newPlugValueShort(plug, value);
 
-        CHECK_STATUS(status);
-    }, R"pbdoc(Adds an operation to the modifier to set a value onto a short integer plug.)pbdoc")
+        CHECK_STATUS(status)
+    }, py::arg("plug"),
+       py::arg("value"),
+       _doc_newPlugValueShort)
 
     .def("newPlugValueString", [](MDGModifier & self, MPlug plug, std::string value) {
         plug::assert_not_null(plug);
@@ -344,7 +460,9 @@ Note that the link is established immediately and is not affected by the modifie
         MStatus status = self.newPlugValueString(plug, MString(value.c_str()));
 
         CHECK_STATUS(status);
-    }, R"pbdoc(Adds an operation to the modifier to set a value onto a string plug.)pbdoc")
+    }, py::arg("plug"),
+       py::arg("value"),
+       _doc_newPlugValueString)
 
     .def("pythonCommandToExecute", [](MDGModifier & self, std::string command) {
         if (command.empty())
@@ -355,16 +473,8 @@ Note that the link is established immediately and is not affected by the modifie
         MStatus status = self.pythonCommandToExecute(MString(command.c_str()));
 
         CHECK_STATUS(status);
-    },     
-R"pbdoc(Adds an operation to the modifier to execute a Python command, 
-which can be passed as either a Python callable or a string containing the text of the Python code to be executed. 
-
-The command should be fully undoable otherwise unexpected results may occur. 
-
-If the command contains no undoable portions whatsoever, the call to doIt() may fail, but only after executing the command. 
-It is best to use multiple calls rather than batching multiple commands into a single call to pythonCommandToExecute(). 
-They will still be undone together, as a single undo action by the user, 
-but Maya will better be able to recover if one of the commands fails.)pbdoc")
+    }, py::arg("command"),
+       _doc_pythonCommandToExecute)
 
     .def("removeAttribute", [](MDGModifier & self, MObject node, MObject attribute) {            
         validate::is_not_null(node, "Cannot remove an attribute from a null node.");
@@ -382,12 +492,9 @@ but Maya will better be able to recover if one of the commands fails.)pbdoc")
         MStatus status = self.removeAttribute(node, attribute);
 
         CHECK_STATUS(status)
-    }, 
-R"pbdoc(Adds an operation to the modifier to remove a dynamic attribute from the given dependency node. 
-If the attribute is a compound its children will be removed as well, so only the parent needs to be removed using this method.  
-The attribute MObject passed in will be set to kNullObj. 
-
-There should be no function sets attached to the attribute at the time of the call as their behaviour may become unpredictable.)pbdoc")
+    }, py::arg("node"),
+       py::arg("attribute"),
+       _doc_removeAttribute)
 
     .def("removeExtensionAttribute", [](MDGModifier & self, MNodeClass nodeClass, MObject attribute) {
         validate::is_not_null(attribute, "Cannot remove null extension attribute.");
@@ -399,12 +506,8 @@ There should be no function sets attached to the attribute at the time of the ca
         MStatus status = self.removeExtensionAttribute(nodeClass, attribute);
 
         CHECK_STATUS(status)
-    }, 
-R"pbdoc(Adds an operation to the modifier to remove an extension attribute from the given node class. 
-If the attribute is a compound its children will be removed as well, so only the parent needs to be removed using this method. 
-The attribute MObject passed in will be set to kNullObj. 
-
-There should be no function sets attached to the attribute at the time of the call as their behaviour may become unpredictable.)pbdoc")
+    }, py::arg("nodeClass"), py::arg("attribute"),
+    _doc_removeExtensionAttribute)
 
     .def("removeExtensionAttributeIfUnset", [](MDGModifier & self, MNodeClass nodeClass, MObject attribute) {
         validate::is_not_null(attribute, "Cannot remove null extension attribute (if unset).");
@@ -416,13 +519,9 @@ There should be no function sets attached to the attribute at the time of the ca
         MStatus status = self.removeExtensionAttribute(nodeClass, attribute);
 
         CHECK_STATUS(status)    
-    }, 
-R"pbdoc(Adds an operation to the modifier to remove an extension attribute from the given node class,
-but only if there are no nodes in the graph with non-default values for this attribute. 
-If the attribute is a compound its children will be removed as well, so only the parent needs to be removed using this method. 
-The attribute MObject passed in will be set to kNullObj. 
-
-There should be no function sets attached to the attribute at the time of the call as their behaviour may become unpredictable.)pbdoc")
+    }, py::arg("nodeClass"),
+       py::arg("attribute"),
+       _doc_removeExtensionAttributeIfUnset)
 
     .def("removeMultiInstance", [](MDGModifier & self, MPlug plug, bool breakConnections) {
         plug::assert_not_null(plug);
@@ -431,7 +530,9 @@ There should be no function sets attached to the attribute at the time of the ca
         MStatus status = self.removeMultiInstance(plug, breakConnections);
 
         CHECK_STATUS(status);
-    }, R"pbdoc(Adds an operation to the modifier to remove an element of a multi (array) plug.)pbdoc")
+    }, py::arg("plug"),
+       py::arg("breakConnections"),
+       _doc_removeMultiInstance)
 
     .def("renameAttribute", [](MDGModifier & self, MObject node, MObject attribute, std::string shortName, std::string longName) {
         validate::is_not_null(node, "Cannot rename an attribute from a null node.");
@@ -459,7 +560,11 @@ There should be no function sets attached to the attribute at the time of the ca
 
         CHECK_STATUS(status)
 
-    }, R"pbdoc(Adds an operation to the modifer that renames a dynamic attribute on the given dependency node.)pbdoc")
+    }, py::arg("node"),
+       py::arg("attribute"),
+       py::arg("shortName"),
+       py::arg("longName"),
+       _doc_renameAttribute)
 
     .def("renameNode", [](MDGModifier & self, MObject node, std::string newName) {
         validate::is_not_null(node, "Cannot rename a null node.");
@@ -476,7 +581,9 @@ There should be no function sets attached to the attribute at the time of the ca
         MStatus status = self.renameNode(node, MString(newName.c_str()));
 
         CHECK_STATUS(status)
-    }, R"pbdoc(Adds an operation to the modifer to rename a node.)pbdoc")
+    }, py::arg("node"),
+       py::arg("newName"),
+       _doc_renameNode)
 
     .def("setNodeLockState", [](MDGModifier & self, MObject node, bool newState) {
         validate::is_not_null(node, "Cannot un/lock a null node.");
@@ -488,13 +595,15 @@ There should be no function sets attached to the attribute at the time of the ca
         MStatus status = self.setNodeLockState(node, newState);
 
         CHECK_STATUS(status)
-    }, R"pbdoc(Adds an operation to the modifier to set the lockState of a node.)pbdoc")
+    }, py::arg("node"),
+       py::arg("newState"),
+       _doc_setNodeLockState)
 
     .def("undoIt", [](MDGModifier & self) {
         MStatus status = self.undoIt();
 
         CHECK_STATUS(status)
-    }, R"pbdoc(Undoes all of the operations that have been given to this modifier. It is only valid to call this method after the doIt() method has been called.)pbdoc")
+    }, _doc_undoIt)
 
     .def("unlinkExtensionAttributeFromPlugin", [](MDGModifier & self, MObject plugin, MObject attribute) {
         validate::is_not_null(plugin, "Cannot unlink extension attribute from a null plugin.");
@@ -511,11 +620,7 @@ There should be no function sets attached to the attribute at the time of the ca
 
         MStatus status = self.unlinkExtensionAttributeFromPlugin(plugin, attribute);
 
-        CHECK_STATUS(status)
-    }, 
-R"pbdoc(The plugin can call this method to indicate that it no longer requires an extension attribute for its operation. 
-This requirement is used when the plugin is checked to see if it is in use, or if is able to be unloaded, or if it is required as part of a stored file. 
-For compound attributes only the topmost parent attribute may be passed in and all of its children will be unlinked, recursively. 
-Thus it's not possible to unlink a child attribute from a plugin by itself. 
-
-Note that the link is broken immediately and is not affected by the modifier's doIt() or undoIt() methods.)pbdoc");
+        CHECK_STATUS(status);
+    }, py::arg("plugin"),
+       py::arg("attribute"),
+       _doc_unlinkExtensionAttributeFromPlugin);
