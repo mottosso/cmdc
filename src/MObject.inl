@@ -1,7 +1,7 @@
-#define _doc_Object_isNull R"pbdoc(Return True if the internal Maya Object does not exist.)pbdoc"
-#define _doc_Object_hasFn R"pbdoc(Return True if the internal Maya Object is compatible with the given Function Type.)pbdoc"
-#define _doc_Object_apiType R"pbdoc(Return the exact type of the internal Maya Object.)pbdoc"
-#define _doc_Object_apiTypeStr R"pbdoc(Return the type name of the internal Maya Object.)pbdoc"
+#define _doc_Object_isNull "Return True if the internal Maya Object does not exist."
+#define _doc_Object_hasFn "Return True if the internal Maya Object is compatible with the given Function Type."
+#define _doc_Object_apiType "Return the exact type of the internal Maya Object."
+#define _doc_Object_apiTypeStr "Return the type name of the internal Maya Object."
 
 Object
     .def_property_readonly_static("kNullObj", [](py::object /* self */) { return MObject::kNullObj; })
