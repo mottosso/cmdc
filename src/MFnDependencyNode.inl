@@ -1,5 +1,5 @@
-#define _doc_create R"pbdoc(Creates a new dependency node with the given type.)pbdoc"
-#define _doc_findPlug R"pbdoc(Attempt to find a plug for the given attribute.)pbdoc"
+#define _doc_FnDependencyNode_create R"pbdoc(Creates a new dependency node with the given type.)pbdoc"
+#define _doc_FnDependencyNode_findPlug R"pbdoc(Attempt to find a plug for the given attribute.)pbdoc"
 
 FnDependencyNode
     .def(py::init<>())
@@ -12,7 +12,7 @@ FnDependencyNode
         CHECK_STATUS(status);
         return obj;
     }, py::arg("type"),
-       _doc_create)
+       _doc_FnDependencyNode_create)
 
     .def("create", [](MFnDependencyNode& self,
                       const std::string type,
@@ -23,7 +23,7 @@ FnDependencyNode
         return obj;
     }, py::arg("type"),
        py::arg("name"),
-       _doc_create)
+       _doc_FnDependencyNode_create)
 
     .def("findPlug", [](MFnDependencyNode& self,
                       const std::string attrName,
@@ -34,7 +34,7 @@ FnDependencyNode
         return obj;
     }, py::arg("attrName"),
        py::arg("wantNetworkedPlug") = true,
-       _doc_findPlug)
+       _doc_FnDependencyNode_findPlug)
 
     .def("name", [](MFnDependencyNode& self) -> std::string {
         MStatus status;

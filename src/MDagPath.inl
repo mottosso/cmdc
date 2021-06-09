@@ -1,68 +1,68 @@
-#define _doc_apiType R"pbdoc(Returns the type of the object at the end of the path.)pbdoc"
+#define _doc_DagPath_apiType R"pbdoc(Returns the type of the object at the end of the path.)pbdoc"
 
-#define _doc_child R"pbdoc(Returns the specified child of the object at the end of the path.)pbdoc"
+#define _doc_DagPath_child R"pbdoc(Returns the specified child of the object at the end of the path.)pbdoc"
 
-#define _doc_childCount R"pbdoc(Returns the number of objects parented directly beneath the object at the end of the path.)pbdoc"
+#define _doc_DagPath_childCount R"pbdoc(Returns the number of objects parented directly beneath the object at the end of the path.)pbdoc"
 
-#define _doc_exclusiveMatrix R"pbdoc(Returns the matrix for all transforms in the path, excluding the end object.)pbdoc"
+#define _doc_DagPath_exclusiveMatrix R"pbdoc(Returns the matrix for all transforms in the path, excluding the end object.)pbdoc"
 
-#define _doc_exclusiveMatrixInverse R"pbdoc(Returns the inverse of exclusiveMatrix().)pbdoc"
+#define _doc_DagPath_exclusiveMatrixInverse R"pbdoc(Returns the inverse of exclusiveMatrix().)pbdoc"
 
-#define _doc_extendToShape R"pbdoc(If the object at the end of this path is a transform and there is a shape node directly beneath it in the hierarchy, then the path is extended to that geometry node.\
+#define _doc_DagPath_extendToShape R"pbdoc(If the object at the end of this path is a transform and there is a shape node directly beneath it in the hierarchy, then the path is extended to that geometry node.\
 \
 NOTE: This method will fail if there multiple shapes below the transform.)pbdoc"
 
-#define _doc_extendToShapeDirectlyBelow R"pbdoc(This method is used if the end of the path is a transform and there are shapes directly below the transform.\
+#define _doc_DagPath_extendToShapeDirectlyBelow R"pbdoc(This method is used if the end of the path is a transform and there are shapes directly below the transform.\
 The shape to extend to is set by passing in an appropriate index parameter.\
 Use the `numberOfShapesDirectlyBelow()` method to determine how many shapes are below)pbdoc"
 
-#define _doc_fullPathName R"pbdoc(Returns a string representation of the path from the DAG root to the path's last node.)pbdoc"
+#define _doc_DagPath_fullPathName R"pbdoc(Returns a string representation of the path from the DAG root to the path's last node.)pbdoc"
 
-#define _doc_getAPathTo R"pbdoc(Returns the first path found to the given node.)pbdoc"
+#define _doc_DagPath_getAPathTo R"pbdoc(Returns the first path found to the given node.)pbdoc"
 
-#define _doc_getAllPathsBelow R"pbdoc(Returns all paths to the given node.)pbdoc"
+#define _doc_DagPath_getAllPathsBelow R"pbdoc(Returns all paths to the given node.)pbdoc"
 
-#define _doc_getAllPathsTo R"pbdoc(Returns all paths to the given node.)pbdoc"
+#define _doc_DagPath_getAllPathsTo R"pbdoc(Returns all paths to the given node.)pbdoc"
 
-#define _doc_getDrawOverrideInfo R"pbdoc(Returns the draw override information for this path.)pbdoc"
+#define _doc_DagPath_getDrawOverrideInfo R"pbdoc(Returns the draw override information for this path.)pbdoc"
 
-#define _doc_getPath R"pbdoc(Returns the specified sub-path of this path.)pbdoc"
+#define _doc_DagPath_getPath R"pbdoc(Returns the specified sub-path of this path.)pbdoc"
 
-#define _doc_hasFn R"pbdoc(Returns True if the object at the end of the path supports the given function set.)pbdoc"
+#define _doc_DagPath_hasFn R"pbdoc(Returns True if the object at the end of the path supports the given function set.)pbdoc"
 
-#define _doc_inclusiveMatrix R"pbdoc(Returns the matrix for all transforms in the path, including the end object, if it is a transform.)pbdoc"
+#define _doc_DagPath_inclusiveMatrix R"pbdoc(Returns the matrix for all transforms in the path, including the end object, if it is a transform.)pbdoc"
 
-#define _doc_inclusiveMatrixInverse R"pbdoc(Returns the inverse of inclusiveMatrix().)pbdoc"
+#define _doc_DagPath_inclusiveMatrixInverse R"pbdoc(Returns the inverse of inclusiveMatrix().)pbdoc"
 
-#define _doc_instanceNumber R"pbdoc(Returns the instance number of this path to the object at the end.)pbdoc"
+#define _doc_DagPath_instanceNumber R"pbdoc(Returns the instance number of this path to the object at the end.)pbdoc"
 
-#define _doc_isInstanced R"pbdoc(Returns True if the object at the end of the path can be reached by more than one path.)pbdoc"
+#define _doc_DagPath_isInstanced R"pbdoc(Returns True if the object at the end of the path can be reached by more than one path.)pbdoc"
 
-#define _doc_isTemplated R"pbdoc(Returns true if the DAG Node at the end of the path is templated.)pbdoc"
+#define _doc_DagPath_isTemplated R"pbdoc(Returns true if the DAG Node at the end of the path is templated.)pbdoc"
 
-#define _doc_isValid R"pbdoc(Returns True if this is a valid path.)pbdoc"
+#define _doc_DagPath_isValid R"pbdoc(Returns True if this is a valid path.)pbdoc"
 
-#define _doc_isVisible R"pbdoc(Returns true if the DAG Node at the end of the path is visible.)pbdoc"
+#define _doc_DagPath_isVisible R"pbdoc(Returns true if the DAG Node at the end of the path is visible.)pbdoc"
 
-#define _doc_length R"pbdoc(Returns the number of nodes on the path, not including the DAG's root node.)pbdoc"
+#define _doc_DagPath_length R"pbdoc(Returns the number of nodes on the path, not including the DAG's root node.)pbdoc"
 
-#define _doc_matchTransform R"pbdoc(Extends the path to the specified shape node parented directly beneath the transform at the current end of the path.)pbdoc"
+#define _doc_DagPath_matchTransform R"pbdoc(Extends the path to the specified shape node parented directly beneath the transform at the current end of the path.)pbdoc"
 
-#define _doc_node R"pbdoc(Returns the DAG node at the end of the path.)pbdoc"
+#define _doc_DagPath_node R"pbdoc(Returns the DAG node at the end of the path.)pbdoc"
 
-#define _doc_numberOfShapesDirectlyBelow R"pbdoc(Returns the number of shape nodes parented directly beneath the transform at the end of the path.)pbdoc"
+#define _doc_DagPath_numberOfShapesDirectlyBelow R"pbdoc(Returns the number of shape nodes parented directly beneath the transform at the end of the path.)pbdoc"
 
-#define _doc_partialPathName R"pbdoc(Returns the minimum string representation which will uniquely identify the path.)pbdoc"
+#define _doc_DagPath_partialPathName R"pbdoc(Returns the minimum string representation which will uniquely identify the path.)pbdoc"
 
-#define _doc_pathCount R"pbdoc(Returns the number of sub-paths which make up this path.)pbdoc"
+#define _doc_DagPath_pathCount R"pbdoc(Returns the number of sub-paths which make up this path.)pbdoc"
 
-#define _doc_pop R"pbdoc(Removes objects from the end of the path.)pbdoc"
+#define _doc_DagPath_pop R"pbdoc(Removes objects from the end of the path.)pbdoc"
 
-#define _doc_push R"pbdoc(Extends the path to the specified child object, which must be parented directly beneath the object currently at the end of the path.)pbdoc"
+#define _doc_DagPath_push R"pbdoc(Extends the path to the specified child object, which must be parented directly beneath the object currently at the end of the path.)pbdoc"
 
-#define _doc_set R"pbdoc(Replaces the current path held by this object with another.)pbdoc"
+#define _doc_DagPath_set R"pbdoc(Replaces the current path held by this object with another.)pbdoc"
 
-#define _doc_transform R"pbdoc(Returns the last transform node on the path.)pbdoc"
+#define _doc_DagPath_transform R"pbdoc(Returns the last transform node on the path.)pbdoc"
 
 DagPath
     .def(py::init<>())
@@ -72,7 +72,7 @@ DagPath
     .def("apiType", [](MDagPath & self) -> MFn::Type {
         // Not throwing anything here since apiType returns kInvalid when it fails.
         return self.apiType();
-    }, _doc_apiType)
+    }, _doc_DagPath_apiType)
 
     .def("child", [](MDagPath & self, unsigned int i) -> MObject {
         if (!self.isValid()) {
@@ -90,7 +90,7 @@ DagPath
 
         return result;
     }, py::arg("i"),
-       _doc_child)
+       _doc_DagPath_child)
 
     .def("childCount", [](MDagPath & self) -> int {
         if (!self.isValid()) {
@@ -105,7 +105,7 @@ DagPath
         }
 
         return result;
-    }, _doc_childCount)
+    }, _doc_DagPath_childCount)
 
     .def("exclusiveMatrix", [](MDagPath & self) -> MMatrix {
         if (!self.isValid()) {
@@ -120,7 +120,7 @@ DagPath
         }
 
         return result;
-    }, _doc_exclusiveMatrix)
+    }, _doc_DagPath_exclusiveMatrix)
 
     .def("exclusiveMatrixInverse", [](MDagPath & self) -> MMatrix {
         if (!self.isValid()) {
@@ -134,7 +134,7 @@ DagPath
         }
 
         return result;
-    }, _doc_exclusiveMatrixInverse)
+    }, _doc_DagPath_exclusiveMatrixInverse)
 
     .def("extendToShape", [](MDagPath & self) {
         if (!self.isValid()) {
@@ -146,7 +146,7 @@ DagPath
         if (!status) {
             throw std::logic_error(status.errorString().asChar());
         }
-    }, _doc_extendToShape)
+    }, _doc_DagPath_extendToShape)
 
     .def("extendToShapeDirectlyBelow", [](MDagPath & self, unsigned int index) {
         if (!self.isValid()) {
@@ -165,7 +165,7 @@ DagPath
             throw std::logic_error(status.errorString().asChar());
         }
     }, py::arg("index"),
-       _doc_extendToShapeDirectlyBelow)
+       _doc_DagPath_extendToShapeDirectlyBelow)
 
     .def("fullPathName", [](MDagPath & self) -> std::string {
         if (!self.isValid()) {
@@ -180,7 +180,7 @@ DagPath
         }
 
         return result;
-    }, _doc_fullPathName)
+    }, _doc_DagPath_fullPathName)
 
     .def_static("getAPathTo", [](MObject node) -> MDagPath {
         if (node.isNull()) {
@@ -201,26 +201,26 @@ DagPath
 
         return path;
     }, py::arg("node"),
-       _doc_getAPathTo)
+       _doc_DagPath_getAPathTo)
 
     .def_static("getAllPathsBelow", [](MObject node) -> std::vector<MDagPath> {
         throw std::logic_error{"Function not yet implemented."};
     }, py::arg("node"),
-       _doc_getAllPathsBelow)
+       _doc_DagPath_getAllPathsBelow)
 
     .def_static("getAllPathsTo", [](MObject node) -> std::vector<MDagPath> {
         throw std::logic_error{"Function not yet implemented."};
     }, py::arg("node"),
-       _doc_getAllPathsTo)
+       _doc_DagPath_getAllPathsTo)
 
     .def("getDrawOverrideInfo", [](MDagPath & self) -> MDAGDrawOverrideInfo {
         throw std::logic_error{"Function not yet implemented."};
-    }, _doc_getDrawOverrideInfo)
+    }, _doc_DagPath_getDrawOverrideInfo)
 
     .def("getPath", [](MDagPath & self, unsigned int i = 0) -> MDagPath {
         throw std::logic_error{"Function not yet implemented."};
     }, py::arg("i"),
-       _doc_getPath)
+       _doc_DagPath_getPath)
 
     .def("hasFn", [](MDagPath & self, MFn::Type type) -> bool {
         if (!self.isValid()) {
@@ -236,14 +236,14 @@ DagPath
 
         return result;
     }, py::arg("type"),
-       _doc_hasFn)
+       _doc_DagPath_hasFn)
 
     .def("inclusiveMatrix", [](MDagPath & self) -> MMatrix {
         if (!self.isValid()) {
             throw std::logic_error("Call on invalid DagPath.");
         }
         return self.inclusiveMatrix();
-    }, _doc_inclusiveMatrix)
+    }, _doc_DagPath_inclusiveMatrix)
 
     .def("inclusiveMatrixInverse", [](MDagPath & self) -> MMatrix {
         if (!self.isValid()) {
@@ -258,7 +258,7 @@ DagPath
         }
 
         return result;
-    }, _doc_inclusiveMatrixInverse)
+    }, _doc_DagPath_inclusiveMatrixInverse)
 
     .def("instanceNumber", [](MDagPath & self) -> int {
         if (!self.isValid()) {
@@ -275,7 +275,7 @@ DagPath
         }
 
         return result;
-    }, _doc_instanceNumber)
+    }, _doc_DagPath_instanceNumber)
 
     .def("isInstanced", [](MDagPath & self) -> bool {
         if (!self.isValid()) {
@@ -290,7 +290,7 @@ DagPath
         }
 
         return result;
-    }, _doc_isInstanced)
+    }, _doc_DagPath_isInstanced)
 
     .def("isTemplated", [](MDagPath & self) -> bool {
         if (!self.isValid()) {
@@ -305,7 +305,7 @@ DagPath
         }
 
         return result;
-    }, _doc_isTemplated)
+    }, _doc_DagPath_isTemplated)
 
     .def("isValid", [](MDagPath & self) -> bool {
         MStatus status;
@@ -316,7 +316,7 @@ DagPath
         }
 
         return result;
-    }, _doc_isValid)
+    }, _doc_DagPath_isValid)
 
     .def("isVisible", [](MDagPath & self) -> bool {
         if (!self.isValid()) {
@@ -331,7 +331,7 @@ DagPath
         }
 
         return result;
-    }, _doc_isVisible)
+    }, _doc_DagPath_isVisible)
 
     .def("length", [](MDagPath & self) -> int {
         if (!self.isValid()) {
@@ -346,11 +346,11 @@ DagPath
         }
 
         return result;
-    }, _doc_length)
+    }, _doc_DagPath_length)
 
     .def("matchTransform", [](MDagPath & self) {
         throw std::logic_error{"Function not yet implemented."};
-    }, _doc_matchTransform)
+    }, _doc_DagPath_matchTransform)
 
     .def("node", [](MDagPath & self) -> MObject {
         if (!self.isValid()) {
@@ -365,7 +365,7 @@ DagPath
         }
 
         return result;
-    }, _doc_node)
+    }, _doc_DagPath_node)
 
     .def("numberOfShapesDirectlyBelow", [](MDagPath & self) -> unsigned int {
         if (!self.isValid()) {
@@ -381,7 +381,7 @@ DagPath
         }
 
         return result;
-    }, _doc_numberOfShapesDirectlyBelow)
+    }, _doc_DagPath_numberOfShapesDirectlyBelow)
 
     .def("partialPathName", [](MDagPath & self) -> std::string {
         if (!self.isValid()) {
@@ -396,11 +396,11 @@ DagPath
         }
 
         return std::string(result.asChar());
-    }, _doc_partialPathName)
+    }, _doc_DagPath_partialPathName)
 
     .def("pathCount", [](MDagPath & self) -> int {
         throw std::logic_error{"Function not yet implemented."};
-    }, _doc_pathCount)
+    }, _doc_DagPath_pathCount)
 
     .def("pop", [](MDagPath & self, unsigned int num = 1) {
         if (!self.isValid()) {
@@ -415,7 +415,7 @@ DagPath
             throw std::logic_error(status.errorString().asChar());
         }
 
-    }, _doc_pop, py::arg("num") = 1)
+    }, _doc_DagPath_pop, py::arg("num") = 1)
 
     .def("push", [](MDagPath & self, MObject child) {
         if (!self.isValid()) {
@@ -429,7 +429,7 @@ DagPath
         }
 
     }, py::arg("child"),
-       _doc_push)
+       _doc_DagPath_push)
 
     .def("set", [](MDagPath & self, MDagPath src) {
         MStatus status = self.set(src);
@@ -438,7 +438,7 @@ DagPath
             throw std::logic_error(status.errorString().asChar());
         }
     }, py::arg("src"),
-       _doc_set)
+       _doc_DagPath_set)
 
     .def("transform", [](MDagPath & self) -> MObject {
         if (!self.isValid()) {
@@ -453,4 +453,4 @@ DagPath
         }
 
         return result;
-    }, _doc_transform);
+    }, _doc_DagPath_transform);

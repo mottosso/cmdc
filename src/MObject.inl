@@ -1,7 +1,7 @@
-#define _doc_isNull R"pbdoc(Return True if the internal Maya Object does not exist.)pbdoc"
-#define _doc_hasFn R"pbdoc(Return True if the internal Maya Object is compatible with the given Function Type.)pbdoc"
-#define _doc_apiType R"pbdoc(Return the exact type of the internal Maya Object.)pbdoc"
-#define _doc_apiTypeStr R"pbdoc(Return the type name of the internal Maya Object.)pbdoc"
+#define _doc_Object_isNull R"pbdoc(Return True if the internal Maya Object does not exist.)pbdoc"
+#define _doc_Object_hasFn R"pbdoc(Return True if the internal Maya Object is compatible with the given Function Type.)pbdoc"
+#define _doc_Object_apiType R"pbdoc(Return the exact type of the internal Maya Object.)pbdoc"
+#define _doc_Object_apiTypeStr R"pbdoc(Return the type name of the internal Maya Object.)pbdoc"
 
 Object
     .def_property_readonly_static("kNullObj", [](py::object /* self */) { return MObject::kNullObj; })
@@ -10,16 +10,16 @@ Object
 
     .def(py::self == MObject(), py::arg("other"))
 
-    .def("isNull", &MObject::isNull, _doc_isNull)
+    .def("isNull", &MObject::isNull, _doc_Object_isNull)
     .def("hasFn", [](MObject& self, MFn::Type type) -> bool {
         return self.hasFn(type);
-    }, py::arg("type"), _doc_hasFn)
+    }, py::arg("type"), _doc_Object_hasFn)
     .def("apiType", [](MObject& self) -> MFn::Type {
         return self.apiType();
-    }, _doc_apiType)
+    }, _doc_Object_apiType)
     .def("apiTypeStr", [](MObject& self) -> std::string {
         return self.apiTypeStr();
-    }, _doc_apiTypeStr)
+    }, _doc_Object_apiTypeStr)
 
     .def("__repr__", [](const MObject &self) {
         std::string ret = "<cmdc.Object(";
