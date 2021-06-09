@@ -1,12 +1,18 @@
-py::class_<MPlug> plug(m, "Plug");
-py::enum_<MPlug::MValueSelector>(plug, "ValueSelector")
+py::enum_<MPlug::MValueSelector>(Plug, "ValueSelector")
     .value("kAll", MPlug::MValueSelector::kAll)
     .value("kNonDefault", MPlug::MValueSelector::kNonDefault)
     .value("kChanged", MPlug::MValueSelector::kChanged)
     .value("kLastAttrSelector", MPlug::MValueSelector::kLastAttrSelector)
     .export_values();
 
-plug.def(py::init<>())
+py::enum_<MPlug::FreeToChangeState>(Plug, "FreeToChangeState")
+    .value("kFreeToChange ", MPlug::FreeToChangeState::kFreeToChange)
+    .value("kNotFreeToChange ", MPlug::FreeToChangeState::kNotFreeToChange)
+    .value("kChildrenNotFreeToChange ", MPlug::FreeToChangeState::kChildrenNotFreeToChange)
+    .export_values();
+
+Plug
+    .def(py::init<>())
 
     .def(py::self == MPlug())
 

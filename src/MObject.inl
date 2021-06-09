@@ -1,6 +1,5 @@
-py::class_<MObject>(m, "Object")
+Object
     .def_property_readonly_static("kNullObj", [](py::object /* self */) { return MObject::kNullObj; })
-
     .def(py::init<>())
     .def(py::init<const MObject &>())
 
@@ -27,7 +26,7 @@ py::class_<MObject>(m, "Object")
     }
 );
 
-py::class_<MObjectHandle>(m, "ObjectHandle")
+ObjectHandle
     .def(py::init<>())
     .def(py::init<const MObject &>())
 

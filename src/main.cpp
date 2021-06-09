@@ -65,6 +65,8 @@ PYBIND11_MODULE(cmdc, m) {
 
     )pbdoc";
 
+    #include "ForwardDeclarations.inl"
+
     #include "Math.inl"
     #include "MDagPath.inl"
     #include "MDGModifier.inl"

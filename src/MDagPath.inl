@@ -1,4 +1,4 @@
-py::class_<MDagPath>(m, "DagPath")
+DagPath
     .def(py::init<>())
 
     .def(py::self == MDagPath())

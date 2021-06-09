@@ -18,7 +18,8 @@ RUN mayapy -m pip install --user \
         flaky==3.7.0 \
         six==1.16.0 \
         sphinx==1.8.5 \
-        sphinxcontrib-napoleon==0.7
+        sphinxcontrib-napoleon==0.7 \
+        pybind11-stubgen==0.8.7
 
 # Since 2019, this sucker throws an
 # unnecessary warning if not declared.
