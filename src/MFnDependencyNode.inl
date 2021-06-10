@@ -1,5 +1,7 @@
-#define _doc_FnDependencyNode_create R"pbdoc(Creates a new dependency node with the given type.)pbdoc"
-#define _doc_FnDependencyNode_findPlug R"pbdoc(Attempt to find a plug for the given attribute.)pbdoc"
+#define _doc_FnDependencyNode_create \
+    "Creates a new dependency node with the given type."
+#define _doc_FnDependencyNode_findPlug \
+    "Attempt to find a plug for the given attribute."
 
 FnDependencyNode
     .def(py::init<>())

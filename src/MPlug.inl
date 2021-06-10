@@ -1,160 +1,252 @@
-#define _doc_Plug_array "Returns a plug for the array of plugs of which this plug is an element."
+#define _doc_Plug_array \
+    "Returns a plug for the array of plugs of which this plug is an element."
 
-#define _doc_Plug_asBool "Retrieves the plug's value, as a boolean."
+#define _doc_Plug_asBool \
+    "Retrieves the plug's value, as a boolean."
 
-#define _doc_Plug_asChar "Retrieves the plug's value, as a single-byte integer."
+#define _doc_Plug_asChar \
+    "Retrieves the plug's value, as a single-byte integer."
 
-#define _doc_Plug_asDouble "Retrieves the plug's value, as a double-precision float."
+#define _doc_Plug_asDouble \
+    "Retrieves the plug's value, as a double-precision float."
 
-#define _doc_Plug_asFloat "Retrieves the plug's value, as a single-precision float."
+#define _doc_Plug_asFloat \
+    "Retrieves the plug's value, as a single-precision float."
 
-#define _doc_Plug_asInt "Retrieves the plug's value, as a regular integer."
+#define _doc_Plug_asInt \
+    "Retrieves the plug's value, as a regular integer."
 
-#define _doc_Plug_asMAngle "Retrieves the plug's value, as an MAngle."
+#define _doc_Plug_asMAngle \
+    "Retrieves the plug's value, as an MAngle."
 
-#define _doc_Plug_asMDataHandle "Retrieve the current value of the attribute this plug references."
+#define _doc_Plug_asMDataHandle \
+    "Retrieve the current value of the attribute this plug references."
 
-#define _doc_Plug_asMDistance "Retrieves the plug's value, as an MDistance."
+#define _doc_Plug_asMDistance \
+    "Retrieves the plug's value, as an MDistance."
 
-#define _doc_Plug_asMObject "Retrieves the plug's value, as as an MObject containing a direct reference to the plug's data."
+#define _doc_Plug_asMObject \
+    "Retrieves the plug's value, as as an MObject containing a\n"\
+    "direct reference to the plug's data."
 
-#define _doc_Plug_asMTime "Retrieves the plug's value, as an MTime."
+#define _doc_Plug_asMTime \
+    "Retrieves the plug's value, as an MTime."
 
-#define _doc_Plug_asShort "Retrieves the plug's value, as a short integer."
+#define _doc_Plug_asShort \
+    "Retrieves the plug's value, as a short integer."
 
-#define _doc_Plug_asString "Retrieves the plug's value, as a string."
+#define _doc_Plug_asString \
+    "Retrieves the plug's value, as a string."
 
-#define _doc_Plug_attribute "Returns the attribute currently referenced by this plug."
+#define _doc_Plug_attribute \
+    "Returns the attribute currently referenced by this plug."
 
-#define _doc_Plug_child "Returns a plug for the specified child attribute of this plug."
+#define _doc_Plug_child \
+    "Returns a plug for the specified child attribute of this plug."
 
-#define _doc_Plug_child "Returns a plug for the specified child attribute of this plug."
+#define _doc_Plug_child \
+    "Returns a plug for the specified child attribute of this plug."
 
-#define _doc_Plug_connectedTo "Returns an array of plugs which are connected to this one."
+#define _doc_Plug_connectedTo \
+    "Returns an array of plugs which are connected to this one."
 
-#define _doc_Plug_connectionByPhysicalIndex "Returns a plug for the index'th connected element of this plug."
+#define _doc_Plug_connectionByPhysicalIndex \
+    "Returns a plug for the index'th connected element of this plug."
 
-#define _doc_Plug_constructHandle "Constructs a data handle for the plug."
+#define _doc_Plug_constructHandle \
+    "Constructs a data handle for the plug."
 
 #define _doc_Plug_destinations \
-"If this plug is a source, return the destination plugs connected to it.\n"\
-"If this plug is not a source, a null plug is returned.\n"\
-"This method will produce the networked version of the connected plug."
+    "If this plug is a source, return the destination plugs connected to it.\n"\
+    "If this plug is not a source, a null plug is returned.\n"\
+    "This method will produce the networked version of the connected plug."
 
 #define _doc_Plug_destinationsWithConversions \
-"If this plug is a source, return the destination plugs connected to it.\n"\
-"This method is very similar to the destinations() method.  The only difference is that the destinations() method skips over any unit conversion node connected to this source, and returns the destination of the unit conversion node.\n"\
-"destinationsWithConversionNode() does not skip over unit conversion nodes, and returns the destination plug on a unit conversion node, if present.\n"\
-"Note that the behavior of connectedTo() is identical to destinationsWithConversions(), that is, do not skip over unit conversion nodes."
+    "If this plug is a source, return the destination plugs connected to it.\n"\
+    "This method is very similar to the destinations() method.\n"\
+    "The only difference is that the destinations() method skips over any\n"\
+    "unit conversion node connected to this source, and returns\n"\
+    "the destination of the unit conversion node.\n"\
+    "destinationsWithConversionNode() does not skip over unit\n"\
+    "conversion nodes, and returns the destination plug on a unit\n"\
+    "conversion node, if present.\n"\
+    "Note that the behavior of connectedTo() is identical\n"\
+    "to destinationsWithConversions(), that is, do not skip over\n"\
+    "unit conversion nodes."
 
-#define _doc_Plug_destructHandle "Destroys a data handle previously constructed using constructHandle()."
+#define _doc_Plug_destructHandle \
+    "Destroys a data handle previously constructed using constructHandle()."
 
-#define _doc_Plug_elementByLogicalIndex "Returns a plug for the element of this plug array having the specified logical index."
+#define _doc_Plug_elementByLogicalIndex \
+    "Returns a plug for the element of this plug array having the\n"\
+    "specified logical index."
 
-#define _doc_Plug_elementByPhysicalIndex "Returns a plug for the element of this plug array having the specified physical index. "
+#define _doc_Plug_elementByPhysicalIndex \
+    "Returns a plug for the element of this plug array having the\n"\
+    "specified physical index. "
 
-#define _doc_Plug_evaluateNumElements "Like numElements() but evaluates all connected elements first to ensure that they are included in the count."
+#define _doc_Plug_evaluateNumElements \
+    "Like numElements() but evaluates all connected elements first to\n"\
+    "ensure that they are included in the count."
 
-#define _doc_Plug_getExistingArrayAttributeIndices "Returns an array of all the plug's logical indices which are currently in use."
+#define _doc_Plug_getExistingArrayAttributeIndices \
+    "Returns an array of all the plug's logical indices which are currently\n"\
+    "in use."
 
-#define _doc_Plug_getSetAttrCmds "Returns a list of strings containing the setAttr commands (in MEL syntax) for this plug and all of its descendents."
+#define _doc_Plug_getSetAttrCmds \
+    "Returns a list of strings containing the setAttr commands\n"\
+    "(in MEL syntax) for this plug and all of its descendents."
 
-#define _doc_Plug_info "Description of the plug for debugging purposes, in the form node:attr1.attr2[].attr3..."
+#define _doc_Plug_info \
+    "Description of the plug for debugging purposes, in the\n"\
+    "form node:attr1.attr2[].attr3..."
 
-#define _doc_Plug_isArray "True if plug is an array of plugs."
+#define _doc_Plug_isArray \
+    "True if plug is an array of plugs."
 
-#define _doc_Plug_isChild "True if plug is a child of a compound parent."
+#define _doc_Plug_isChild \
+    "True if plug is a child of a compound parent."
 
-#define _doc_Plug_isCompound "True if plug is compound parent with children."
+#define _doc_Plug_isCompound \
+    "True if plug is compound parent with children."
 
-#define _doc_Plug_isConnected "True if plug has any connections."
+#define _doc_Plug_isConnected \
+    "True if plug has any connections."
 
-#define _doc_Plug_isDefaultValue "Returns a value indicating if the plug's value is equivalent to the plug's default value."
+#define _doc_Plug_isDefaultValue \
+    "Returns a value indicating if the plug's value is equivalent to\n"\
+    "the plug's default value."
 
-#define _doc_Plug_isDestination "True if plug is the destination of a connection."
+#define _doc_Plug_isDestination \
+    "True if plug is the destination of a connection."
 
-#define _doc_Plug_isDynamic "True if plug is for a dynamic attribute."
+#define _doc_Plug_isDynamic \
+    "True if plug is for a dynamic attribute."
 
-#define _doc_Plug_isElement "True if plug is an element of an array of plugs."
+#define _doc_Plug_isElement \
+    "True if plug is an element of an array of plugs."
 
-#define _doc_Plug_isFreeToChange "Returns a value indicating if the plug's value can be changed, after taking into account the effects of locking and connections."
+#define _doc_Plug_isFreeToChange \
+    "Returns a value indicating if the plug's value can be changed,\n"\
+    "after taking into account the effects of locking and connections."
 
-#define _doc_Plug_isFromReferencedFile "True if plug is part of a connection from a referenced file."
+#define _doc_Plug_isFromReferencedFile \
+    "True if plug is part of a connection from a referenced file."
 
-#define _doc_Plug_isIgnoredWhenRendering "True if connetions to plug are ignored during rendering."
+#define _doc_Plug_isIgnoredWhenRendering \
+    "True if connetions to plug are ignored during rendering."
 
-#define _doc_Plug_isKeyable "True if keys can be set on plug from Maya's UI."
+#define _doc_Plug_isKeyable \
+    "True if keys can be set on plug from Maya's UI."
 
-#define _doc_Plug_isLocked "True if plug is locked against changes."
+#define _doc_Plug_isLocked \
+    "True if plug is locked against changes."
 
-#define _doc_Plug_isNetworked "True if plug is networked."
+#define _doc_Plug_isNetworked \
+    "True if plug is networked."
 
-#define _doc_Plug_isNull "True if plug does not reference an attribute."
+#define _doc_Plug_isNull \
+    "True if plug does not reference an attribute."
 
-#define _doc_Plug_isProcedural "True if plug is procedural."
+#define _doc_Plug_isProcedural \
+    "True if plug is procedural."
 
-#define _doc_Plug_isSource "True if plug is the source of a connection."
+#define _doc_Plug_isSource \
+    "True if plug is the source of a connection."
 
-#define _doc_Plug_logicalIndex "Returns this plug's logical index within its parent array."
+#define _doc_Plug_logicalIndex \
+    "Returns this plug's logical index within its parent array."
 
-#define _doc_Plug_name "Returns the name of the plug."
+#define _doc_Plug_name \
+    "Returns the name of the plug."
 
-#define _doc_Plug_node "Returns the node that this plug belongs to."
+#define _doc_Plug_node \
+    "Returns the node that this plug belongs to."
 
-#define _doc_Plug_numChildren "Returns the number of children this plug has."
+#define _doc_Plug_numChildren \
+    "Returns the number of children this plug has."
 
-#define _doc_Plug_numConnectedChildren "Returns the number of this plug's children which have connections."
+#define _doc_Plug_numConnectedChildren \
+    "Returns the number of this plug's children which have connections."
 
-#define _doc_Plug_numConnectedElements "Returns the number of this plug's elements which have connections."
+#define _doc_Plug_numConnectedElements \
+    "Returns the number of this plug's elements which have connections."
 
-#define _doc_Plug_numElements "Returns the number of the plug's logical indices which are currently in use. Connected elements which have not yet been evaluated may not yet fully exist and may be excluded from the count."
+#define _doc_Plug_numElements \
+    "Returns the number of the plug's logical indices which are currently\n"\
+    "in use. Connected elements which have not yet been evaluated may not\n"\
+    "yet fully exist and may be excluded from the count."
 
-#define _doc_Plug_parent "Returns a plug for the parent of this plug."
+#define _doc_Plug_parent \
+    "Returns a plug for the parent of this plug."
 
-#define _doc_Plug_partialName "Returns the name of the plug, formatted according to various criteria."
+#define _doc_Plug_partialName \
+    "Returns the name of the plug, formatted according to various criteria."
 
-#define _doc_Plug_selectAncestorLogicalIndex "Changes the logical index of the specified attribute in the plug's path."
+#define _doc_Plug_selectAncestorLogicalIndex \
+    "Changes the logical index of the specified attribute in the plug's path."
 
-#define _doc_Plug_setAttribute "Switches the plug to reference the given attribute of the same node as the previously referenced attribute."
+#define _doc_Plug_setAttribute \
+    "Switches the plug to reference the given attribute of the same node\n"\
+    "as the previously referenced attribute."
 
-#define _doc_Plug_setBool "Sets the plug's value as a boolean."
+#define _doc_Plug_setBool \
+    "Sets the plug's value as a boolean."
 
-#define _doc_Plug_setChar "Sets the plug's value as a single-byte integer."
+#define _doc_Plug_setChar \
+    "Sets the plug's value as a single-byte integer."
 
-#define _doc_Plug_setDouble "Sets the plug's value as a double-precision float."
+#define _doc_Plug_setDouble \
+    "Sets the plug's value as a double-precision float."
 
-#define _doc_Plug_setFloat "Sets the plug's value as a single-precision float."
+#define _doc_Plug_setFloat \
+    "Sets the plug's value as a single-precision float."
 
-#define _doc_Plug_setInt "Sets the plug's value as a regular integer."
+#define _doc_Plug_setInt \
+    "Sets the plug's value as a regular integer."
 
-#define _doc_Plug_setMAngle "Sets the plug's value as an MAngle."
+#define _doc_Plug_setMAngle \
+    "Sets the plug's value as an MAngle."
 
-#define _doc_Plug_setMDataHandle "Sets the plug's value as a data handle."
+#define _doc_Plug_setMDataHandle \
+    "Sets the plug's value as a data handle."
 
-#define _doc_Plug_setMDistance "Sets the plug's value as an MDistance."
+#define _doc_Plug_setMDistance \
+    "Sets the plug's value as an MDistance."
 
-#define _doc_Plug_setMObject "Sets the plug's value as an MObject."
+#define _doc_Plug_setMObject \
+    "Sets the plug's value as an MObject."
 
-#define _doc_Plug_setMPxData "Sets the plug's value using custom plug-in data."
+#define _doc_Plug_setMPxData \
+    "Sets the plug's value using custom plug-in data."
 
-#define _doc_Plug_setMTime "Sets the plug's value as an MTime."
+#define _doc_Plug_setMTime \
+    "Sets the plug's value as an MTime."
 
-#define _doc_Plug_setNumElements "Pre-allocates space for count elements in an array of plugs."
+#define _doc_Plug_setNumElements \
+    "Pre-allocates space for count elements in an array of plugs."
 
-#define _doc_Plug_setShort "Sets the plug's value as a short integer."
+#define _doc_Plug_setShort \
+    "Sets the plug's value as a short integer."
 
-#define _doc_Plug_setString "Sets the plug's value as a string."
+#define _doc_Plug_setString \
+    "Sets the plug's value as a string."
 
 #define _doc_Plug_source \
-"If this plug is a destination, return the source plug connected to it.\n"\
-"If this plug is not a destination, a null plug is returned.\n"\
-"This method will produce the networked version of the connectedplug."
+    "If this plug is a destination, return the source plug connected to it.\n"\
+    "If this plug is not a destination, a null plug is returned.\n"\
+    "This method will produce the networked version of the connectedplug."
 
 #define _doc_Plug_sourceWithConversion \
-"If this plug is a destination, return the source plug connected to it.\n"\
-"This method is very similar to the source() method.  The only difference is that the source() method skips over any unit conversionnode connected to this destination, and returns the source of the unit conversion node.\n"\
-"sourceWithConversion() does not skip over unitconversion nodes, and returns the source plug on a unit conversionnode, if present.\n"\
-"Note that the behavior of connectedTo() is identical to sourceWithConversion(), that is, do not skip over unit conversion nodes."
+    "If this plug is a destination, return the source plug connected to it.\n"\
+    "This method is very similar to the source() method.\n"\
+    "The only difference is that the source() method skips over any\n"\
+    "unit conversionnode connected to this destination, and returns the\n"\
+    "source of the unit conversion node.\n"\
+    "sourceWithConversion() does not skip over unitconversion nodes,\n"\
+    "and returns the source plug on a unit conversionnode, if present.\n"\
+    "Note that the behavior of connectedTo() is identical\n"\
+    "to sourceWithConversion(), that is, do not skip over unit conversion nodes."
 
 py::enum_<MPlug::MValueSelector>(Plug, "ValueSelector")
     .value("kAll", MPlug::MValueSelector::kAll)

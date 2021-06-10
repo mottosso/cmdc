@@ -1,70 +1,115 @@
-#define _doc_DagPath_apiType "Returns the type of the object at the end of the path."
+#define _doc_DagPath_apiType \
+    "Returns the type of the object at the end of the path."
 
-#define _doc_DagPath_child "Returns the specified child of the object at the end of the path."
+#define _doc_DagPath_child \
+    "Returns the specified child of the object at the end of the path."
 
-#define _doc_DagPath_childCount "Returns the number of objects parented directly beneath the object at the end of the path."
+#define _doc_DagPath_childCount \
+    "Returns the number of objects parented directly beneath the object at\n"\
+    "the end of the path."
 
-#define _doc_DagPath_exclusiveMatrix "Returns the matrix for all transforms in the path, excluding the end object."
+#define _doc_DagPath_exclusiveMatrix \
+    "Returns the matrix for all transforms in the path, excluding the\n"\
+    "end object."
 
-#define _doc_DagPath_exclusiveMatrixInverse "Returns the inverse of exclusiveMatrix()."
+#define _doc_DagPath_exclusiveMatrixInverse \
+    "Returns the inverse of exclusiveMatrix()."
 
 #define _doc_DagPath_extendToShape \
-"If the object at the end of this path is a transform and there is a shape node directly beneath it in the hierarchy, then the path is extended to that geometry node.\n"\
-"\n"\
-"NOTE: This method will fail if there multiple shapes below the transform."\
+    "If the object at the end of this path is a transform and there is a\n"\
+    "shape node directly beneath it in the hierarchy, then the path is\n"\
+    "extended to that geometry node.\n"\
+    "\n"\
+    "NOTE: This method will fail if there multiple shapes below the transform."\
 
 #define _doc_DagPath_extendToShapeDirectlyBelow \
-"This method is used if the end of the path is a transform and there are shapes directly below the transform.\n"\
-"The shape to extend to is set by passing in an appropriate index parameter.\n"\
-"Use the `numberOfShapesDirectlyBelow()` method to determine how many shapes are below"\
+    "This method is used if the end of the path is a transform and there\n"\
+    "are shapes directly below the transform.\n"\
+    "The shape to extend to is set by passing in an appropriate index\n"\
+    "parameter.\n"\
+    "Use the `numberOfShapesDirectlyBelow()` method to determine how\n"\
+    "many shapes are below"\
 
-#define _doc_DagPath_fullPathName "Returns a string representation of the path from the DAG root to the path's last node."
+#define _doc_DagPath_fullPathName \
+    "Returns a string representation of the path from the DAG root to the\n"\
+    "path's last node."
 
-#define _doc_DagPath_getAPathTo "Returns the first path found to the given node."
+#define _doc_DagPath_getAPathTo \
+    "Returns the first path found to the given node."
 
-#define _doc_DagPath_getAllPathsBelow "Returns all paths to the given node."
+#define _doc_DagPath_getAllPathsBelow \
+    "Returns all paths to the given node."
 
-#define _doc_DagPath_getAllPathsTo "Returns all paths to the given node."
+#define _doc_DagPath_getAllPathsTo \
+    "Returns all paths to the given node."
 
-#define _doc_DagPath_getDrawOverrideInfo "Returns the draw override information for this path."
+#define _doc_DagPath_getDrawOverrideInfo \
+    "Returns the draw override information for this path."
 
-#define _doc_DagPath_getPath "Returns the specified sub-path of this path."
+#define _doc_DagPath_getPath \
+    "Returns the specified sub-path of this path."
 
-#define _doc_DagPath_hasFn "Returns True if the object at the end of the path supports the given function set."
+#define _doc_DagPath_hasFn \
+    "Returns True if the object at the end of the path supports the\n"\
+    "given function set."
 
-#define _doc_DagPath_inclusiveMatrix "Returns the matrix for all transforms in the path, including the end object, if it is a transform."
+#define _doc_DagPath_inclusiveMatrix \
+    "Returns the matrix for all transforms in the path, including the\n"\
+    "end object, if it is a transform."
 
-#define _doc_DagPath_inclusiveMatrixInverse "Returns the inverse of inclusiveMatrix()."
+#define _doc_DagPath_inclusiveMatrixInverse \
+    "Returns the inverse of inclusiveMatrix()."
 
-#define _doc_DagPath_instanceNumber "Returns the instance number of this path to the object at the end."
+#define _doc_DagPath_instanceNumber \
+    "Returns the instance number of this path to the object at the end."
 
-#define _doc_DagPath_isInstanced "Returns True if the object at the end of the path can be reached by more than one path."
+#define _doc_DagPath_isInstanced \
+    "Returns True if the object at the end of the path can be reached by\n"\
+    "more than one path."
 
-#define _doc_DagPath_isTemplated "Returns true if the DAG Node at the end of the path is templated."
+#define _doc_DagPath_isTemplated \
+    "Returns true if the DAG Node at the end of the path is templated."
 
-#define _doc_DagPath_isValid "Returns True if this is a valid path."
+#define _doc_DagPath_isValid \
+    "Returns True if this is a valid path."
 
-#define _doc_DagPath_isVisible "Returns true if the DAG Node at the end of the path is visible."
+#define _doc_DagPath_isVisible \
+    "Returns true if the DAG Node at the end of the path is visible."
 
-#define _doc_DagPath_length "Returns the number of nodes on the path, not including the DAG's root node."
+#define _doc_DagPath_length \
+    "Returns the number of nodes on the path, not including the DAG's root\n"\
+    "node."
 
-#define _doc_DagPath_matchTransform "Extends the path to the specified shape node parented directly beneath the transform at the current end of the path."
+#define _doc_DagPath_matchTransform \
+    "Extends the path to the specified shape node parented directly\n"\
+    "beneath the transform at the current end of the path."
 
-#define _doc_DagPath_node "Returns the DAG node at the end of the path."
+#define _doc_DagPath_node \
+    "Returns the DAG node at the end of the path."
 
-#define _doc_DagPath_numberOfShapesDirectlyBelow "Returns the number of shape nodes parented directly beneath the transform at the end of the path."
+#define _doc_DagPath_numberOfShapesDirectlyBelow \
+    "Returns the number of shape nodes parented directly beneath the\n"\
+    "transform at the end of the path."
 
-#define _doc_DagPath_partialPathName "Returns the minimum string representation which will uniquely identify the path."
+#define _doc_DagPath_partialPathName \
+    "Returns the minimum string representation which will uniquely\n"\
+    "identify the path."
 
-#define _doc_DagPath_pathCount "Returns the number of sub-paths which make up this path."
+#define _doc_DagPath_pathCount \
+    "Returns the number of sub-paths which make up this path."
 
-#define _doc_DagPath_pop "Removes objects from the end of the path."
+#define _doc_DagPath_pop \
+    "Removes objects from the end of the path."
 
-#define _doc_DagPath_push "Extends the path to the specified child object, which must be parented directly beneath the object currently at the end of the path."
+#define _doc_DagPath_push \
+    "Extends the path to the specified child object, which must be\n"\
+    "parented directly beneath the object currently at the end of the path."
 
-#define _doc_DagPath_set "Replaces the current path held by this object with another."
+#define _doc_DagPath_set \
+    "Replaces the current path held by this object with another."
 
-#define _doc_DagPath_transform "Returns the last transform node on the path."
+#define _doc_DagPath_transform \
+    "Returns the last transform node on the path."
 
 DagPath
     .def(py::init<>())

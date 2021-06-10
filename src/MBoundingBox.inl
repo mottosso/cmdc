@@ -1,12 +1,29 @@
-#define _doc_BoundingBox_center "Center point"
-#define _doc_BoundingBox_clear "Empties the bounding box, setting its corners to (0, 0, 0)."
-#define _doc_BoundingBox_contains "Returns True if a point lies within the bounding box."
-#define _doc_BoundingBox_depth "Size in Z"
-#define _doc_BoundingBox_expand "Expands the bounding box to include a point or other bounding box."
-#define _doc_BoundingBox_height "Size in Y"
-#define _doc_BoundingBox_intersects "Returns True if any part of a given bounding box lies within this one."
-#define _doc_BoundingBox_transformUsing "Multiplies the bounding box's corners by a matrix."
-#define _doc_BoundingBox_width "Size in X"
+#define _doc_BoundingBox_center \
+    "Center point"
+
+#define _doc_BoundingBox_clear \
+    "Empties the bounding box, setting its corners to (0, 0, 0)."
+
+#define _doc_BoundingBox_contains \
+    "Returns True if a point lies within the bounding box."
+
+#define _doc_BoundingBox_depth \
+    "Size in Z"
+
+#define _doc_BoundingBox_expand \
+    "Expands the bounding box to include a point or other bounding box."
+
+#define _doc_BoundingBox_height \
+    "Size in Y"
+
+#define _doc_BoundingBox_intersects \
+    "Returns True if any part of a given bounding box lies within this one."
+
+#define _doc_BoundingBox_transformUsing \
+    "Multiplies the bounding box's corners by a matrix."
+
+#define _doc_BoundingBox_width \
+    "Size in X"
 
 BoundingBox
     .def(py::init<>())

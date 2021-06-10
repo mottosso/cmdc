@@ -1,131 +1,200 @@
 #define _doc_DGModifier_addAttribute \
-"Adds an operation to the modifier to add a new dynamic attribute to the given dependency node.\n"\
-"If the attribute is a compound its children will ae added as well, so only the parent needs to be added using this method."
+    "Adds an operation to the modifier to add a new dynamic attribute to\n"\
+    "the given dependency node.\n"\
+    "If the attribute is a compound its children will ae added as well, so\n"\
+    "only the parent needs to be added using this method."
 
 #define _doc_DGModifier_addExtensionAttribute \
-"Adds an operation to the modifier to add a new extension attribute to the given node class.\n"\
-"If the attribute is a compound its children will be added as well, so only the parent needs to be added using this method."
+    "Adds an operation to the modifier to add a new extension attribute to\n"\
+    "the given node class.\n"\
+    "If the attribute is a compound its children will be added as well, so\n"\
+    "only the parent needs to be added using this method."
 
 #define _doc_DGModifier_commandToExecute \
-"Adds an operation to the modifier to execute a MEL command.\n"\
-"The command should be fully undoable otherwise unexpected results may occur.\n"\
-"If  the command contains no undoable portions whatsoever, the call to doIt() may fail,\n"\
-"but only after executing the command. It is best to use multiple commandToExecute() calls\n"\
-"rather than batching multiple commands into a single call to commandToExecute().\n"\
-"They will still be undone together, as a single undo action by the user,\n"\
-"but Maya will better be able to recover if one of the commands fails."
+    "Adds an operation to the modifier to execute a MEL command.\n"\
+    "The command should be fully undoable otherwise unexpected results\n"\
+    "may occur.\n"\
+    "If  the command contains no undoable portions whatsoever, the call to\n"\
+    "doIt() may fail, but only after executing the command. It is best to\n"\
+    "use multiple commandToExecute() calls rather than batching multiple\n"\
+    "commands into a single call to commandToExecute().\n"\
+    "They will still be undone together, as a single undo action by\n"\
+    "the user but Maya will better be able to recover if one of the\n"\
+    "commands fails."
 
 #define _doc_DGModifier_connect \
-"Adds an operation to the modifier that connects two plugs in the dependency graph.\n"\
-"It is the user's responsibility to ensure that the source and destination attributes are of compatible types.\n"\
-"For instance, if the source attribute is a nurbs surface then the destination must also be a nurbs surface."
+    "Adds an operation to the modifier that connects two plugs in\n"\
+    "the dependency graph.\n"\
+    "It is the user's responsibility to ensure that the source and\n"\
+    "destination attributes are of compatible types.\n"\
+    "For instance, if the source attribute is a nurbs surface then the\n"\
+    "destination must also be a nurbs surface."
 
 #define _doc_DGModifier_createNode \
-"Adds an operation to the modifier to create a node of the given type.\n"\
-"The new node is created and returned but will not be added to the dependency graph until the modifier's doIt() method is called.\n"\
-"Raises TypeError if the named node type does not exist or if it is a DAG node type."
+    "Adds an operation to the modifier to create a node of the given type.\n"\
+    "The new node is created and returned but will not be added to\n"\
+    "the dependency graph until the modifier's doIt() method is called.\n"\
+    "\n"\
+    "Raises TypeError if the named node type does not exist or if it is a DAG\n"\
+    "node type."
 
 #define _doc_DGModifier_deleteNode \
-"Adds an operation to the modifier which deletes the specified node from the dependency graph.\n"\
-"\n"\
-"If deleteNode() is called to delete nodes in a graph while other items are also in the queue,\n"\
-"it might end up deleting the nodes before all the other tasks in the queue.\n"\
-"\n"\
-"In order to prevent unexpected outcomes, the modifier's doIt() should be called before the deleteNode\n"\
-"operation is added so that the queue is emptied. Then, deleteNode() can be called and added to the queue.\n"\
-"doIt() should be called immediately after to ensure that the queue is emptied before any other operations are added to it."
+    "Adds an operation to the modifier which deletes the specified node\n"\
+    "from the dependency graph.\n"\
+    "\n"\
+    "If deleteNode() is called to delete nodes in a graph while other items\n"\
+    "are also in the queue, it might end up deleting the nodes before all\n"\
+    "the other tasks in the queue.\n"\
+    "\n"\
+    "In order to prevent unexpected outcomes, the modifier's doIt() should\n"\
+    "be called before the deleteNode operation is added so that the queue\n"\
+    "is emptied. Then, deleteNode() can be called and added to the queue.\n"\
+    "doIt() should be called immediately after to ensure that the queue is\n"\
+    "emptied before any other operations are added to it."
 
-#define _doc_DGModifier_disconnect "Adds an operation to the modifier that breaks a connection between two plugs in the dependency graph."
+#define _doc_DGModifier_disconnect \
+    "Adds an operation to the modifier that breaks a connection between\n"\
+    "two plugs in the dependency graph."
 
 #define _doc_DGModifier_doIt \
-"Executes the modifier's operations.\n"\
-"\n"\
-"If doIt() is called multiple times in a row, without any intervening calls to undoIt(),\n"\
-"then only the operations which were added since the previous doIt() call will be executed.\n"\
-"\n"\
-"If undoIt() has been called then the next call to doIt() will do all operations."
+    "Executes the modifier's operations.\n"\
+    "\n"\
+    "If doIt() is called multiple times in a row, without any\n"\
+    "intervening calls to undoIt(), then only the operations which were\n"\
+    "added since the previous doIt() call will be executed.\n"\
+    "\n"\
+    "If undoIt() has been called then the next call to doIt() will do\n"\
+    "all operations."
 
 #define _doc_DGModifier_linkExtensionAttributeToPlugin \
-"The plugin can call this method to indicate that the extension attribute defines part of the plugin, regardless of the node type to which it attaches itself.\n"\
-"\n"\
-"This requirement is used when the plugin is checked to see if it is in use or if is able to be unloaded or if it is required as part of a stored file.\n"\
-"For compound attributes only the topmost parent attribute may be passed in and all of its children will be included, recursively.\n"\
-"Thus it's not possible to link a child attribute to a plugin by itself.\n"\
-"\n"\
-"Note that the link is established immediately and is not affected by the modifier's doIt() or undoIt() methods."
+    "The plugin can call this method to indicate that the extension\n"\
+    "attribute defines part of the plugin, regardless of the node type\n"\
+    "to which it attaches itself.\n"\
+    "\n"\
+    "This requirement is used when the plugin is checked to see if it is\n"\
+    "in use or if is able to be unloaded or if it is required as part of\n"\
+    "a stored file.\n"\
+    "For compound attributes only the topmost parent attribute may be\n"\
+    "passed in and all of its children will be included, recursively.\n"\
+    "Thus it's not possible to link a child attribute to a plugin by itself.\n"\
+    "\n"\
+    "Note that the link is established immediately and is not affected by\n"\
+    "the modifier's doIt() or undoIt() methods."
 
-#define _doc_DGModifier_newPlugValue "Adds an operation to the modifier to set the value of a plug, where value is an MObject data wrapper, such as created by the various MFn*Data classes."
+#define _doc_DGModifier_newPlugValue \
+    "Adds an operation to the modifier to set the value of a plug, where\n"\
+    "value is an MObject data wrapper, such as created by the various\n"\
+    "MFn*Data classes."
 
-#define _doc_DGModifier_newPlugValueBool "Adds an operation to the modifier to set a value onto a bool plug."
+#define _doc_DGModifier_newPlugValueBool \
+    "Adds an operation to the modifier to set a value onto a bool plug."
 
-#define _doc_DGModifier_newPlugValueChar "Adds an operation to the modifier to set a value onto a char (single byte signed integer) plug."
+#define _doc_DGModifier_newPlugValueChar \
+    "Adds an operation to the modifier to set a value onto a char\n"\
+    "(single byte signed integer) plug."
 
-#define _doc_DGModifier_newPlugValueDouble "Adds an operation to the modifier to set a value onto a double-precision float plug."
+#define _doc_DGModifier_newPlugValueDouble \
+    "Adds an operation to the modifier to set a value onto a\n"\
+    "double-precision float plug."
 
-#define _doc_DGModifier_newPlugValueFloat "Adds an operation to the modifier to set a value onto a single-precision float plug."
+#define _doc_DGModifier_newPlugValueFloat \
+    "Adds an operation to the modifier to set a value onto a\n"\
+    "single-precision float plug."
 
-#define _doc_DGModifier_newPlugValueInt "Adds an operation to the modifier to set a value onto an int plug."
+#define _doc_DGModifier_newPlugValueInt \
+    "Adds an operation to the modifier to set a value onto an int plug."
 
-#define _doc_DGModifier_newPlugValueMAngle "Adds an operation to the modifier to set a value onto an angle plug."
+#define _doc_DGModifier_newPlugValueMAngle \
+    "Adds an operation to the modifier to set a value onto an angle plug."
 
-#define _doc_DGModifier_newPlugValueMDistance "Adds an operation to the modifier to set a value onto a distance plug."
+#define _doc_DGModifier_newPlugValueMDistance \
+    "Adds an operation to the modifier to set a value onto a distance plug."
 
-#define _doc_DGModifier_newPlugValueMTime "Adds an operation to the modifier to set a value onto a time plug."
+#define _doc_DGModifier_newPlugValueMTime \
+    "Adds an operation to the modifier to set a value onto a time plug."
 
-#define _doc_DGModifier_newPlugValueShort "Adds an operation to the modifier to set a value onto a short integer plug."
+#define _doc_DGModifier_newPlugValueShort \
+    "Adds an operation to the modifier to set a value onto a short integer plug."
 
-#define _doc_DGModifier_newPlugValueString "Adds an operation to the modifier to set a value onto a string plug."
+#define _doc_DGModifier_newPlugValueString \
+    "Adds an operation to the modifier to set a value onto a string plug."
 
 #define _doc_DGModifier_pythonCommandToExecute \
-"Adds an operation to the modifier to execute a Python command,\n"\
-"which can be passed as either a Python callable or a string containing the text of the Python code to be executed.\n"\
-"\n"\
-"The command should be fully undoable otherwise unexpected results may occur.\n"\
-"\n"\
-"If the command contains no undoable portions whatsoever, the call to doIt() may fail, but only after executing the command.\n"\
-"It is best to use multiple calls rather than batching multiple commands into a single call to pythonCommandToExecute().\n"\
-"They will still be undone together, as a single undo action by the user,\n"\
-"but Maya will better be able to recover if one of the commands fails."
+    "Adds an operation to the modifier to execute a Python command, which\n"\
+    "can be passed as either a Python callable or a string containing the\n"\
+    "text of the Python code to be executed.\n"\
+    "\n"\
+    "The command should be fully undoable otherwise unexpected results\n"\
+    "may occur.\n"\
+    "\n"\
+    "If the command contains no undoable portions whatsoever, the call\n"\
+    "to doIt() may fail, but only after executing the command.\n"\
+    "It is best to use multiple calls rather than batching multiple\n"\
+    "commands into a single call to pythonCommandToExecute().\n"\
+    "They will still be undone together, as a single undo action by the user,\n"\
+    "but Maya will better be able to recover if one of the commands fails."
 
 #define _doc_DGModifier_removeAttribute \
-"Adds an operation to the modifier to remove a dynamic attribute from the given dependency node.\n"\
-"If the attribute is a compound its children will be removed as well, so only the parent needs to be removed using this method.\n"\
-"The attribute MObject passed in will be set to kNullObj.\n"\
-"\n"\
-"There should be no function sets attached to the attribute at the time of the call as their behaviour may become unpredictable."
+    "Adds an operation to the modifier to remove a dynamic attribute from\n"\
+    "the given dependency node.\n"\
+    "If the attribute is a compound its children will be removed as well,\n"\
+    "so only the parent needs to be removed using this method.\n"\
+    "The attribute MObject passed in will be set to kNullObj.\n"\
+    "\n"\
+    "There should be no function sets attached to the attribute at the time\n"\
+    "of the call as their behaviour may become unpredictable."
 
 #define _doc_DGModifier_removeExtensionAttribute \
-"Adds an operation to the modifier to remove an extension attribute from the given node class.\n"\
-"If the attribute is a compound its children will be removed as well, so only the parent needs to be removed using this method.\n"\
-"The attribute MObject passed in will be set to kNullObj.\n"\
-"\n"\
-"There should be no function sets attached to the attribute at the time of the call as their behaviour may become unpredictable."
+    "Adds an operation to the modifier to remove an extension attribute\n"\
+    "from the given node class.\n"\
+    "If the attribute is a compound its children will be removed as well,\n"\
+    "so only the parent needs to be removed using this method.\n"\
+    "The attribute MObject passed in will be set to kNullObj.\n"\
+    "\n"\
+    "There should be no function sets attached to the attribute at the time\n"\
+    "of the call as their behaviour may become unpredictable."
 
 #define _doc_DGModifier_removeExtensionAttributeIfUnset \
-"Adds an operation to the modifier to remove an extension attribute from the given node class,\n"\
-"but only if there are no nodes in the graph with non-default values for this attribute.\n"\
-"If the attribute is a compound its children will be removed as well, so only the parent needs to be removed using this method.\n"\
-"The attribute MObject passed in will be set to kNullObj.\n"\
-"\n"\
-"There should be no function sets attached to the attribute at the time of the call as their behaviour may become unpredictable."
+    "Adds an operation to the modifier to remove an extension attribute\n"\
+    "from the given node class, but only if there are no nodes in the\n"\
+    "graph with non-default values for this attribute.\n"\
+    "If the attribute is a compound its children will be removed as well,\n"\
+    "so only the parent needs to be removed using this method.\n"\
+    "The attribute MObject passed in will be set to kNullObj.\n"\
+    "\n"\
+    "There should be no function sets attached to the attribute at the time\n"\
+    "of the call as their behaviour may become unpredictable."
 
-#define _doc_DGModifier_removeMultiInstance "Adds an operation to the modifier to remove an element of a multi (array) plug."
+#define _doc_DGModifier_removeMultiInstance \
+    "Adds an operation to the modifier to remove an element of a multi\n"\
+    "(array) plug."
 
-#define _doc_DGModifier_renameAttribute "Adds an operation to the modifer that renames a dynamic attribute on the given dependency node."
+#define _doc_DGModifier_renameAttribute \
+    "Adds an operation to the modifer that renames a dynamic attribute on\n"\
+    "the given dependency node."
 
-#define _doc_DGModifier_renameNode "Adds an operation to the modifer to rename a node."
+#define _doc_DGModifier_renameNode \
+    "Adds an operation to the modifer to rename a node."
 
-#define _doc_DGModifier_setNodeLockState "Adds an operation to the modifier to set the lockState of a node."
+#define _doc_DGModifier_setNodeLockState \
+    "Adds an operation to the modifier to set the lockState of a node."
 
-#define _doc_DGModifier_undoIt "Undoes all of the operations that have been given to this modifier. It is only valid to call this method after the doIt() method has been called."
+#define _doc_DGModifier_undoIt \
+    "Undoes all of the operations that have been given to this modifier.\n"\
+    "It is only valid to call this method after the doIt() method has been called."
 
 #define _doc_DGModifier_unlinkExtensionAttributeFromPlugin \
-"The plugin can call this method to indicate that it no longer requires an extension attribute for its operation.\n"\
-"This requirement is used when the plugin is checked to see if it is in use, or if is able to be unloaded, or if it is required as part of a stored file.\n"\
-"For compound attributes only the topmost parent attribute may be passed in and all of its children will be unlinked, recursively.\n"\
-"Thus it's not possible to unlink a child attribute from a plugin by itself.\n"\
-"\n"\
-"Note that the link is broken immediately and is not affected by the modifier's doIt() or undoIt() methods."
+    "The plugin can call this method to indicate that it no longer requires\n"\
+    "an extension attribute for its operation.\n"\
+    "This requirement is used when the plugin is checked to see if it is\n"\
+    "in use, or if is able to be unloaded, or if it is required as part of a stored file.\n"\
+    "For compound attributes only the topmost parent attribute may be\n"\
+    "passed in and all of its children will be unlinked, recursively.\n"\
+    "Thus it's not possible to unlink a child attribute from a plugin\n"\
+    "by itself.\n"\
+    "\n"\
+    "Note that the link is broken immediately and is not affected by\n"\
+    "the modifier's doIt() or undoIt() methods."
 
 DGModifier
     .def(py::init<>())
