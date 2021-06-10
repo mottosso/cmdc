@@ -265,8 +265,8 @@ jobs:
       - name: Create distribution
         run: |
           cp ./cmdc.mod modules/
-          mkdir modules/stubs
-          mv ./linux-2022/cmdc.pyi modules/stubs/cmdc.pyi
+          mkdir ./modules/stubs
+          mv ./modules/cmdc-0.1.0/linux-2022/cmdc.pyi ./modules/cmdc-0.1.0/stubs/cmdc.pyi
           zip -r cmdc-0.1.0.zip modules/
 
       - name: Upload distribution
