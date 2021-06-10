@@ -1,12 +1,125 @@
+#define _doc_DagPath_apiType \
+    "Returns the type of the object at the end of the path."
+
+#define _doc_DagPath_child \
+    "Returns the specified child of the object at the end of the path."
+
+#define _doc_DagPath_childCount \
+    "Returns the number of objects parented directly beneath the object at\n"\
+    "the end of the path."
+
+#define _doc_DagPath_exclusiveMatrix \
+    "Returns the matrix for all transforms in the path, excluding the\n"\
+    "end object."
+
+#define _doc_DagPath_exclusiveMatrixInverse \
+    "Returns the inverse of exclusiveMatrix()."
+
+#define _doc_DagPath_extendToShape \
+    "If the object at the end of this path is a transform and there is a\n"\
+    "shape node directly beneath it in the hierarchy, then the path is\n"\
+    "extended to that geometry node.\n"\
+    "\n"\
+    "NOTE: This method will fail if there multiple shapes below the transform."\
+
+#define _doc_DagPath_extendToShapeDirectlyBelow \
+    "This method is used if the end of the path is a transform and there\n"\
+    "are shapes directly below the transform.\n"\
+    "The shape to extend to is set by passing in an appropriate index\n"\
+    "parameter.\n"\
+    "Use the `numberOfShapesDirectlyBelow()` method to determine how\n"\
+    "many shapes are below"\
+
+#define _doc_DagPath_fullPathName \
+    "Returns a string representation of the path from the DAG root to the\n"\
+    "path's last node."
+
+#define _doc_DagPath_getAPathTo \
+    "Returns the first path found to the given node."
+
+#define _doc_DagPath_getAllPathsBelow \
+    "Returns all paths to the given node."
+
+#define _doc_DagPath_getAllPathsTo \
+    "Returns all paths to the given node."
+
+#define _doc_DagPath_getDrawOverrideInfo \
+    "Returns the draw override information for this path."
+
+#define _doc_DagPath_getPath \
+    "Returns the specified sub-path of this path."
+
+#define _doc_DagPath_hasFn \
+    "Returns True if the object at the end of the path supports the\n"\
+    "given function set."
+
+#define _doc_DagPath_inclusiveMatrix \
+    "Returns the matrix for all transforms in the path, including the\n"\
+    "end object, if it is a transform."
+
+#define _doc_DagPath_inclusiveMatrixInverse \
+    "Returns the inverse of inclusiveMatrix()."
+
+#define _doc_DagPath_instanceNumber \
+    "Returns the instance number of this path to the object at the end."
+
+#define _doc_DagPath_isInstanced \
+    "Returns True if the object at the end of the path can be reached by\n"\
+    "more than one path."
+
+#define _doc_DagPath_isTemplated \
+    "Returns true if the DAG Node at the end of the path is templated."
+
+#define _doc_DagPath_isValid \
+    "Returns True if this is a valid path."
+
+#define _doc_DagPath_isVisible \
+    "Returns true if the DAG Node at the end of the path is visible."
+
+#define _doc_DagPath_length \
+    "Returns the number of nodes on the path, not including the DAG's root\n"\
+    "node."
+
+#define _doc_DagPath_matchTransform \
+    "Extends the path to the specified shape node parented directly\n"\
+    "beneath the transform at the current end of the path."
+
+#define _doc_DagPath_node \
+    "Returns the DAG node at the end of the path."
+
+#define _doc_DagPath_numberOfShapesDirectlyBelow \
+    "Returns the number of shape nodes parented directly beneath the\n"\
+    "transform at the end of the path."
+
+#define _doc_DagPath_partialPathName \
+    "Returns the minimum string representation which will uniquely\n"\
+    "identify the path."
+
+#define _doc_DagPath_pathCount \
+    "Returns the number of sub-paths which make up this path."
+
+#define _doc_DagPath_pop \
+    "Removes objects from the end of the path."
+
+#define _doc_DagPath_push \
+    "Extends the path to the specified child object, which must be\n"\
+    "parented directly beneath the object currently at the end of the path."
+
+#define _doc_DagPath_set \
+    "Replaces the current path held by this object with another."
+
+#define _doc_DagPath_transform \
+    "Returns the last transform node on the path."
+
 DagPath
     .def(py::init<>())
 
-    .def(py::self == MDagPath())
+    .def(py::self == MDagPath(), py::arg("other"))
 
     .def("apiType", [](MDagPath & self) -> MFn::Type {
         // Not throwing anything here since apiType returns kInvalid when it fails.
         return self.apiType();
-    }, R"pbdoc(Returns the type of the object at the end of the path.)pbdoc")
+    }, _doc_DagPath_apiType)
 
     .def("child", [](MDagPath & self, unsigned int i) -> MObject {
         if (!self.isValid()) {
@@ -23,7 +136,8 @@ DagPath
         }
 
         return result;
-    }, R"pbdoc(Returns the specified child of the object at the end of the path.)pbdoc")
+    }, py::arg("i"),
+       _doc_DagPath_child)
 
     .def("childCount", [](MDagPath & self) -> int {
         if (!self.isValid()) {
@@ -38,7 +152,7 @@ DagPath
         }
 
         return result;
-    }, R"pbdoc(Returns the number of objects parented directly beneath the object at the end of the path.)pbdoc")
+    }, _doc_DagPath_childCount)
 
     .def("exclusiveMatrix", [](MDagPath & self) -> MMatrix {
         if (!self.isValid()) {
@@ -53,7 +167,7 @@ DagPath
         }
 
         return result;
-    }, R"pbdoc(Returns the matrix for all transforms in the path, excluding the end object.)pbdoc")
+    }, _doc_DagPath_exclusiveMatrix)
 
     .def("exclusiveMatrixInverse", [](MDagPath & self) -> MMatrix {
         if (!self.isValid()) {
@@ -67,7 +181,7 @@ DagPath
         }
 
         return result;
-    }, R"pbdoc(Returns the inverse of exclusiveMatrix().)pbdoc")
+    }, _doc_DagPath_exclusiveMatrixInverse)
 
     .def("extendToShape", [](MDagPath & self) {
         if (!self.isValid()) {
@@ -79,9 +193,7 @@ DagPath
         if (!status) {
             throw std::logic_error(status.errorString().asChar());
         }
-    }, R"pbdoc(If the object at the end of this path is a transform and there is a shape node directly beneath it in the hierarchy, then the path is extended to that geometry node.
-
-NOTE: This method will fail if there multiple shapes below the transform.)pbdoc")
+    }, _doc_DagPath_extendToShape)
 
     .def("extendToShapeDirectlyBelow", [](MDagPath & self, unsigned int index) {
         if (!self.isValid()) {
@@ -99,9 +211,8 @@ NOTE: This method will fail if there multiple shapes below the transform.)pbdoc"
         if (!status) {
             throw std::logic_error(status.errorString().asChar());
         }
-    }, R"pbdoc(This method is used if the end of the path is a transform and there are shapes directly below the transform.
-The shape to extend to is set by passing in an appropriate index parameter.
-Use the `numberOfShapesDirectlyBelow()` method to determine how many shapes are below)pbdoc")
+    }, py::arg("index"),
+       _doc_DagPath_extendToShapeDirectlyBelow)
 
     .def("fullPathName", [](MDagPath & self) -> std::string {
         if (!self.isValid()) {
@@ -116,7 +227,7 @@ Use the `numberOfShapesDirectlyBelow()` method to determine how many shapes are 
         }
 
         return result;
-    }, R"pbdoc(Returns a string representation of the path from the DAG root to the path's last node.)pbdoc")
+    }, _doc_DagPath_fullPathName)
 
     .def_static("getAPathTo", [](MObject node) -> MDagPath {
         if (node.isNull()) {
@@ -136,23 +247,27 @@ Use the `numberOfShapesDirectlyBelow()` method to determine how many shapes are 
         }
 
         return path;
-    }, R"pbdoc(Returns the first path found to the given node.)pbdoc")
+    }, py::arg("node"),
+       _doc_DagPath_getAPathTo)
 
     .def_static("getAllPathsBelow", [](MObject node) -> std::vector<MDagPath> {
         throw std::logic_error{"Function not yet implemented."};
-    }, R"pbdoc(Returns all paths to the given node.)pbdoc")
+    }, py::arg("node"),
+       _doc_DagPath_getAllPathsBelow)
 
     .def_static("getAllPathsTo", [](MObject node) -> std::vector<MDagPath> {
         throw std::logic_error{"Function not yet implemented."};
-    }, R"pbdoc(Returns all paths to the given node.)pbdoc")
+    }, py::arg("node"),
+       _doc_DagPath_getAllPathsTo)
 
     .def("getDrawOverrideInfo", [](MDagPath & self) -> MDAGDrawOverrideInfo {
         throw std::logic_error{"Function not yet implemented."};
-    }, R"pbdoc(Returns the draw override information for this path.)pbdoc")
+    }, _doc_DagPath_getDrawOverrideInfo)
 
     .def("getPath", [](MDagPath & self, unsigned int i = 0) -> MDagPath {
         throw std::logic_error{"Function not yet implemented."};
-    }, R"pbdoc(Returns the specified sub-path of this path.)pbdoc")
+    }, py::arg("i"),
+       _doc_DagPath_getPath)
 
     .def("hasFn", [](MDagPath & self, MFn::Type type) -> bool {
         if (!self.isValid()) {
@@ -167,14 +282,15 @@ Use the `numberOfShapesDirectlyBelow()` method to determine how many shapes are 
         }
 
         return result;
-    }, R"pbdoc(Returns True if the object at the end of the path supports the given function set.)pbdoc")
+    }, py::arg("type"),
+       _doc_DagPath_hasFn)
 
     .def("inclusiveMatrix", [](MDagPath & self) -> MMatrix {
         if (!self.isValid()) {
             throw std::logic_error("Call on invalid DagPath.");
         }
         return self.inclusiveMatrix();
-    }, R"pbdoc(Returns the matrix for all transforms in the path, including the end object, if it is a transform.)pbdoc")
+    }, _doc_DagPath_inclusiveMatrix)
 
     .def("inclusiveMatrixInverse", [](MDagPath & self) -> MMatrix {
         if (!self.isValid()) {
@@ -189,7 +305,7 @@ Use the `numberOfShapesDirectlyBelow()` method to determine how many shapes are 
         }
 
         return result;
-    }, R"pbdoc(Returns the inverse of inclusiveMatrix().)pbdoc")
+    }, _doc_DagPath_inclusiveMatrixInverse)
 
     .def("instanceNumber", [](MDagPath & self) -> int {
         if (!self.isValid()) {
@@ -206,7 +322,7 @@ Use the `numberOfShapesDirectlyBelow()` method to determine how many shapes are 
         }
 
         return result;
-    }, R"pbdoc(Returns the instance number of this path to the object at the end.)pbdoc")
+    }, _doc_DagPath_instanceNumber)
 
     .def("isInstanced", [](MDagPath & self) -> bool {
         if (!self.isValid()) {
@@ -221,7 +337,7 @@ Use the `numberOfShapesDirectlyBelow()` method to determine how many shapes are 
         }
 
         return result;
-    }, R"pbdoc(Returns True if the object at the end of the path can be reached by more than one path.)pbdoc")
+    }, _doc_DagPath_isInstanced)
 
     .def("isTemplated", [](MDagPath & self) -> bool {
         if (!self.isValid()) {
@@ -236,7 +352,7 @@ Use the `numberOfShapesDirectlyBelow()` method to determine how many shapes are 
         }
 
         return result;
-    }, R"pbdoc(Returns true if the DAG Node at the end of the path is templated.)pbdoc")
+    }, _doc_DagPath_isTemplated)
 
     .def("isValid", [](MDagPath & self) -> bool {
         MStatus status;
@@ -247,7 +363,7 @@ Use the `numberOfShapesDirectlyBelow()` method to determine how many shapes are 
         }
 
         return result;
-    }, R"pbdoc(Returns True if this is a valid path.)pbdoc")
+    }, _doc_DagPath_isValid)
 
     .def("isVisible", [](MDagPath & self) -> bool {
         if (!self.isValid()) {
@@ -262,7 +378,7 @@ Use the `numberOfShapesDirectlyBelow()` method to determine how many shapes are 
         }
 
         return result;
-    }, R"pbdoc(Returns true if the DAG Node at the end of the path is visible.)pbdoc")
+    }, _doc_DagPath_isVisible)
 
     .def("length", [](MDagPath & self) -> int {
         if (!self.isValid()) {
@@ -277,11 +393,11 @@ Use the `numberOfShapesDirectlyBelow()` method to determine how many shapes are 
         }
 
         return result;
-    }, R"pbdoc(Returns the number of nodes on the path, not including the DAG's root node.)pbdoc")
+    }, _doc_DagPath_length)
 
     .def("matchTransform", [](MDagPath & self) {
         throw std::logic_error{"Function not yet implemented."};
-    }, R"pbdoc(Extends the path to the specified shape node parented directly beneath the transform at the current end of the path.)pbdoc")
+    }, _doc_DagPath_matchTransform)
 
     .def("node", [](MDagPath & self) -> MObject {
         if (!self.isValid()) {
@@ -296,7 +412,7 @@ Use the `numberOfShapesDirectlyBelow()` method to determine how many shapes are 
         }
 
         return result;
-    }, R"pbdoc(Returns the DAG node at the end of the path.)pbdoc")
+    }, _doc_DagPath_node)
 
     .def("numberOfShapesDirectlyBelow", [](MDagPath & self) -> unsigned int {
         if (!self.isValid()) {
@@ -312,7 +428,7 @@ Use the `numberOfShapesDirectlyBelow()` method to determine how many shapes are 
         }
 
         return result;
-    }, R"pbdoc(Returns the number of shape nodes parented directly beneath the transform at the end of the path.)pbdoc")
+    }, _doc_DagPath_numberOfShapesDirectlyBelow)
 
     .def("partialPathName", [](MDagPath & self) -> std::string {
         if (!self.isValid()) {
@@ -327,11 +443,11 @@ Use the `numberOfShapesDirectlyBelow()` method to determine how many shapes are 
         }
 
         return std::string(result.asChar());
-    }, R"pbdoc(Returns the minimum string representation which will uniquely identify the path.)pbdoc")
+    }, _doc_DagPath_partialPathName)
 
     .def("pathCount", [](MDagPath & self) -> int {
         throw std::logic_error{"Function not yet implemented."};
-    }, R"pbdoc(Returns the number of sub-paths which make up this path.)pbdoc")
+    }, _doc_DagPath_pathCount)
 
     .def("pop", [](MDagPath & self, unsigned int num = 1) {
         if (!self.isValid()) {
@@ -346,7 +462,7 @@ Use the `numberOfShapesDirectlyBelow()` method to determine how many shapes are 
             throw std::logic_error(status.errorString().asChar());
         }
 
-    }, R"pbdoc(Removes objects from the end of the path.)pbdoc", py::arg("num") = 1)
+    }, _doc_DagPath_pop, py::arg("num") = 1)
 
     .def("push", [](MDagPath & self, MObject child) {
         if (!self.isValid()) {
@@ -359,7 +475,8 @@ Use the `numberOfShapesDirectlyBelow()` method to determine how many shapes are 
             throw std::logic_error(status.errorString().asChar());
         }
 
-    }, R"pbdoc(Extends the path to the specified child object, which must be parented directly beneath the object currently at the end of the path.)pbdoc")
+    }, py::arg("child"),
+       _doc_DagPath_push)
 
     .def("set", [](MDagPath & self, MDagPath src) {
         MStatus status = self.set(src);
@@ -367,7 +484,8 @@ Use the `numberOfShapesDirectlyBelow()` method to determine how many shapes are 
         if (!status) {
             throw std::logic_error(status.errorString().asChar());
         }
-    }, R"pbdoc(Replaces the current path held by this object with another.)pbdoc")
+    }, py::arg("src"),
+       _doc_DagPath_set)
 
     .def("transform", [](MDagPath & self) -> MObject {
         if (!self.isValid()) {
@@ -382,4 +500,4 @@ Use the `numberOfShapesDirectlyBelow()` method to determine how many shapes are 
         }
 
         return result;
-    }, R"pbdoc(Returns the last transform node on the path.)pbdoc");
+    }, _doc_DagPath_transform);
