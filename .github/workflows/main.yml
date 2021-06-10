@@ -257,6 +257,7 @@ jobs:
         #     linux-2019.3/cmdc.so
         #     linux-2020.4/cmdc.so
         #     linux-2022/cmdc.so
+        #   /stubs/cmdc.pyi
         #   /cmdc.mod
         with:
           path: modules/cmdc-0.1.0
@@ -264,6 +265,8 @@ jobs:
       - name: Create distribution
         run: |
           cp ./cmdc.mod modules/
+          mkdir modules/stubs
+          mv linux-2022/cmdc.pyi modules/stubs/cmdc.pyi
           zip -r cmdc-0.1.0.zip modules/
 
       - name: Upload distribution
