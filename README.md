@@ -137,8 +137,8 @@ docker build -t cmdc .
 
 Interested in helping out? Here's how to do it.
 
-1. Get a free compiler, like [Visual Studio 2019]()
-1. Download a Maya devkit, such as [this one]()
+1. Get a free compiler, like [Visual Studio 2019](https://visualstudio.microsoft.com/vs/community/) for Windows
+1. Download and unzip a [Maya devkit](https://www.autodesk.com/developer-network/platform-technologies/maya) (scroll down)
 2. Clone this repository
 3. Write your header file
 4. Submit a pull-request
@@ -156,7 +156,7 @@ Great, then here's what's next.
 
 ```bash
 # Tell cmdc about where your devkit is
-$env:DEVKIT_LOCATION="C:\github\mayaexamples\maya-devkit\2020.2\windows"
+$env:DEVKIT_LOCATION="C:\maya-devkit"
 
 # Clone the big jeeves out of this repository
 git clone https://github.com/mottosso/cmdc.git

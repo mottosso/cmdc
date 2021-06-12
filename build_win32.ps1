@@ -124,10 +124,10 @@ Write-Host "(4) Cleaning.."
 & python .\scripts\mfn.py clear
 
 $t4 = $stopwatch.ElapsedMilliseconds
-
 $clean_duration = $t4 - $t3
-$total_duration = $t4 - $t0
 
 Write-Host "(4) Finished in $clean_duration ms"
 Write-Host "(4) ----------------------------"
+
+$total_duration = $t4 - $t0
 Write-Host "Successfully created .\build\cmdc.pyd in $total_duration ms"

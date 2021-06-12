@@ -1,42 +1,77 @@
-py::class_<MBoundingBox>(m, "BoundingBox")
+#define _doc_BoundingBox_center \
+    "Center point"
+
+#define _doc_BoundingBox_clear \
+    "Empties the bounding box, setting its corners to (0, 0, 0)."
+
+#define _doc_BoundingBox_contains \
+    "Returns True if a point lies within the bounding box."
+
+#define _doc_BoundingBox_depth \
+    "Size in Z"
+
+#define _doc_BoundingBox_expand \
+    "Expands the bounding box to include a point or other bounding box."
+
+#define _doc_BoundingBox_height \
+    "Size in Y"
+
+#define _doc_BoundingBox_intersects \
+    "Returns True if any part of a given bounding box lies within this one."
+
+#define _doc_BoundingBox_transformUsing \
+    "Multiplies the bounding box's corners by a matrix."
+
+#define _doc_BoundingBox_width \
+    "Size in X"
+
+BoundingBox
     .def(py::init<>())
 
     .def("center", [](MBoundingBox& self) -> MPoint {
         return self.center();
-    }, R"pbdoc(Center point)pbdoc")
+    }, _doc_BoundingBox_center)
 
     .def("clear", [](MBoundingBox& self) -> void {
         self.clear();
-    }, R"pbdoc(Empties the bounding box, setting its corners to (0, 0, 0).)pbdoc")
+    }, _doc_BoundingBox_clear)
 
     .def("contains", [](MBoundingBox& self, MPoint point) -> bool {
         return self.contains(point);
-    }, R"pbdoc(Returns True if a point lies within the bounding box.)pbdoc")
+    },
+    py::arg("point"),
+    _doc_BoundingBox_contains)
 
     .def("depth", [](MBoundingBox& self) -> double {
         return self.depth();
-    }, R"pbdoc(Size in Z)pbdoc")
+    }, _doc_BoundingBox_depth)
 
     .def("expand", [](MBoundingBox& self, MBoundingBox box) -> void {
         self.expand(box);
-    }, R"pbdoc(Expands the bounding box to include a point or other bounding box.)pbdoc")
+    },
+    py::arg("box"), 
+    _doc_BoundingBox_expand)
 
     .def("expand", [](MBoundingBox& self, MPoint point) -> void {
         self.expand(point);
-    }, R"pbdoc(Expands the bounding box to include a point or other bounding box.)pbdoc")
+    }, py::arg("point"), 
+       _doc_BoundingBox_expand)
 
     .def("height", [](MBoundingBox& self) -> double {
         return self.height();
-    }, R"pbdoc(Size in Y)pbdoc")
+    }, _doc_BoundingBox_height)
 
     .def("intersects", [](MBoundingBox& self, MBoundingBox box, double tol = 0.0) -> bool {
         return self.intersects(box, tol);
-    }, R"pbdoc(Returns True if any part of a given bounding box lies within this one.)pbdoc")
+    }, py::arg("box"),
+       py::arg("tol") = 0.0,
+       _doc_BoundingBox_intersects)
 
     .def("transformUsing", [](MBoundingBox& self, MMatrix matrix) -> void {
         self.transformUsing(matrix);
-    }, R"pbdoc(Multiplies the bounding box's corners by a matrix.)pbdoc")
+    }, py::arg("matrix"),
+       _doc_BoundingBox_transformUsing)
 
     .def("width", [](MBoundingBox& self) -> double {
         return self.width();
-    }, R"pbdoc(Size in X)pbdoc");
+    }, _doc_BoundingBox_width);

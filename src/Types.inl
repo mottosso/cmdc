@@ -1,16 +1,15 @@
-
-py::class_<MStatus>(m, "Status")
+Status
     .def(py::init<>())
-    .def(py::init<const MStatus &>())
+    .def(py::init<const MStatus &>(), py::arg("status"))
 
     .def("__repr__", [](const MStatus &a) {
         return "<cmdc.Status()>";
     }
 );
 
-py::class_<MTypeId>(m, "TypeId")
+TypeId
     .def(py::init<>())
-    .def(py::init<const MTypeId &>())
+    .def(py::init<const MTypeId &>(), py::arg("src"))
     .def(py::init<const unsigned int>(),
          py::arg("id"))
     .def(py::init<const unsigned int, const unsigned int>(),
@@ -31,17 +30,17 @@ py::class_<MTypeId>(m, "TypeId")
 );
 
 
-py::class_<MString>(m, "String")
+String
     .def(py::init<>())
-    .def(py::init<const MString &>())
-    .def(py::init<const char*>())
+    .def(py::init<const MString &>(), py::arg("other"))
+    .def(py::init<const char*>(), py::arg("charString"))
 
-    .def(py::self += MString())
-    .def(py::self += char())
-    .def(py::self += double())
-    .def(py::self += int())
+    .def(py::self += MString(), py::arg("other"))
+    .def(py::self += char(), py::arg("other"))
+    .def(py::self += double(), py::arg("other"))
+    .def(py::self += int(), py::arg("other"))
     // .def(py::self += unsigned int())  # Not supported with GCC?
-    .def(py::self += float())
+    .def(py::self += float(), py::arg("other"))
 
     .def("__repr__", [](const MString &a) {
         return "<cmdc.String()>";

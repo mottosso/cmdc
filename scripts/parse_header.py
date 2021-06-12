@@ -107,11 +107,12 @@ def parse_header(header_name):
                 arguments = ', {}'.format(arguments)
 
         m_method = getattr(m_class, method_name)
+        docstring = _remove_docstring_signatures(m_method.__doc__)
 
         method_str = method_str_fmt.format(
             class_name=class_name,
             arguments=arguments,
-            doctstring=m_method.__doc__,
+            doctstring=docstring,
             method_name=method_name,
             return_type=return_type,
         )
@@ -361,6 +362,27 @@ def filter_header_lines(class_name, lines):
 
             if line == '};\n':
                 in_class_definition = False
+
+def _remove_docstring_signatures(docstring):
+    signature_regex = re.compile(r".*\(.*\) -> .*")
+
+    lines = docstring.splitlines()
+
+    while lines:
+        line = lines[0]
+
+        # Exclude signature lines and empty lines
+        if signature_regex.match(line) or not line:
+            lines.pop(0)
+            continue
+
+        # Stop trying to pop as soon as we encounter a real doc line.
+        if line:
+            break
+
+    filtered_docstring = "\n".join(lines)
+        
+    return filtered_docstring
 
 
 def _is_complete_statement(statement):
