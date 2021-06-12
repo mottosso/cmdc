@@ -707,3 +707,4 @@ py::class_<MDGModifier>(m, "DGModifier")
     }, py::arg("plugin"),
        py::arg("attribute"),
        _doc_DGModifier_unlinkExtensionAttributeFromPlugin);
+#endif DGMODIFIER_INL
