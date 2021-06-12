@@ -1,6 +1,5 @@
 #ifndef DGMODIFIER_INL
 #define DGMODIFIER_INL
-py::class_<MDGModifier>(m, "DGModifier")
 #define _doc_DGModifier_addAttribute \
     "Adds an operation to the modifier to add a new dynamic attribute to\n"\
     "the given dependency node.\n"\
@@ -199,6 +198,7 @@ py::class_<MDGModifier>(m, "DGModifier")
     "Note that the link is broken immediately and is not affected by\n"\
     "the modifier's doIt() or undoIt() methods."
 
+DGModifier
     .def(py::init<>())
 
     .def("addAttribute", [](MDGModifier & self, MObject node, MObject attribute) {
