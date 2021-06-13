@@ -1,4 +1,5 @@
 import inspect
+from itertools import count
 import sys
 import time
 
@@ -10,6 +11,10 @@ STUBS_LOCATION = "build/cmdc.pyi"
 
 class InvalidSignatureError(Exception):
     """Raised when one or more signatures are invalid."""
+
+
+class UnnamedArgumentError(Exception):
+    """Raised when one or more signatures contain unnamed arguments."""
 
 
 def cleanup_imports(content):
@@ -36,6 +41,26 @@ def cleanup_imports(content):
     return content
 
 
+def count_unnamed_args(lines):
+    """Count all the signatures that have unnamed arguments.
+
+    This ignores property setters as these will always have unnamed arguments.
+    """
+
+    unnamed_signatures = []
+    for line in lines:
+        if "arg0" in line and "setter" not in previous_line:
+            unnamed_signatures.append(line)
+        previous_line = line
+
+    if unnamed_signatures:
+        print("These signatures contain unnamed arguments:")
+        for signature in unnamed_signatures:
+            print(f"    {signature.strip(' ')}")
+
+    return len(unnamed_signatures)
+
+
 def main():
     print("Generating stubs")
     t0 = time.time()
@@ -58,6 +83,14 @@ def main():
     print("(1) ----------------------------")
 
     print("(2) Generating stubs content..")
+
+    lines = module.to_lines()
+    unnamed_args_count = count_unnamed_args(lines)
+
+    if unnamed_args_count > 0:
+        raise UnnamedArgumentError(
+            f"Module contains {unnamed_args_count} signatures with unnamed arguments."
+        )
 
     content = "\n".join(module.to_lines())
     content = cleanup_imports(content)
