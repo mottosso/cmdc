@@ -58,12 +58,49 @@ py::class_<MFnDagNode>(m, "FnDagNode")
     })
 ```
 
+
+### Ensuring good stubs generation.
+
+To ensure the quality of the generated stubs, here are a few things to keep in mind:
+1. There should be no function signature as part of the docstrings.
+2. All methods and functions should specify their argument names (and default values) with Pybind's [py::arg](https://pybind11.readthedocs.io/en/stable/basics.html#keyword-arguments) syntax.  
+In the case where the default value results in an invalid signature, use [py::arg_v](https://pybind11.readthedocs.io/en/stable/advanced/functions.html?highlight=arg_v#default-arguments-revisited) instead.  
+3. All types should be declared before being used in any signature.
+`ForwardDeclarations.inl` is a good place for that as it is included before any other file. Not doing this causes the C++ Types to be used in the signature instead of the Python types, resulting in invalid stubs.
+
+```c++
+// MSelectionList.inl
+SelectionList
+    .def("add", [](MSelectionList & self, MDagPath object, MObject component = MObject::kNullObj, bool mergeWithExisting = false) -> MSelectionList {
+        throw std::logic_error{"Function not yet implemented."};
+    }, py::arg("object"),
+       py::arg_v("component", MObject::kNullObj, "Object.kNullObj"),
+       py::arg("mergeWithExisting") = false,
+       _doc_SelectionList_add)
+
+```
+
+Which results in the following python signature:
+```python
+class SelectionList:
+    def add(self, object: DagPath, component: Object = Object.kNullObj, mergeWithExisting: bool = False) -> SelectionList: ...
+```
+
+Not using `py::arg` and `py::arg_v` and would have resulted in this invalid signature and the stubs generation would have failed.
+
+```python
+class SelectionList:
+    def add(self, arg0: DagPath, arg1: Object = <Object(kInvalid)>, arg2: bool = False) -> SelectionList: ...
+#                                               ^--- Invalid Syntax
+```
+
 <br>
 
 ### Style Guide
 
 - [80 character line width](#80-characters-wide)
 - [Formatting](formatting)
+- [Docstrings](docstrings)
 
 <br>
 
@@ -93,6 +130,32 @@ class bad_class {};
 obj.good_variable = true;
 obj.goodVariable = false;
 obj.GoodVariable = false;
+```
+
+<br>
+
+### Docstrings
+
+Docstrings are defined at the top of the file with `#define` statements with a variable name following this template `_doc_ClassName_methodName`
+The actual content of the docstring is placed on the line after the `#define` statement, indented once.
+
+Here's an example taken from `MDagPath.inl`
+
+```c++
+
+#define _doc_DagPath_exclusiveMatrix \
+    "Returns the matrix for all transforms in the path, excluding the\n"\
+    "end object."
+
+#define _doc_DagPath_exclusiveMatrixInverse \
+    "Returns the inverse of exclusiveMatrix()."
+
+#define _doc_DagPath_extendToShape \
+    "If the object at the end of this path is a transform and there is a\n"\
+    "shape node directly beneath it in the hierarchy, then the path is\n"\
+    "extended to that geometry node.\n"\
+    "\n"\
+    "NOTE: This method will fail if there multiple shapes below the transform."\
 ```
 
 <br>
