@@ -1,3 +1,5 @@
+#ifndef DGMODIFIER_INL
+#define DGMODIFIER_INL
 #define _doc_DGModifier_addAttribute \
     "Adds an operation to the modifier to add a new dynamic attribute to\n"\
     "the given dependency node.\n"\
@@ -705,3 +707,4 @@ DGModifier
     }, py::arg("plugin"),
        py::arg("attribute"),
        _doc_DGModifier_unlinkExtensionAttributeFromPlugin);
+#endif DGMODIFIER_INL

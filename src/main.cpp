@@ -12,11 +12,12 @@
 // Types
 #include <maya/MAngle.h>
 #include <maya/MColor.h>
+#include <maya/MDagModifier.h>
+#include <maya/MDagPath.h>
 #include <maya/MDataBlock.h>
 #include <maya/MDataHandle.h>
-#include <maya/MDGModifier.h>
 #include <maya/MDistance.h>
-#include <maya/MDagPath.h>
+#include <maya/MDGModifier.h>
 #include <maya/MEulerRotation.h>
 #include <maya/MFn.h>
 #include <maya/MIntArray.h>
@@ -68,6 +69,7 @@ PYBIND11_MODULE(cmdc, m) {
     #include "ForwardDeclarations.inl"
 
     #include "Math.inl"
+    #include "MDagModifier.inl"
     #include "MDagPath.inl"
     #include "MDGModifier.inl"
     #include "MFn.inl"

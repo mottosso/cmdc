@@ -121,7 +121,7 @@ Write-Host "(3) Finished in $link_duration ms"
 Write-Host "(3) ----------------------------"
 Write-Host "(4) Cleaning.."
 
-& python .\scripts\mfn.py clean
+& python .\scripts\mfn.py clear
 
 $t4 = $stopwatch.ElapsedMilliseconds
 $clean_duration = $t4 - $t3
