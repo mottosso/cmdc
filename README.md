@@ -57,11 +57,15 @@ print("Success")
 
 Code completion working in Visual Studio Code with Pylance:
 
-https://user-images.githubusercontent.com/3117205/121938610-50b24100-cd4c-11eb-9325-28c35e00f4d7.mp4
+<video autoplay muted loop>
+  <source src="https://user-images.githubusercontent.com/3117205/121938610-50b24100-cd4c-11eb-9325-28c35e00f4d7.mp4" type="video/mp4">
+</video>
 
 Type Checking working in Visual Studio Code with Pylance:
 
-https://user-images.githubusercontent.com/3117205/121938610-50b24100-cd4c-11eb-9325-28c35e00f4d7.mp4
+<video autoplay muted loop>
+  <source src="https://user-images.githubusercontent.com/3117205/121938616-53ad3180-cd4c-11eb-9b5d-d2f7e7829b82.mp4" type="video/mp4">
+</video>
 
 <br>
 
