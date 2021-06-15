@@ -14,6 +14,7 @@ An alternative set of bindings for the C++ API of Maya 2018-2022.
 - What if you could address bugs in the bindings yourself?
 - What if you could *add* missing members yourself?
 - What if there were bindings for Maya that made it impossible to crash Maya from Python?
+- What if setting up code completion and type checking was easy?
 
 That's what this repository is for.
 
@@ -54,6 +55,14 @@ print(fn.name())
 print("Success")
 ```
 
+**Code completion working in Visual Studio Code with Pylance**
+
+<img width=500 src=https://user-images.githubusercontent.com/3117205/121947966-f7034400-cd56-11eb-85ad-5b1d9aac091d.gif>
+
+**Type Checking working in Visual Studio Code with Pylance**
+
+<img width=500 src=https://user-images.githubusercontent.com/3117205/121947972-f8347100-cd56-11eb-8782-3d5fcd6c4376.gif>
+
 <br>
 
 ### Goal
@@ -67,8 +76,8 @@ print("Success")
 - Object attributes are preferred over rather than set/get methods. For example you can now write array.sizeIncrement=64.
 - There are more types of exceptions used when methods fail. Not everything is a RuntimeError, as was the case in the old API.
 - `cmdc` should be faster or as fast as API 2.0
-
-> [Reference](https://help.autodesk.com/view/MAYAUL/2020/ENU/?guid=__py_ref_index_html)
+  > [Reference](https://help.autodesk.com/view/MAYAUL/2020/ENU/?guid=__py_ref_index_html)
+- `cmdc` comes with fully type annotated stubs, making it easy to set up code completion as well as type checking.
 
 <br>
 
