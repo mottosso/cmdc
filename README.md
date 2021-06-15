@@ -55,14 +55,13 @@ print(fn.name())
 print("Success")
 ```
 
-Code completion working in Visual Studio Code with Pylance:
+**Code completion working in Visual Studio Code with Pylance**
 
-![cmdc_completion](https://user-images.githubusercontent.com/3117205/121947966-f7034400-cd56-11eb-85ad-5b1d9aac091d.gif)
+<img width=500 src=https://user-images.githubusercontent.com/3117205/121947966-f7034400-cd56-11eb-85ad-5b1d9aac091d.gif>
 
+**Type Checking working in Visual Studio Code with Pylance**
 
-Type Checking working in Visual Studio Code with Pylance:
-
-![cmdc_type_checking](https://user-images.githubusercontent.com/3117205/121947972-f8347100-cd56-11eb-8782-3d5fcd6c4376.gif)
+<img width=500 src=https://user-images.githubusercontent.com/3117205/121947972-f8347100-cd56-11eb-8782-3d5fcd6c4376.gif>
 
 <br>
 
