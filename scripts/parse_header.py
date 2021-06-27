@@ -2,7 +2,7 @@
 
 """Parse Header.
 
-This script generate a Pythong binding stub from a Maya devkit header.
+This script generates a Python binding stub from a Maya devkit header.
 """
 
 import re
@@ -50,13 +50,13 @@ py::class_<M{class_name}>(m, "{class_name}")
 INSTANCE_METHOD = """\
     .def("{method_name}", []({class_name} & self{arguments}){return_type} {{
         throw std::logic_error{{"Function not yet implemented."}};
-    }}, {doctstring_variable})\
+    }}, {pybind_arguments}{doctstring_variable})\
 """
 
 STATIC_METHOD = """\
     .def_static("{method_name}", []({arguments}){return_type} {{
         throw std::logic_error{{"Function not yet implemented."}};
-    }}, {doctstring_variable})\
+    }}, {pybind_arguments}{doctstring_variable})\
 """
 
 class Docstring(object):
@@ -186,6 +186,8 @@ def parse_header(header_name):
         if not hasattr(m_class, method_name):
             continue
 
+        pybind_arguments = generate_pybind_args(arguments)
+
         if signature.startswith('static'):
             method_str_fmt = STATIC_METHOD
         else:
@@ -203,11 +205,13 @@ def parse_header(header_name):
         if docstring not in docstrings:
             docstrings.append(docstring)
 
+            
         method_str = method_str_fmt.format(
-            class_name=class_name,
             arguments=arguments,
+            class_name=class_name,
             doctstring_variable=docstring.variable_name,
             method_name=method_name,
+            pybind_arguments=pybind_arguments,
             return_type=return_type,
         )
 
@@ -246,6 +250,43 @@ def parse_header(header_name):
         fp.write(code_str)
 
     log.info("Successfully generated '%s'" % file_path)
+
+def generate_pybind_args(arguments):
+    # type: (str) -> str
+
+    if not arguments:
+        return ""
+
+    # matches a single argument with a type, name and optional value
+    # some examples:
+    #     MPlug plug
+    #     unsigned int i
+    #     bool mergeWithExisting = false
+    argument_re = re.compile(r"^(?P<type>.*?) (?P<name>\S+)( = (?P<value>.*))?$")
+
+    pybind_arg_template = "py::arg(\"{arg_name}\")"
+
+    pybind_args = []
+    for arg in arguments.split(","):
+        match = argument_re.match(arg)
+
+        if not match:
+            continue
+
+        arg_name = match["name"]
+        arg_value = match["value"]
+        arg_str = pybind_arg_template.format(arg_name=arg_name)
+
+        if arg_value:
+            arg_str += " = {}".format(arg_value)
+        
+        pybind_args.append(arg_str)
+
+    pybind_args_str = ", ".join(pybind_args)
+    if pybind_args:
+        pybind_args_str += ", "
+
+    return pybind_args_str
 
 
 def parse_method(signature, arguments):
