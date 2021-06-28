@@ -2,7 +2,7 @@
 
 """Parse Header.
 
-This script generate a Pythong binding stub from a Maya devkit header.
+This script generates a Python binding stub from a Maya devkit header.
 """
 
 import re
@@ -10,6 +10,7 @@ import os
 import logging
 import argparse
 import collections
+import textwrap
 
 from maya.api import (
     OpenMaya,
@@ -40,6 +41,8 @@ IGNORED_CPP_TOKENS = (
 )
 
 TEMPLATE_STR = """\
+{docstring_definitions}
+
 py::class_<M{class_name}>(m, "{class_name}")
 {class_body}\
 """
@@ -47,14 +50,97 @@ py::class_<M{class_name}>(m, "{class_name}")
 INSTANCE_METHOD = """\
     .def("{method_name}", []({class_name} & self{arguments}){return_type} {{
         throw std::logic_error{{"Function not yet implemented."}};
-    }}, R"pbdoc({doctstring})pbdoc")\
+    }}, {pybind_arguments}{doctstring_variable})\
 """
 
 STATIC_METHOD = """\
     .def_static("{method_name}", []({arguments}){return_type} {{
         throw std::logic_error{{"Function not yet implemented."}};
-    }}, R"pbdoc({doctstring})pbdoc")\
+    }}, {pybind_arguments}{doctstring_variable})\
 """
+
+class Docstring(object):
+    def __init__(self, class_name, method_name, docstring):
+        # type: (str, str, str) -> None
+        self.class_name = class_name.strip("M")
+        self.method_name = method_name
+        self.docstring = docstring
+
+        self._process_docstring()
+
+    def _process_docstring(self):
+        # type: () -> None
+        self.strip_signature()
+        self.process_multilines()
+
+    def strip_signature(self):
+        # type: () -> None
+        signature_regex = re.compile(r".*\(.*\) -> .*")
+
+        lines = self.docstring.splitlines()
+
+        while lines:
+            line = lines[0]
+
+            # Exclude signature lines and empty lines
+            if signature_regex.match(line) or not line:
+                lines.pop(0)
+                continue
+
+            # Stop trying to pop as soon as we encounter a real doc line.
+            if line:
+                break
+
+        filtered_docstring = "\n".join(lines)
+            
+        self.docstring = filtered_docstring
+
+    def process_multilines(self):
+        # type: () -> None
+        lines = self.docstring.splitlines()
+        line_template = "    \"{line}\\n\"\\\n"
+        last_line_template = "    \"{line}\""
+
+        multiline_docstring = ""
+        for i, line in enumerate(lines):
+            if i < len(lines) - 1:
+                formatted_line = line_template.format(line=line)
+            else:
+                formatted_line = last_line_template.format(line=line)
+            multiline_docstring += formatted_line
+
+        self.docstring = multiline_docstring
+
+    @property
+    def variable_name(self):
+        # type: () -> str
+        return "_doc_{class_name}_{method_name}".format(
+            class_name=self.class_name,
+            method_name=self.method_name,
+        )
+
+    @property
+    def define_statement(self):
+        # type: () -> str
+        return textwrap.dedent(
+            "#define {variable_name} \\\n"
+            "{docstring}\n".format(
+                variable_name=self.variable_name,
+                docstring=self.docstring,
+            )
+        )
+    
+    def __str__(self):
+        # type: () -> str
+        return self.define_statement
+
+    def __eq__(self, other):
+        # type: (Docstring) -> bool
+        return (
+            self.class_name == other.class_name
+            and self.method_name == other.method_name
+            and self.docstring == other.docstring
+        )
 
 
 def parse_header(header_name):
@@ -88,6 +174,8 @@ def parse_header(header_name):
 
     m_class = find_maya_class(class_name)
 
+    docstrings = []
+
     for (signature, arguments) in filter_function_lines(lines):
         method_name, arguments, return_type = parse_method(signature,
                                                            arguments)
@@ -98,6 +186,8 @@ def parse_header(header_name):
         if not hasattr(m_class, method_name):
             continue
 
+        pybind_arguments = generate_pybind_args(arguments)
+
         if signature.startswith('static'):
             method_str_fmt = STATIC_METHOD
         else:
@@ -107,13 +197,21 @@ def parse_header(header_name):
                 arguments = ', {}'.format(arguments)
 
         m_method = getattr(m_class, method_name)
-        docstring = _remove_docstring_signatures(m_method.__doc__)
+        docstring = Docstring(
+            m_class.__name__,
+            m_method.__name__,
+            m_method.__doc__
+        )
+        if docstring not in docstrings:
+            docstrings.append(docstring)
 
+            
         method_str = method_str_fmt.format(
-            class_name=class_name,
             arguments=arguments,
-            doctstring=docstring,
+            class_name=class_name,
+            doctstring_variable=docstring.variable_name,
             method_name=method_name,
+            pybind_arguments=pybind_arguments,
             return_type=return_type,
         )
 
@@ -127,8 +225,11 @@ def parse_header(header_name):
     class_body[-1] += ';'
     class_body_str = '\n\n'.join(class_body)
 
+    docstring_definitions = "\n".join([d.define_statement for d in docstrings])
+
     code_str = (
         TEMPLATE_STR.format(
+            docstring_definitions=docstring_definitions,
             class_name=class_name[1:],
             class_body=class_body_str
         )
@@ -149,6 +250,43 @@ def parse_header(header_name):
         fp.write(code_str)
 
     log.info("Successfully generated '%s'" % file_path)
+
+def generate_pybind_args(arguments):
+    # type: (str) -> str
+
+    if not arguments:
+        return ""
+
+    # matches a single argument with a type, name and optional value
+    # some examples:
+    #     MPlug plug
+    #     unsigned int i
+    #     bool mergeWithExisting = false
+    argument_re = re.compile(r"^(?P<type>.*?) (?P<name>\S+)( = (?P<value>.*))?$")
+
+    pybind_arg_template = "py::arg(\"{arg_name}\")"
+
+    pybind_args = []
+    for arg in arguments.split(","):
+        match = argument_re.match(arg)
+
+        if not match:
+            continue
+
+        arg_name = match["name"]
+        arg_value = match["value"]
+        arg_str = pybind_arg_template.format(arg_name=arg_name)
+
+        if arg_value:
+            arg_str += " = {}".format(arg_value)
+        
+        pybind_args.append(arg_str)
+
+    pybind_args_str = ", ".join(pybind_args)
+    if pybind_args:
+        pybind_args_str += ", "
+
+    return pybind_args_str
 
 
 def parse_method(signature, arguments):
@@ -362,28 +500,6 @@ def filter_header_lines(class_name, lines):
 
             if line == '};\n':
                 in_class_definition = False
-
-def _remove_docstring_signatures(docstring):
-    signature_regex = re.compile(r".*\(.*\) -> .*")
-
-    lines = docstring.splitlines()
-
-    while lines:
-        line = lines[0]
-
-        # Exclude signature lines and empty lines
-        if signature_regex.match(line) or not line:
-            lines.pop(0)
-            continue
-
-        # Stop trying to pop as soon as we encounter a real doc line.
-        if line:
-            break
-
-    filtered_docstring = "\n".join(lines)
-        
-    return filtered_docstring
-
 
 def _is_complete_statement(statement):
     if '(' in statement:
