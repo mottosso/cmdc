@@ -23,6 +23,7 @@ If you wish to manually run ctags:
 from __future__ import annotations
 
 import argparse
+import json
 import logging
 import os
 import re
@@ -32,8 +33,7 @@ import textwrap
 from dataclasses import dataclass, field
 from enum import Enum
 from pathlib import Path
-from typing import Any, Callable, List, Optional, Type
-
+from typing import Any, Callable, Dict, List, Optional, Type
 
 try:
     import maya.standalone
@@ -80,17 +80,22 @@ DOCSTRING_TEMPLATE = """\
 """
 
 
+class UnnamedArgumentError(Exception):
+    """Raised when one or more signatures contain unnamed arguments."""
+
+
 @dataclass
 class Module:
-    classes: List[Class] = field(default_factory=list)
+    classes: Dict[str, Class] = field(default_factory=dict)
 
     def __str__(self) -> str:
         docstrings = []
-        for cls in self.classes:
+        classes = self.classes.values()
+        for cls in classes:
             docstrings.extend(cls.unique_docstrings())
 
         docstrings = map(str, docstrings)
-        classes = map(str, self.classes)
+        classes = map(str, classes)
 
         docstrings_str = "\n".join(docstrings)
         classes_str = "\n".join(classes)
@@ -171,34 +176,35 @@ class Class:
 @dataclass
 class Method:
 
-    arguments: List[Argument]
-    klass: Class
+    cls: Class
     name: str
+    arguments: List[Argument]
     return_type: Optional[str]
     body = 'throw std::logic_error{{"Function not yet implemented."}};'
-    is_constructor = False
-    is_destructor = False
-    is_operator = False
+
+    is_constructor: bool = field(init=False, default=False)
+    is_destructor: bool = field(init=False, default=False)
+    is_operator: bool = field(init=False, default=False)
     docstring: Docstring = field(init=False)
     maya_api1_method: Optional[Callable[[], Any]] = field(default=None, init=False)
     maya_api2_method: Optional[Callable[[], Any]] = field(default=None, init=False)
 
     def __post_init__(self):
-        if self.name == self.klass.maya_class_name:
+        if self.name == self.cls.maya_class_name:
             self.is_constructor = True
 
         if self.name.startswith("~"):
             self.is_destructor = True
 
         try:
-            api1_method = getattr(self.klass.maya_api1_class, self.name)
+            api1_method = getattr(self.cls.maya_api1_class, self.name)
         except:
             self.maya_api1_method = None
         else:
             self.maya_api1_method = api1_method
 
         try:
-            api2_method = getattr(self.klass.maya_api2_class, self.name)
+            api2_method = getattr(self.cls.maya_api2_class, self.name)
         except:
             self.maya_api2_method = None
         else:
@@ -221,12 +227,12 @@ class Method:
 
         if not self.is_constructor:
             self.arguments.insert(
-                0, Argument.from_string(f"{self.klass.maya_class_name} & self")
+                0, Argument.from_string(f"{self.cls.maya_class_name} & self")
             )
 
         docstring_str = "MISSING DOCSTRING"
-        if hasattr(self.klass.maya_api2_class, self.name):
-            maya_method = getattr(self.klass.maya_api2_class, self.name)
+        if hasattr(self.cls.maya_api2_class, self.name):
+            maya_method = getattr(self.cls.maya_api2_class, self.name)
             if maya_method.__doc__:
                 docstring_str = maya_method.__doc__
         self.docstring = Docstring(self, docstring_str)
@@ -234,6 +240,7 @@ class Method:
         self._filter_mstatus()
 
     def _filter_mstatus(self):
+        """Remove any MStatus arguments."""
         arguments = self.arguments
         for argument in arguments:
             if "MStatus" in argument.type:
@@ -243,15 +250,35 @@ class Method:
             self.return_type = None
 
     @classmethod
-    def new(
-        cls,
-        klass: Class,
-        name: str,
-        arguments_str: str,
-        return_type: Optional[str],
-    ) -> Method:
+    def from_entry(cls, klass: Type, entry: Dict[str, str]) -> Method:
+        name = entry["name"]
+        signature = entry["signature"]
+
+        return_type = entry.get("typeref")
+        if return_type:
+            return_type = return_type.replace("typename:", "")
+
+        arguments = cls._parse_signature(signature)
+
+        return Method(
+            arguments=arguments,
+            cls=klass,
+            name=name,
+            return_type=return_type,
+        )
+
+    @classmethod
+    def _parse_signature(cls, signature: str) -> Tuple[List[Argument], str]:
+        signature_re = re.compile(r"\((?P<arguments_str>.*)\).*")
+
+        match = signature_re.match(signature)
+
+        if not match:
+            raise ValueError(f"Invalid signature format: {signature}")
 
         arguments = []
+
+        arguments_str = match["arguments_str"]
         for argument_str in arguments_str.split(","):
             if not argument_str:
                 continue
@@ -260,29 +287,26 @@ class Method:
                 argument = Argument.from_string(argument_str.strip())
             except RuntimeError as e:
                 logger.warning(e)
+            except UnnamedArgumentError:
+                pass
             else:
                 arguments.append(argument)
 
-        return Method(
-            arguments=arguments,
-            klass=klass,
-            name=name,
-            return_type=return_type,
-        )
+        return arguments
 
     @property
     def arguments_str(self) -> str:
-        return ", ".join([arg.source_string for arg in self.arguments])
+        return ", ".join([arg.source_string for arg in self.arguments if arg.name])
 
     @property
     def pyargs_str(self) -> str:
         # self is the first argument, we don't want it in the pybind arguments
-        arguments = self.arguments[1:]
+        arguments = [arg for arg in self.arguments[1:] if arg.name]
 
         if not arguments:
             return ""
 
-        return ",\n    ".join([arg.pyarg_str for arg in arguments if arg.name]) + ",\n    "
+        return ",\n    ".join([arg.pyarg_str for arg in arguments]) + ",\n    "
 
     @property
     def return_type_str(self) -> str:
@@ -363,7 +387,7 @@ class Docstring:
 
     @property
     def variable_name(self) -> str:
-        return f"_doc_{self.method.klass.name}_{self.method.name}"
+        return f"_doc_{self.method.cls.name}_{self.method.name}"
 
     @property
     def define_statement(self) -> str:
@@ -384,35 +408,53 @@ class Docstring:
 
 @dataclass
 class Argument:
-    # To make sense of the regex: https://regex101.com/r/7O6yVV/1
-    _regex_pattern = re.compile(
-        r"^(?P<type>.+?(\s?(\*|&)\s?)*)(?P<name>\S+)?( = (?P<value>\S+))?$"
-    )
 
-    name: Optional[str]
     source_string: str
+    name: Optional[str]
     type: str
     value: Optional[str]
+    is_pointer: bool
+    is_reference: bool
+    is_const: bool
 
     @classmethod
-    def from_string(cls, string: str) -> Argument:
-        string = string.strip()
-        match = cls._regex_pattern.match(string)
+    def from_string(cls, argument_str: str) -> Argument:
+
+        # https://regex101.com/r/StbpY9/1
+        arguement_re = re.compile(
+            r"^(?P<const>const)? ?(?P<type>.+?) ?(?P<passed_by>\*|&)? ?(?P<name>\S+)?( = (?P<value>\S+))?$"
+        )
+        argument_str = argument_str.strip()
+        match = arguement_re.match(argument_str)
 
         if not match:
-            raise RuntimeError(f"Invalid argument pattern: {string}")
+            raise RuntimeError(f"Invalid argument pattern: {argument_str}")
 
         groups = match.groupdict()
 
-        name = groups["name"]
+        name = groups.get("name")
+
         type = groups["type"]
         value = groups.get("value", None)
 
+        is_const = bool(groups.get("is_const"))
+
+        passed_by = groups.get("passed_by")
+        is_reference = False
+        is_pointer = False
+        if passed_by == "*":
+            is_reference = True
+        if passed_by == "&":
+            is_pointer = False
+
         return Argument(
+            source_string=argument_str,
             name=name,
-            source_string=string,
             type=type,
             value=value,
+            is_pointer=is_pointer,
+            is_reference=is_reference,
+            is_const=is_const,
         )
 
     @property
@@ -426,25 +468,6 @@ class Argument:
             return pyarg_str
         else:
             return None
-    
-    @property
-    def is_reference(self):
-        return "&" in self.type
-
-    @property
-    def is_pointer(self):
-        return "*" in self.type
-
-    @property
-    def is_const(self):
-        return "const" in self.type
-
-
-
-class EntryKind(Enum):
-    Class = "c"
-    Member = "m"
-    Prototype = "p"  # A prototype method is a method with no implementation
 
 
 def find_header_file(header_name: str) -> Path:
@@ -455,7 +478,7 @@ def find_header_file(header_name: str) -> Path:
     header_file = devkit_path / "include" / "maya" / header_name
 
     if not header_file.exists():
-        raise LookupError(f"No '{header_name}' header in the devkit.")
+        raise FileNotFoundError(f"No '{header_name}' header in the devkit.")
     else:
         logger.info(f"Header file found: {header_file}")
 
@@ -475,6 +498,9 @@ def generate_tags(header_file: Path) -> Path:
     tags_dir = Path(__file__).parent.resolve() / "tags"
     tags_dir.mkdir(exist_ok=True)
     tags_file = tags_dir / header_file.name.replace(".h", ".tags")
+
+    if tags_file.exists():
+        tags_file.unlink()
 
     args = [
         "ctags",
@@ -501,42 +527,28 @@ def parse_tags(tag_file: Path) -> Module:
 
     module = Module()
 
-    # https://regex101.com/r/dPC7VE/1
-    # I'm sorry...
-    line_re = re.compile(
-        r"^(?P<name>[^!]\S+)\s*(?P<file>\S+)\s*(?P<line_number>\d+);\"\s(?P<kind>d|c|p)((\sclass:(?P<class>\S+))?(\styperef:typename:(?P<return_type>\S+))?(\ssignature:\((?P<arguments>.*)\))?)?"
-    )
-
-    current_class = None
     for line in tag_file_content.splitlines():
-        match = line_re.match(line)
+        entry = json.loads(line)
 
-        if not match:
+        if entry["_type"] != "tag":
             continue
 
-        entry = match.groupdict()
-
         name = entry["name"]
-        kind = EntryKind(entry["kind"])
+        kind = entry["kind"]
 
-        if kind is EntryKind.Class:
-            current_class = Class(name)
-            module.classes.append(current_class)
-        elif kind is EntryKind.Prototype:
+        if kind == "class":
+            module.classes[name] = Class(name)
 
-            cls = entry["class"]
-            if cls is None:
-                continue
-
-            arguments = entry["arguments"] or ""
-            return_type = entry["return_type"]
+        elif kind == "prototype":
             try:
-                method = Method.new(current_class, name, arguments, return_type)
+                cls = module.classes[entry["scope"]]
+                method = Method.from_entry(cls, entry)
             except RuntimeError as e:
                 logger.info(e)
             else:
-                current_class.add_method(method)
+                cls.add_method(method)
         else:
+            # TODO: Support properties and probably more kinds
             continue
 
     return module
@@ -584,7 +596,7 @@ def main():
     opts = parser.parse_args()
     try:
         parse_header(opts.header, opts.overwrite)
-    except LookupError as e:
+    except FileNotFoundError as e:
         logger.error(str(e))
     except OSError as e:
         logger.error(str(e))
