@@ -318,10 +318,11 @@ class Docstring:
         self._process_docstring()
 
     def _process_docstring(self):
-        self.strip_signature()
-        self.process_multilines()
+        self._strip_signature()
+        self._process_quotes()
+        self._process_multilines()
 
-    def strip_signature(self) -> None:
+    def _strip_signature(self) -> None:
         signature_regex = re.compile(r".*\(.*\) -> .*")
 
         lines = self.docstring.splitlines()
@@ -342,7 +343,10 @@ class Docstring:
 
         self.docstring = filtered_docstring
 
-    def process_multilines(self) -> None:
+    def _process_quotes(self) -> None:
+        self.docstring = self.docstring.replace('"', '\\"')
+
+    def _process_multilines(self) -> None:
         lines = self.docstring.splitlines()
         line_template = '"{line}\\n"\\\n'
         last_line_template = '"{line}"'
