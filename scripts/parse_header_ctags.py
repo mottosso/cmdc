@@ -33,7 +33,7 @@ import textwrap
 from dataclasses import dataclass, field
 from enum import Enum
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional, Type
+from typing import Any, Callable, Dict, List, Optional, Type, Tuple
 
 try:
     import maya.standalone
@@ -47,7 +47,10 @@ else:
 
 logging.getLogger().setLevel(logging.DEBUG)
 logger = logging.getLogger("parse_header")
-# logger.setLevel(logging.DEBUG)
+
+
+class DeprecationError(Exception):
+    """Raised when a method is deprecated."""
 
 
 MODULE_TEMPLATE = """\
@@ -78,10 +81,6 @@ DOCSTRING_TEMPLATE = """\
 #define {variable_name} \\
 {docstring}
 """
-
-
-class UnnamedArgumentError(Exception):
-    """Raised when one or more signatures contain unnamed arguments."""
 
 
 @dataclass
@@ -237,20 +236,12 @@ class Method:
                 docstring_str = maya_method.__doc__
         self.docstring = Docstring(self, docstring_str)
 
-        self._filter_mstatus()
-
-    def _filter_mstatus(self):
-        """Remove any MStatus arguments."""
-        arguments = self.arguments
-        for argument in arguments:
-            if "MStatus" in argument.type:
-                self.arguments.remove(argument)
-
-        if self.return_type and "MStatus" in self.return_type:
-            self.return_type = None
-
     @classmethod
-    def from_entry(cls, klass: Type, entry: Dict[str, str]) -> Method:
+    def from_entry(
+        cls,
+        klass: Class,
+        entry: Dict[str, str],
+    ) -> Method:
         name = entry["name"]
         signature = entry["signature"]
 
@@ -258,17 +249,45 @@ class Method:
         if return_type:
             return_type = return_type.replace("typename:", "")
 
-        arguments = cls._parse_signature(signature)
+            if "OPENMAYA_DEPRECATED" in return_type:
+                raise DeprecationError(
+                    f"Method {klass.name}.{name} is deprecated -- skipping."
+                )
+
+        if return_type == "void":
+            return_type = None
+
+        if return_type == "MString":
+            return_type = "std::string"
+
+        if return_type == "MStatus":
+            return_type = None
+            has_out_args = True
+        else:
+            has_out_args = False
+
+        in_args, out_args = cls._parse_signature(signature, has_out_args)
+
+        if out_args:
+            if len(out_args) == 1:
+                return_type = out_args[0].type
+            else:
+                out_args_types = [arg.type for arg in out_args]
+                return_type = "std::tuple<{}>".format(", ".join(out_args_types))
 
         return Method(
-            arguments=arguments,
+            arguments=in_args,
             cls=klass,
             name=name,
             return_type=return_type,
         )
 
     @classmethod
-    def _parse_signature(cls, signature: str) -> Tuple[List[Argument], str]:
+    def _parse_signature(
+        cls,
+        signature: str,
+        has_out_args: bool,
+    ) -> Tuple[List[Argument], List[Argument]]:
         signature_re = re.compile(r"\((?P<arguments_str>.*)\).*")
 
         match = signature_re.match(signature)
@@ -276,27 +295,36 @@ class Method:
         if not match:
             raise ValueError(f"Invalid signature format: {signature}")
 
-        arguments = []
+        in_args: List[Argument] = []
+        out_args: List[Argument] = []
 
         arguments_str = match["arguments_str"]
         for argument_str in arguments_str.split(","):
             if not argument_str:
                 continue
-
             try:
                 argument = Argument.from_string(argument_str.strip())
-            except RuntimeError as e:
+            except re.error as e:
                 logger.warning(e)
-            except UnnamedArgumentError:
-                pass
             else:
-                arguments.append(argument)
+                if not argument.name or "MStatus" in argument.type:
+                    continue
 
-        return arguments
+                if argument.is_const:
+                    in_args.append(argument)
+                elif argument.is_reference:
+                    if has_out_args:
+                        out_args.append(argument)
+                    else:
+                        in_args.append(argument)
+                else:
+                    in_args.append(argument)
+
+        return (in_args, out_args)
 
     @property
     def arguments_str(self) -> str:
-        return ", ".join([arg.source_string for arg in self.arguments if arg.name])
+        return ", ".join([arg.source_string for arg in self.arguments])
 
     @property
     def pyargs_str(self) -> str:
@@ -343,7 +371,7 @@ class Docstring:
 
     def _process_docstring(self):
         self._strip_signature()
-        self._process_quotes()
+        self._escape_quotes()
         self._process_multilines()
 
     def _strip_signature(self) -> None:
@@ -367,7 +395,7 @@ class Docstring:
 
         self.docstring = filtered_docstring
 
-    def _process_quotes(self) -> None:
+    def _escape_quotes(self) -> None:
         self.docstring = self.docstring.replace('"', '\\"')
 
     def _process_multilines(self) -> None:
@@ -420,21 +448,24 @@ class Argument:
     @classmethod
     def from_string(cls, argument_str: str) -> Argument:
 
-        # https://regex101.com/r/StbpY9/1
+        # https://regex101.com/r/99q0hk/2
         arguement_re = re.compile(
-            r"^(?P<const>const)? ?(?P<type>.+?) ?(?P<passed_by>\*|&)? ?(?P<name>\S+)?( = (?P<value>\S+))?$"
+            r"^(?P<const>const)? ?(?P<type>(unsigned )?\S+) ?(?P<passed_by>\*|&)? ?(?P<name>\S+?)?( ?= ?(?P<value>\S+))?$"
         )
         argument_str = argument_str.strip()
         match = arguement_re.match(argument_str)
 
         if not match:
-            raise RuntimeError(f"Invalid argument pattern: {argument_str}")
+            raise re.error(f"Invalid argument pattern: {argument_str}")
 
         groups = match.groupdict()
 
         name = groups.get("name")
 
         type = groups["type"]
+        if type == "MString":
+            type = "std::string"
+
         value = groups.get("value", None)
 
         is_const = bool(groups.get("is_const"))
@@ -443,9 +474,9 @@ class Argument:
         is_reference = False
         is_pointer = False
         if passed_by == "*":
-            is_reference = True
+            is_pointer = True
         if passed_by == "&":
-            is_pointer = False
+            is_reference = True
 
         return Argument(
             source_string=argument_str,
@@ -468,6 +499,17 @@ class Argument:
             return pyarg_str
         else:
             return None
+
+    def __str__(self) -> str:
+        argument_str = self.type
+
+        if self.name:
+            argument_str += f" {self.name}"
+
+        if self.value:
+            argument_str += f" = {self.value}"
+
+        return argument_str
 
 
 def find_header_file(header_name: str) -> Path:
@@ -527,6 +569,7 @@ def parse_tags(tag_file: Path) -> Module:
 
     module = Module()
 
+    # register all the classes first
     for line in tag_file_content.splitlines():
         entry = json.loads(line)
 
@@ -535,16 +578,38 @@ def parse_tags(tag_file: Path) -> Module:
 
         name = entry["name"]
         kind = entry["kind"]
+        scope = entry.get("scope")
 
         if kind == "class":
             module.classes[name] = Class(name)
 
-        elif kind == "prototype":
+    # then register all the methods.
+    for line in tag_file_content.splitlines():
+        entry = json.loads(line)
+
+        if entry["_type"] != "tag":
+            continue
+
+        name = entry["name"]
+        kind = entry["kind"]
+        scope = entry.get("scope")
+
+        if kind == "prototype":
+            if not scope:
+                # we likely have a function in our hands
+                # TODO: Support function definitions.
+                continue
+
             try:
-                cls = module.classes[entry["scope"]]
-                method = Method.from_entry(cls, entry)
-            except RuntimeError as e:
-                logger.info(e)
+                cls = module.classes[scope]
+                if cls:
+                    method = Method.from_entry(cls, entry)
+            except KeyError as e:
+                logger.warning(f"class {scope} not found for {name} -- skipping.")
+            except DeprecationError as e:
+                logger.warning(e)
+            except Exception as e:
+                raise e
             else:
                 cls.add_method(method)
         else:
