@@ -31,10 +31,19 @@ set(CMAKE_CONFIGURATION_TYPES "Debug" "Release")
 set(Maya_DIR "${PROJECT_SOURCE_DIR}/cmake")
 
 find_package(Maya REQUIRED)
-
 add_subdirectory(pybind11)
 
+add_custom_target(BuildMFnTypes ALL python ./scripts/mfn.py parse ${MAYA_DEVKIT_ROOT}
+                  BYPRODUCTS ./src/MFn.Types.inl
+                  WORKING_DIRECTORY ${PROJECT_SOURCE_DIR})
 add_library(${PROJECT_NAME} SHARED ${CMDC_SOURCES})
+add_dependencies(${PROJECT_NAME} BuildMFnTypes)
+add_custom_command(TARGET ${PROJECT_NAME}
+                    POST_BUILD
+                    COMMAND python ./mfn.py clear -
+                    BYPRODUCTS ./src/MFn.Types.inl
+                    WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}/scripts"
+)
 pybind11_extension(${PROJECT_NAME})
 
 if (APPLE)

@@ -12,7 +12,11 @@ if (WIN32)
 
 elseif (APPLE)
     set(PYTHON_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/os/mac/${PYBIND11_PYTHON_VERSION}/include")
-    set(PYTHON_LIB "${PROJECT_SOURCE_DIR}/os/mac/${PYBIND11_PYTHON_VERSION}/lib/libpython${PYBIND11_PYTHON_VERSION}.dylib")
+    if (${PYBIND11_PYTHON_VERSION} EQUAL "2.7")
+        set(PYTHON_LIB "${PROJECT_SOURCE_DIR}/os/mac/${PYBIND11_PYTHON_VERSION}/lib/libpython${PYBIND11_PYTHON_VERSION}.dylib")
+    else()
+        set(PYTHON_LIB "${PROJECT_SOURCE_DIR}/os/mac/${PYBIND11_PYTHON_VERSION}/lib/libpython${PYBIND11_PYTHON_VERSION}m.dylib")
+    endif()
 else()
     set(PYTHON_INCLUDE_DIR "${MAYA_DEVKIT_ROOT}/include/Python")
     if (${PYBIND11_PYTHON_VERSION} EQUAL "2.7")
@@ -21,6 +25,9 @@ else()
         set(PYTHON_LIB "${PROJECT_SOURCE_DIR}/os/linux/${PYBIND11_PYTHON_VERSION}/lib/libpython${PYBIND11_PYTHON_VERSION}m.so")
     endif()
 endif()
+
+message("Python library set to: ${PYTHON_LIB}")
+message("Python include set to: ${PYTHON_INCLUDE_DIR}")
 
 add_library(Maya::Foundation SHARED IMPORTED)
 add_library(Maya::OpenMaya SHARED IMPORTED)
@@ -71,6 +78,7 @@ elseif(APPLE)
     set_target_properties(Python::Lib PROPERTIES
         INTERFACE_INCLUDE_DIRECTORIES ${PYTHON_INCLUDE_DIR}
         IMPORTED_LOCATION ${PYTHON_LIB}
+        IMPORTED_SONAME "libpython${PYBIND11_PYTHON_VERSION}m.dylib"
     )
 
     set_target_properties(Maya::Foundation PROPERTIES
@@ -109,6 +117,12 @@ elseif(APPLE)
         IMPORTED_SONAME "libOpenMayaFX.dylib"
     )
 else()
+    set_target_properties(Python::Lib PROPERTIES
+        INTERFACE_INCLUDE_DIRECTORIES ${PYTHON_INCLUDE_DIR}
+        IMPORTED_LOCATION ${PYTHON_LIB}
+        IMPORTED_SONAME "libpython${PYBIND11_PYTHON_VERSION}m.so"
+    )
+
     set_target_properties(Maya::Foundation PROPERTIES
         INTERFACE_INCLUDE_DIRECTORIES ${MAYA_INCLUDE_DIR}
         IMPORTED_LOCATION "${MAYA_LIB_DIR}/libFoundation.so"
