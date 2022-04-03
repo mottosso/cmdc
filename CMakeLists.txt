@@ -12,6 +12,7 @@ if (MAYA_VERSION GREATER 2020)
 else()
     set(PYBIND11_PYTHON_VERSION "2.7" CACHE STRING "")
 endif()
+set(PYBIND11_NOPYTHON ON)
 
 if (NOT DEFINED MAYA_DEVKIT_ROOT)
     if (WIN32)
@@ -44,8 +45,15 @@ add_custom_command(TARGET ${PROJECT_NAME}
                     BYPRODUCTS ./src/MFn.Types.inl
                     WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}/scripts"
 )
-pybind11_extension(${PROJECT_NAME})
 
+if (WIN32)
+    set(PYTHON_MODULE_EXTENSION ".pyd")
+else()
+    set(PYTHON_MODULE_EXTENSION ".so")
+endif()
+set_target_properties(${PROJECT_NAME} PROPERTIES PREFIX ""
+                                        SUFFIX "${PYTHON_MODULE_EXTENSION}")
+                                        
 if (APPLE)
     target_compile_definitions(${PROJECT_NAME} PUBLIC OSMac_)
     set_target_properties(${PROJECT_NAME} PROPERTIES OSX_ARCHITECTURES "x86_64")
