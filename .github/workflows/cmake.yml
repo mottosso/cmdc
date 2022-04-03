@@ -7,7 +7,6 @@ on:
     branches: [ master ]
 
 env:
-  # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
   BUILD_TYPE: Release
 
 jobs:
@@ -32,6 +31,39 @@ jobs:
 
       - name: Build
         run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
+
+      - name: Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: windows-2020
+          path: build/cmdc.pyd
+
+  macos-2020:
+    runs-on: macos-10.15
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          submodules: true
+
+      - name: Install devkit
+        run: |
+          curl -o devkit.dmg https://autodesk-adn-transfer.s3-us-west-2.amazonaws.com/ADN+Extranet/M%26E/Maya/devkit+2020/Autodesk_Maya_2020_DEVKIT_Mac.dmg
+          7z x devkit.dmg
+
+      - name: Configure CMake
+        run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DMAYA_VERSION=2020 -DMAYA_DEVKIT_ROOT="$pwd/devkitBase"
+
+      - name: Build
+        run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
+
+      - name: Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: macos-2020
+          path: build/cmdc.so
+
 
 
 
