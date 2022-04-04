@@ -9,9 +9,26 @@ on:
 env:
   BUILD_TYPE: Release
 
+  # maya 2020 - vs 2017, gcc 6.3.1 (toolset 6.1), xcode 10.2.1
+  # maya 2022 - vs 2019, gcc 9.3.1 (toolset 9), xcode 10.2.1
+  # maya 2023 - vs 2019, gcc 9.3.1 (toolset 9.1), xcode 10.2.1
+
 jobs:
-  windows-2020:
+  maya-win:
     runs-on: windows-2019
+
+    strategy:
+      # Without this, all containers stop if any fail
+      # That's bad, we want to know whether it's only one
+      # or if it happens to multiples or all.
+      fail-fast: false
+
+      matrix:
+       include:
+         - maya: "2020"
+           devkit: "https://autodesk-adn-transfer.s3-us-west-2.amazonaws.com/ADN+Extranet/M%26E/Maya/devkit+2020/Autodesk_Maya_2020_4_Update_DEVKIT_Windows.zip"
+         - maya: "2022"
+           devkit: "https://autodesk-adn-transfer.s3.us-west-2.amazonaws.com/ADN%20Extranet/M%26E/Maya/devkit%202022/Autodesk_Maya_2022_DEVKIT_Windows.zip"
 
     steps:
       - name: Checkout code
@@ -21,13 +38,13 @@ jobs:
 
       - name: Install devkit
         run: |
-          Write-Host "Downloading Maya 2020 Devkit"
-          Invoke-WebRequest -Uri https://autodesk-adn-transfer.s3-us-west-2.amazonaws.com/ADN+Extranet/M%26E/Maya/devkit+2020/Autodesk_Maya_2020_4_Update_DEVKIT_Windows.zip -OutFile "$pwd/devkit.zip"
+          Write-Host "Downloading Devkit: ${{matrix.devkit}}..."
+          Invoke-WebRequest -Uri ${{matrix.devkit}} -OutFile "$pwd/devkit.zip"
           Write-Host "Extracting devkit.zip.."
           Expand-Archive -LiteralPath devkit.zip -DestinationPath $pwd
 
       - name: Configure CMake
-        run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DMAYA_VERSION=2020 -DMAYA_DEVKIT_ROOT="$pwd/devkitBase"
+        run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DMAYA_VERSION=${{matrix.maya}} -DMAYA_DEVKIT_ROOT="$pwd/devkitBase"
 
       - name: Build
         run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
@@ -35,11 +52,21 @@ jobs:
       - name: Artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: windows-2020
-          path: build/cmdc.pyd
+          name: windows-${{matrix.maya}}
+          path: build/${{env.BUILD_TYPE}}/cmdc.pyd
 
-  macos-2020:
+  maya-macos:
     runs-on: macos-10.15
+
+    strategy:
+      fail-fast: false
+
+      matrix:
+       include:
+         - maya: "2020"
+           devkit: "https://autodesk-adn-transfer.s3-us-west-2.amazonaws.com/ADN+Extranet/M%26E/Maya/devkit+2020/Autodesk_Maya_2020_4_Update_DEVKIT_Mac.dmg"
+         - maya: "2022"
+           devkit: "https://autodesk-adn-transfer.s3-us-west-2.amazonaws.com/ADN+Extranet/M%26E/Maya/devkit+2022/Autodesk_Maya_2022_3_Update_DEVKIT_Mac.dmg"
 
     steps:
       - name: Checkout code
@@ -49,11 +76,16 @@ jobs:
 
       - name: Install devkit
         run: |
-          curl -o devkit.dmg https://autodesk-adn-transfer.s3-us-west-2.amazonaws.com/ADN+Extranet/M%26E/Maya/devkit+2020/Autodesk_Maya_2020_DEVKIT_Mac.dmg
+          curl -o devkit.dmg ${{matrix.devkit}}
           7z x devkit.dmg
 
+      - uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: '10.3'
+
       - name: Configure CMake
-        run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DMAYA_VERSION=2020 -DMAYA_DEVKIT_ROOT="$PWD/devkitBase"
+        run: |
+          cmake -G Xcode -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DMAYA_VERSION=2020 -DMAYA_DEVKIT_ROOT="$PWD/devkitBase"
 
       - name: Build
         run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
@@ -61,11 +93,8 @@ jobs:
       - name: Artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: macos-2020
+          name: macos-${{matrix.maya}}
           path: build/cmdc.so
-
-
-
 
   # build-linux:
   #   # The CMake configure and build commands are platform agnostic and should work equally well on Windows or Mac.
