@@ -1,0 +1,17 @@
+FROM gcc:6.3
+
+# Download devkit
+ENV DEVKIT "https://autodesk-adn-transfer.s3-us-west-2.amazonaws.com/ADN+Extranet/M%26E/Maya/devkit+2020/Autodesk_Maya_2020_4_Update_DEVKIT_Linux.tgz"
+RUN wget $DEVKIT -O /tmp/devkit.tgz && \
+    mkdir -p /usr/autodesk && \
+    tar -xvf /tmp/devkit.tgz -C /usr/autodesk/ && \
+    rm /tmp/devkit.tgz
+
+RUN wget https://cmake.org/files/LatestRelease/cmake-3.23.0-linux-x86_64.sh -q -O /tmp/cmake-install.sh && \
+    chmod u+x /tmp/cmake-install.sh && \
+    mkdir /usr/bin/cmake && \
+    /tmp/cmake-install.sh --skip-license --prefix=/usr/bin/cmake && \
+    rm /tmp/cmake-install.sh
+
+ENV PATH="/usr/bin/cmake/bin:${PATH}"
+WORKDIR /cmdc

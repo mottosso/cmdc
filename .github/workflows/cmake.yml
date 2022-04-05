@@ -85,7 +85,7 @@ jobs:
 
       - name: Configure CMake
         run: |
-          cmake -G Xcode -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DMAYA_VERSION=2020 -DMAYA_DEVKIT_ROOT="$PWD/devkitBase"
+          cmake -G Xcode -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DMAYA_VERSION=${{matrix.maya}} -DMAYA_DEVKIT_ROOT="$PWD/devkitBase"
 
       - name: Build
         run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
@@ -94,7 +94,29 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: macos-${{matrix.maya}}
-          path: build/cmdc.so
+          path: build/${{env.BUILD_TYPE}}/cmdc.so
+
+  maya-linux:
+    runs-on: ubuntu-latest
+    container: scottenglert/maya-build:2020
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          submodules: true
+
+      - name: Configure CMake
+        run: |
+          cmake -G Xcode -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DMAYA_VERSION=2020 -DMAYA_DEVKIT_ROOT="/usr/autodesk/devkitBase"
+
+      - name: Build
+        run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
+
+    # strategy:
+    #   fail-fast: false
+
+    
 
   # build-linux:
   #   # The CMake configure and build commands are platform agnostic and should work equally well on Windows or Mac.
