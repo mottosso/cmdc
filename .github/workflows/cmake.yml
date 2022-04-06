@@ -9,11 +9,17 @@ on:
 env:
   BUILD_TYPE: Release
 
-  # maya 2020 - vs 2017, gcc 6.3.1 (toolset 6.1), xcode 10.2.1
-  # maya 2022 - vs 2019, gcc 9.3.1 (toolset 9), xcode 10.2.1
-  # maya 2023 - vs 2019, gcc 9.3.1 (toolset 9.1), xcode 10.2.1
-
 jobs:
+  #
+  # Windows
+  #   
+  #       __
+  #  |\__/  \
+  #  |       |
+  #  |    __ |
+  #   \__/  \|
+  #
+  #   
   maya-win:
     runs-on: windows-2019
 
@@ -25,10 +31,10 @@ jobs:
 
       matrix:
        include:
-          - maya: "2020"
+          - maya: "2020.4"
             devkit: "https://autodesk-adn-transfer.s3-us-west-2.amazonaws.com/ADN+Extranet/M%26E/Maya/devkit+2020/Autodesk_Maya_2020_4_Update_DEVKIT_Windows.zip"
-          - maya: "2022"
-            devkit: "https://autodesk-adn-transfer.s3.us-west-2.amazonaws.com/ADN%20Extranet/M%26E/Maya/devkit%202022/Autodesk_Maya_2022_DEVKIT_Windows.zip"
+          - maya: "2022.3"
+            devkit: "https://autodesk-adn-transfer.s3-us-west-2.amazonaws.com/ADN+Extranet/M%26E/Maya/devkit+2022/Autodesk_Maya_2022_3_Update_DEVKIT_Windows.zip"
           - maya: "2023"
             devkit: "https://autodesk-adn-transfer.s3-us-west-2.amazonaws.com/ADN+Extranet/M%26E/Maya/devkit+2023/Autodesk_Maya_2023_DEVKIT_Windows.zip"
 
@@ -57,6 +63,10 @@ jobs:
           name: windows-${{matrix.maya}}
           path: build/${{env.BUILD_TYPE}}/cmdc.pyd
 
+  #
+  # MacOS
+  #
+  #
   maya-macos:
     runs-on: macos-10.15
 
@@ -65,9 +75,9 @@ jobs:
 
       matrix:
        include:
-          - maya: "2020"
+          - maya: "2020.4"
             devkit: "https://autodesk-adn-transfer.s3-us-west-2.amazonaws.com/ADN+Extranet/M%26E/Maya/devkit+2020/Autodesk_Maya_2020_4_Update_DEVKIT_Mac.dmg"
-          - maya: "2022"
+          - maya: "2022.3"
             devkit: "https://autodesk-adn-transfer.s3-us-west-2.amazonaws.com/ADN+Extranet/M%26E/Maya/devkit+2022/Autodesk_Maya_2022_3_Update_DEVKIT_Mac.dmg"
           - maya: "2023"
             devkit: "https://autodesk-adn-transfer.s3-us-west-2.amazonaws.com/ADN+Extranet/M%26E/Maya/devkit+2023/Autodesk_Maya_2023_DEVKIT_Mac.dmg"
@@ -100,6 +110,16 @@ jobs:
           name: macos-${{matrix.maya}}
           path: build/${{env.BUILD_TYPE}}/cmdc.so
 
+  #
+  # Linux
+  #
+  #     _
+  #    |o\
+  #    /  \
+  #   /    \
+  #  |_|___|
+  #
+  #
   maya-linux:
     runs-on: ubuntu-latest
     container: scottenglert/maya-build:${{matrix.maya}}
@@ -109,8 +129,8 @@ jobs:
 
       matrix:
        include:
-          - maya: "2020"
-          - maya: "2022"
+          - maya: "2020.4"
+          - maya: "2022.3"
           - maya: "2023"
 
     steps:
@@ -126,10 +146,67 @@ jobs:
       - name: Build
         run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
 
-      - run: find ${{github.workspace}}/build -not -path '*/\.*' 
-
       - name: Artifacts
         uses: actions/upload-artifact@v3
         with:
           name: linux-${{matrix.maya}}
-          path: build/cmdc.so
+          path: ${{github.workspace}}/build/cmdc.so
+
+#
+# Shipping
+#
+#   _________
+#  |\ _ _ _ _\
+#  | \________\
+#  | |        |
+#  | |        |
+#   \|________|
+#
+#
+  upload_release:
+    name: Upload release
+    needs: [maya-win, maya-linux, maya-macos]
+    runs-on: ubuntu-latest
+
+    # Only run on e.g. v0.1.0
+    if: startsWith(github.ref, 'refs/tags/v')
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v3
+
+        # Omitting name: means "download all artifacts"
+        # Destination directory structure:
+        # ~/modules
+        #   /cmdc-0.1.0
+        #     windows-2020.4/cmdc.pyd
+        #     windows-2022/cmdc.pyd
+        #     windows-2023/cmdc.pyd
+        #     linux-2020.4/cmdc.so
+        #     linux-2022/cmdc.so
+        #     linux-2023/cmdc.so
+        #     macos-2020/cmdc.so
+        #     macos-2022/cmdc.so
+        #     macos-2023/cmdc.so
+        #   /stubs/cmdc.pyi
+        #   /cmdc.mod
+        with:
+          path: modules/cmdc-0.1.0
+
+      - name: Create distribution
+        run: |
+          cp ./cmdc.mod modules/
+          mkdir ./modules/cmdc-0.1.0/stubs
+          mv ./modules/cmdc-0.1.0/linux-2022/cmdc.pyi ./modules/cmdc-0.1.0/stubs/
+          zip -r cmdc-0.1.0.zip modules/
+
+      - name: Upload distribution
+        uses: "marvinpinto/action-automatic-releases@latest"
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          prerelease: false
+          files: |
+            cmdc-*.zip
