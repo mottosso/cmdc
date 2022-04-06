@@ -130,4 +130,4 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: linux-${{matrix.maya}}
-          path: build/${{env.BUILD_TYPE}}/cmdc.so
+          path: build/cmdc.so
