@@ -152,7 +152,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: linux-${{matrix.maya}}
-          path: ${{github.workspace}}/build/cmdc.so
+          path: ./build/cmdc.so
 
 #
 # Shipping
