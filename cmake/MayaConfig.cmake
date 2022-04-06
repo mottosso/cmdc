@@ -37,7 +37,7 @@ else()
 
 endif()
 
-set(PYTHON_LIB "${PROJECT_SOURCE_DIR}/os/${PYTHON_OS_NAME}/${PYBIND11_PYTHON_VERSION}/lib/${{PYTHON_LIB_FILENAME}")
+set(PYTHON_LIB "${PROJECT_SOURCE_DIR}/os/${PYTHON_OS_NAME}/${PYBIND11_PYTHON_VERSION}/lib/${PYTHON_LIB_FILENAME}")
 
 message("Python library set to: ${PYTHON_LIB}")
 message("Python include set to: ${PYTHON_INCLUDE_DIR}")
