@@ -149,10 +149,10 @@ jobs:
       - run: find ${{github.workspace}}/build -not -path '*/\.*' 
 
       - name: Artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v2
         with:
           name: linux-${{matrix.maya}}
-          path: $pwd/build/cmdc.so
+          path: build/cmdc.so
 
 #
 # Shipping
