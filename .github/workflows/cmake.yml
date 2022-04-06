@@ -126,7 +126,7 @@ jobs:
       - name: Build
         run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
 
-      - run: find build -not -path '*/\.*' 
+      - run: find ${{github.workspace}}/build -not -path '*/\.*' 
 
       - name: Artifacts
         uses: actions/upload-artifact@v3
