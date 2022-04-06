@@ -146,6 +146,8 @@ jobs:
       - name: Build
         run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
 
+      - run: find ${{github.workspace}}/build -not -path '*/\.*' 
+
       - name: Artifacts
         uses: actions/upload-artifact@v3
         with:
@@ -183,13 +185,13 @@ jobs:
         # ~/modules
         #   /cmdc-0.1.0
         #     windows-2020.4/cmdc.pyd
-        #     windows-2022/cmdc.pyd
+        #     windows-2022.3/cmdc.pyd
         #     windows-2023/cmdc.pyd
         #     linux-2020.4/cmdc.so
-        #     linux-2022/cmdc.so
+        #     linux-2022.3/cmdc.so
         #     linux-2023/cmdc.so
-        #     macos-2020/cmdc.so
-        #     macos-2022/cmdc.so
+        #     macos-2020.4/cmdc.so
+        #     macos-2022.3/cmdc.so
         #     macos-2023/cmdc.so
         #   /stubs/cmdc.pyi
         #   /cmdc.mod

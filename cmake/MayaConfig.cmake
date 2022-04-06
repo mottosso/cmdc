@@ -5,7 +5,7 @@ if (WIN32)
     string(REPLACE "." "" PYTHON_VERSION_NO ${PYBIND11_PYTHON_VERSION})
     set(PYTHON_LIB_FILENAME "python${PYTHON_VERSION_NO}.lib")
 
-    if (${MAYA_VERSION} VERSION_EQUAL "2022")
+    if (${MAYA_VERSION} VERSION_GREATER_EQUAL "2022")
         set(PYTHON_INCLUDE_DIR "${MAYA_DEVKIT_ROOT}/include/Python${PYTHON_VERSION_NO}/Python")
     else()
         set(PYTHON_INCLUDE_DIR "${MAYA_DEVKIT_ROOT}/include/Python")
