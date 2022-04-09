@@ -165,13 +165,14 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: linux-2022.3
+          path: modules
 
-      - run: ls .
+      - run: ls ./modules
       
       - name: Build stubs
         run: |
             mayapy -m pip install --user pybind11-stubgen && \
-            export PYTHONPATH=$(pwd)/linux-2022.3
+            export PYTHONPATH=$(pwd)/modules
             mayapy ./scripts/generate_stubs.py cmdc.pyi
 
       - name: Artifacts
