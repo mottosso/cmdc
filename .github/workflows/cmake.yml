@@ -146,13 +146,38 @@ jobs:
       - name: Build
         run: cmake --build ./build --config ${{env.BUILD_TYPE}}
 
-      - run: find ./build -not -path '*/\.*' 
-
       - name: Artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: linux-${{matrix.maya}}
           path: build/cmdc.so
+
+  generate-stubs:
+    needs: [maya-linux]
+    runs-on: ubuntu-latest
+    container: scottenglert/maya-test:2022
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: linux-2022.3
+      
+      - name: Build stubs
+        run: |
+            mayapy -m pip install --user pybind11-stubgen && \
+            export PYTHONPATH=$(pwd)/linux-2022.3
+            mayapy ./scripts/generate_stubs.py cmdc.pyi
+
+      - name: Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: stubs
+          path: |
+            cmdc.pyi
 
 #
 # Shipping
@@ -201,8 +226,6 @@ jobs:
       - name: Create distribution
         run: |
           cp ./cmdc.mod modules/
-          mkdir ./modules/cmdc-0.1.0/stubs
-          mv ./modules/cmdc-0.1.0/linux-2022/cmdc.pyi ./modules/cmdc-0.1.0/stubs/
           zip -r cmdc-0.1.0.zip modules/
 
       - name: Upload distribution
