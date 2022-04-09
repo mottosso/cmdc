@@ -3,8 +3,6 @@ from itertools import count
 import sys
 import time
 
-print(sys.path)
-
 import cmdc
 import pybind11_stubgen
 

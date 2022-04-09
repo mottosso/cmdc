@@ -166,9 +166,7 @@ jobs:
         with:
           name: linux-2022.3
           path: modules
-
-      - run: ls ./modules
-      
+            
       - name: Build stubs
         run: |
             mayapy -m pip install --user pybind11-stubgen && \
@@ -221,7 +219,7 @@ jobs:
         #     macos-2020.4/cmdc.so
         #     macos-2022.3/cmdc.so
         #     macos-2023/cmdc.so
-        #   /stubs/cmdc.pyi
+        #     stubs/cmdc.pyi
         #   /cmdc.mod
         with:
           path: modules/cmdc-0.1.0
