@@ -166,7 +166,7 @@ jobs:
         with:
           name: linux-2022.3
 
-      - run: ls ./linux-2022.3
+      - run: ls .
       
       - name: Build stubs
         run: |
