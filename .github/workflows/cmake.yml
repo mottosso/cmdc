@@ -151,6 +151,7 @@ jobs:
 
       - name: Configure CMake
         run: |
+          mkdir build
           cmake -B ./build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DMAYA_VERSION=${{matrix.maya}} -DMAYA_DEVKIT_ROOT="/usr/autodesk/devkitBase"
 
       - name: Build
