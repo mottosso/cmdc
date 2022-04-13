@@ -1,16 +1,13 @@
-name: cmdc-build
+name: build
 
 on:
   push:
     branches: [ master ]
-    tags:
-      - v*
-
   pull_request:
     branches: [ master ]
 
-  # This allows you to run this workflow manually from the GitHub "Actions" tab
-  workflow_dispatch:
+env:
+  BUILD_TYPE: Release
 
 jobs:
   #
@@ -24,10 +21,9 @@ jobs:
   #
   #   
   maya-win:
-    runs-on: windows-latest
+    runs-on: windows-2019
 
     strategy:
-
       # Without this, all containers stop if any fail
       # That's bad, we want to know whether it's only one
       # or if it happens to multiples or all.
@@ -35,47 +31,92 @@ jobs:
 
       matrix:
        include:
-         - maya: "2018.7"
-           devkit: "https://autodesk-adn-transfer.s3.us-west-2.amazonaws.com/ADN%20Extranet/M%26E/Maya/devkit%202018/Autodesk_Maya_2018_7_Update_DEVKIT_Windows.zip"
-         - maya: "2019.3"
-           devkit: "https://autodesk-adn-transfer.s3.us-west-2.amazonaws.com/ADN%20Extranet/M%26E/Maya/devkit%202019/Autodesk_Maya_2019_3_Update_DEVKIT_Windows.zip"
-         - maya: "2020.4"
-           devkit: "https://autodesk-adn-transfer.s3-us-west-2.amazonaws.com/ADN+Extranet/M%26E/Maya/devkit+2020/Autodesk_Maya_2020_4_Update_DEVKIT_Windows.zip"
-         - maya: "2022"
-           devkit: "https://autodesk-adn-transfer.s3.us-west-2.amazonaws.com/ADN%20Extranet/M%26E/Maya/devkit%202022/Autodesk_Maya_2022_DEVKIT_Windows.zip"
+          - maya: "2018.7"
+            devkit: "https://autodesk-adn-transfer.s3-us-west-2.amazonaws.com/ADN+Extranet/M%26E/Maya/devkit+2018/Autodesk_Maya_2018_7_Update_DEVKIT_Windows.zip"
+          - maya: "2019.3"
+            devkit: "https://autodesk-adn-transfer.s3-us-west-2.amazonaws.com/ADN+Extranet/M%26E/Maya/devkit+2019/Autodesk_Maya_2019_3_Update_DEVKIT_Windows.zip"
+          - maya: "2020.4"
+            devkit: "https://autodesk-adn-transfer.s3-us-west-2.amazonaws.com/ADN+Extranet/M%26E/Maya/devkit+2020/Autodesk_Maya_2020_4_Update_DEVKIT_Windows.zip"
+          - maya: "2022.3"
+            devkit: "https://autodesk-adn-transfer.s3-us-west-2.amazonaws.com/ADN+Extranet/M%26E/Maya/devkit+2022/Autodesk_Maya_2022_3_Update_DEVKIT_Windows.zip"
+          - maya: "2023"
+            devkit: "https://autodesk-adn-transfer.s3-us-west-2.amazonaws.com/ADN+Extranet/M%26E/Maya/devkit+2023/Autodesk_Maya_2023_DEVKIT_Windows.zip"
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       - name: Checkout code
-        uses: actions/checkout@v1
+        uses: actions/checkout@v3
+        with:
+          submodules: true
 
-      - name: Devkit source
+      - name: Install devkit
         run: |
-          Write-Host "Downloading ${{ matrix.devkit }}.."
-          Invoke-WebRequest -Uri ${{ matrix.devkit }} -OutFile "$pwd/devkit.zip"
+          Write-Host "Downloading Devkit: ${{matrix.devkit}}..."
+          Invoke-WebRequest -Uri ${{matrix.devkit}} -OutFile "$pwd/devkit.zip"
           Write-Host "Extracting devkit.zip.."
           Expand-Archive -LiteralPath devkit.zip -DestinationPath $pwd
 
-      # Here we'll also translate Visual Studio's environment
-      # setup script - vcvars64.bat - to PowerShell
+      - name: Configure CMake
+        run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DMAYA_VERSION="${{matrix.maya}}" -DMAYA_DEVKIT_ROOT="$pwd/devkitBase"
+
       - name: Build
-        run: |
-          pushd "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build"
-          cmd /c "vcvars64.bat&set" | foreach {
-            if ($_ -match "=") {
-              $v = $_.split("="); set-item -force -path "ENV:\$($v[0])"  -value "$($v[1])"
-            }
-          }
-          popd
-          $env:DEVKIT_LOCATION = "$pwd\devkitBase"
-          ./build_win32.ps1 ${{ matrix.maya }}
+        run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
 
       - name: Artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
-          name: windows-${{ matrix.maya }}
-          path: build/cmdc.pyd
+          name: windows-${{matrix.maya}}
+          path: build/${{env.BUILD_TYPE}}/cmdc.pyd
 
+  #
+  # MacOS
+  #
+  #
+  maya-macos:
+    runs-on: macos-10.15
+
+    strategy:
+      fail-fast: false
+
+      matrix:
+       include:
+          - maya: "2018.7"
+            devkit: "https://autodesk-adn-transfer.s3-us-west-2.amazonaws.com/ADN+Extranet/M%26E/Maya/devkit+2018/Autodesk_Maya_2018_7_Update_DEVKIT_Mac.dmg"
+          - maya: "2019.3"
+            devkit: "https://autodesk-adn-transfer.s3-us-west-2.amazonaws.com/ADN+Extranet/M%26E/Maya/devkit+2019/Autodesk_Maya_2019_3_Update_DEVKIT_Mac.dmg"
+          - maya: "2020.4"
+            devkit: "https://autodesk-adn-transfer.s3-us-west-2.amazonaws.com/ADN+Extranet/M%26E/Maya/devkit+2020/Autodesk_Maya_2020_4_Update_DEVKIT_Mac.dmg"
+          - maya: "2022.3"
+            devkit: "https://autodesk-adn-transfer.s3-us-west-2.amazonaws.com/ADN+Extranet/M%26E/Maya/devkit+2022/Autodesk_Maya_2022_3_Update_DEVKIT_Mac.dmg"
+          - maya: "2023"
+            devkit: "https://autodesk-adn-transfer.s3-us-west-2.amazonaws.com/ADN+Extranet/M%26E/Maya/devkit+2023/Autodesk_Maya_2023_DEVKIT_Mac.dmg"
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          submodules: true
+
+      - name: Install devkit
+        run: |
+          curl -o devkit.dmg ${{matrix.devkit}}
+          7z x devkit.dmg
+
+      - uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: '10.3'
+
+      - name: Configure CMake
+        run: |
+          cmake -G Xcode -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DMAYA_VERSION=${{matrix.maya}} -DMAYA_DEVKIT_ROOT="$PWD/devkitBase"
+
+      - name: Build
+        run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
+
+      - name: Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: macos-${{matrix.maya}}
+          path: build/${{env.BUILD_TYPE}}/cmdc.so
 
   #
   # Linux
@@ -89,65 +130,108 @@ jobs:
   #
   maya-linux:
     runs-on: ubuntu-latest
+    container: scottenglert/maya-build:${{matrix.maya}}
 
     strategy:
       fail-fast: false
 
       matrix:
        include:
-         - maya: "2018.7" # For distribution
-           image: "2018.7"  # For docker
-           pip: "2.7/get-pip.py"
-           devkit: "https://autodesk-adn-transfer.s3.us-west-2.amazonaws.com/ADN%20Extranet/M%26E/Maya/devkit%202018/Autodesk_Maya_2018_7_Update_DEVKIT_Linux.tgz"
-           generate_stubs: false # stubs generation only works with python 3
-         - maya: "2019.3"
-           image: "2019"
-           pip: "2.7/get-pip.py"
-           devkit: "https://autodesk-adn-transfer.s3.us-west-2.amazonaws.com/ADN%20Extranet/M%26E/Maya/devkit%202019/Autodesk_Maya_2019_3_Update_DEVKIT_Linux.tgz"
-           generate_stubs: false
-         - maya: "2020.4"
-           image: "2020"
-           pip: "2.7/get-pip.py"
-           devkit: "https://autodesk-adn-transfer.s3.us-west-2.amazonaws.com/ADN%20Extranet/M%26E/Maya/devkit%202020/Autodesk_Maya_2020_4_Update_DEVKIT_Linux.tgz"
-           generate_stubs: false
-         - maya: "2022"
-           image: "2022"
-           pip: "get-pip.py"
-           devkit: "https://autodesk-adn-transfer.s3.us-west-2.amazonaws.com/ADN%20Extranet/M%26E/Maya/devkit%202022/Autodesk_Maya_2022_DEVKIT_Linux.tgz"
-           generate_stubs: true
-
-    container: mottosso/maya:${{ matrix.image }}
+          - maya: "2018.7"
+          - maya: "2019.3"
+          - maya: "2020.4"
+          - maya: "2022.3"
+          - maya: "2023"
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v1
+        uses: actions/checkout@v3
+        with:
+          submodules: true
 
-      - name: Setup Build Environment
+      - name: Configure CMake
         run: |
-          yum install centos-release-scl -y
-          yum install devtoolset-7 bc -y
+          mkdir build
+          cd build
+          cmake -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DMAYA_VERSION=${{matrix.maya}} -DMAYA_DEVKIT_ROOT="/usr/autodesk/devkitBase" ..
 
-      - name: Devkit source
-        run: |
-          echo "Downloading ${{ matrix.devkit }}.."
-          wget ${{ matrix.devkit }} -O "$(pwd)/devkit.tgz"
-          echo "Extracting devkit.tgz.."
-          tar -xvf $(pwd)/devkit.tgz $pwd
-
-      # For the weird scl_source call below, see:
-      # https://github.com/actions/virtual-environments/issues/1279
       - name: Build
+        run: cmake --build ./build --config ${{env.BUILD_TYPE}}
+
+      - name: Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: linux-${{matrix.maya}}
+          path: build/cmdc.so
+
+  generate-stubs:
+    needs: [maya-linux]
+    runs-on: ubuntu-latest
+    container: scottenglert/maya-test:2022
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: linux-2022.3
+          path: modules
+            
+      - name: Build stubs
         run: |
-          export DEVKIT_LOCATION=$(pwd)/devkitBase
-          . scl_source enable devtoolset-7 || true
-          g++ --version
-          chmod +x ./build_linux.sh
-          ./build_linux.sh ${{ matrix.maya }}
+            mayapy -m pip install --user pybind11-stubgen && \
+            export PYTHONPATH=$(pwd)/modules
+            mayapy ./scripts/generate_stubs.py cmdc.pyi
+
+      - name: Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: stubs
+          path: |
+            cmdc.pyi
+
+  test:
+    needs: [maya-linux]
+    runs-on: ubuntu-latest
+    container: ${{matrix.image}}
+
+    strategy:
+      fail-fast: false
+
+      matrix:
+       include:
+        - maya: "2018.7" # For distribution
+          image: "mottosso/maya:2018.7"  # For docker
+          pip: "2.7/get-pip.py"
+        - maya: "2019.3"
+          image: "mottosso/maya:2019"
+          pip: "2.7/get-pip.py"
+        - maya: "2020.4"
+          image: "mottosso/maya:2020"
+          pip: "2.7/get-pip.py"
+        - maya: "2022.3"
+          image: "mottosso/maya:2022"
+          pip: "get-pip.py"
+        - maya: "2023"
+          image: "scottenglert/maya-test:2023"
+          pip: "get-pip.py"
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: linux-${{matrix.maya}}
+          path: modules
 
       # We'll lock each version to one that works with both Python 2.7 and 3.7
       - name: Setup Test Environment
         run: |
-          wget https://bootstrap.pypa.io/pip/${{ matrix.pip }}
+          wget https://bootstrap.pypa.io/pip/${{matrix.pip}}
           mayapy get-pip.py --user
           mayapy -m pip install --user \
             nose==1.3.7 \
@@ -171,68 +255,23 @@ jobs:
           pwd
           ls
           mayapy --version
-          export PYTHONPATH=$(pwd)/build
-          mayapy -m nose -xv --exe ./tests
-      
-      - name: Generate Stubs
-        if: ${{ matrix.generate_stubs }}
-        run: |
-          mayapy -m pip install --user \
-            pybind11-stubgen==0.8.7 && \
-          export PYTHONPATH=$(pwd)/build
-          mayapy ./scripts/generate_stubs.py
+          export PYTHONPATH=$(pwd)/modules
+          mayapy -m nose -xv --exe ./tests    
 
-      - name: Artifacts
-        uses: actions/upload-artifact@v2
-        with:
-          name: linux-${{ matrix.maya }}
-          path: |
-            build/cmdc.so
-            build/cmdc.pyi
-
-
-  # maya-osx:
-  #   runs-on: macos-latest
-  #   needs: create_release
-
-  #   strategy:
-
-  #     # Without this, all containers stop if any fail
-  #     # That's bad, we want to know whether it's only one
-  #     # or if it happens to multiples or all.
-  #     fail-fast: false
-
-  #     matrix:
-  #      include:
-  #        - maya: "2018.7"
-  #          devkit: "https://autodesk-adn-transfer.s3.us-west-2.amazonaws.com/ADN%20Extranet/M%26E/Maya/devkit%202018/Autodesk_Maya_2018_7_Update_DEVKIT_Mac.dmg"
-  #        - maya: "2019.3"
-  #          devkit: "https://autodesk-adn-transfer.s3.us-west-2.amazonaws.com/ADN%20Extranet/M%26E/Maya/devkit%202019/Autodesk_Maya_2019_3_Update_DEVKIT_Mac.dmg"
-  #        - maya: "2020.4"
-  #          devkit: "https://autodesk-adn-transfer.s3-us-west-2.amazonaws.com/ADN+Extranet/M%26E/Maya/devkit+2020/Autodesk_Maya_2020_4_Update_DEVKIT_Mac.dmg"
-  #        - maya: "2022"
-  #          devkit: "https://autodesk-adn-transfer.s3.us-west-2.amazonaws.com/ADN%20Extranet/M%26E/Maya/devkit%202022/Autodesk_Maya_2022_DEVKIT_Mac.dmg"
-
-  #   # Steps represent a sequence of tasks that will be executed as part of the job
-  #   steps:
-  #     - name: Checkout code
-  #       uses: actions/checkout@v1
-
-
-  #
-  # Shipping
-  #
-  #   _________
-  #  |\ _ _ _ _\
-  #  | \________\
-  #  | |        |
-  #  | |        |
-  #   \|________|
-  #
-  #
+#
+# Shipping
+#
+#   _________
+#  |\ _ _ _ _\
+#  | \________\
+#  | |        |
+#  | |        |
+#   \|________|
+#
+#
   upload_release:
     name: Upload release
-    needs: [maya-win, maya-linux]
+    needs: [maya-win, maya-linux, maya-macos, generate-stubs, test]
     runs-on: ubuntu-latest
 
     # Only run on e.g. v0.1.0
@@ -240,10 +279,10 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v1
+        uses: actions/checkout@v3
 
       - name: Download artifacts
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
 
         # Omitting name: means "download all artifacts"
         # Destination directory structure:
@@ -252,12 +291,19 @@ jobs:
         #     windows-2018.7/cmdc.pyd
         #     windows-2019.3/cmdc.pyd
         #     windows-2020.4/cmdc.pyd
-        #     windows-2022/cmdc.pyd
+        #     windows-2022.3/cmdc.pyd
+        #     windows-2023/cmdc.pyd
         #     linux-2018.7/cmdc.so
         #     linux-2019.3/cmdc.so
         #     linux-2020.4/cmdc.so
-        #     linux-2022/cmdc.so
-        #   /stubs/cmdc.pyi
+        #     linux-2022.3/cmdc.so
+        #     linux-2023/cmdc.so
+        #     macos-2018.7/cmdc.so
+        #     macos-2019.3/cmdc.so
+        #     macos-2020.4/cmdc.so
+        #     macos-2022.3/cmdc.so
+        #     macos-2023/cmdc.so
+        #     stubs/cmdc.pyi
         #   /cmdc.mod
         with:
           path: modules/cmdc-0.1.0
@@ -265,8 +311,6 @@ jobs:
       - name: Create distribution
         run: |
           cp ./cmdc.mod modules/
-          mkdir ./modules/cmdc-0.1.0/stubs
-          mv ./modules/cmdc-0.1.0/linux-2022/cmdc.pyi ./modules/cmdc-0.1.0/stubs/
           zip -r cmdc-0.1.0.zip modules/
 
       - name: Upload distribution
