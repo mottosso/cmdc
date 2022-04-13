@@ -56,7 +56,7 @@ jobs:
           Expand-Archive -LiteralPath devkit.zip -DestinationPath $pwd
 
       - name: Configure CMake
-        run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DMAYA_VERSION=${{matrix.maya}} -DMAYA_DEVKIT_ROOT="$pwd/devkitBase"
+        run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DMAYA_VERSION="${{matrix.maya}}" -DMAYA_DEVKIT_ROOT="$pwd/devkitBase"
 
       - name: Build
         run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
