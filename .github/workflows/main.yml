@@ -255,7 +255,7 @@ jobs:
           pwd
           ls
           mayapy --version
-          export PYTHONPATH=$(pwd)/modules
+          export PYTHONPATH=$(pwd)/modules:${PYTHONPATH}
           mayapy -m nose -xv --exe ./tests    
 
 #
