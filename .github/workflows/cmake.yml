@@ -192,6 +192,73 @@ jobs:
           path: |
             cmdc.pyi
 
+  test:
+    needs: [maya-linux]
+    runs-on: ubuntu-latest
+    container: ${{matrix.image}}
+
+    strategy:
+      fail-fast: false
+
+      matrix:
+       include:
+        - maya: "2018.7" # For distribution
+          image: "mottosso/maya:2018.7"  # For docker
+          pip: "2.7/get-pip.py"
+        - maya: "2019.3"
+          image: "mottosso/maya:2019"
+          pip: "2.7/get-pip.py"
+        - maya: "2020.4"
+          image: "mottosso/maya:2020"
+          pip: "2.7/get-pip.py"
+        - maya: "2022.3"
+          image: "mottosso/maya:2022"
+          pip: "get-pip.py"
+        # - maya: "2023"
+        #   image: "scottenglert/maya-test:2023"
+        #   pip: "get-pip.py"
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: linux-${{matrix.maya}}
+          path: modules
+
+      # We'll lock each version to one that works with both Python 2.7 and 3.7
+      - name: Setup Test Environment
+        run: |
+          wget https://bootstrap.pypa.io/pip/${{matrix.pip}}
+          mayapy get-pip.py --user
+          mayapy -m pip install --user \
+            nose==1.3.7 \
+            nose-exclude==0.5.0 \
+            coverage==5.5 \
+            flaky==3.7.0 \
+            six==1.16.0 \
+            sphinx==1.8.5 \
+            sphinxcontrib-napoleon==0.7
+
+        # Since 2019, this sucker throws an unnecessary
+        # warning if not declared.
+      - name: Environment
+        run: |
+          mkdir -p /var/tmp/runtime-root
+          export XDG_RUNTIME_DIR=/var/tmp/runtime-root
+          export MAYA_DISABLE_ADP=1
+
+      - name: Tests
+        run: |
+          pwd
+          ls
+          mayapy --version
+          export PYTHONPATH=$(pwd)/modules
+          mayapy -m nose -xv --exe ./tests    
+
+
 #
 # Shipping
 #
