@@ -1,12 +1,8 @@
-from maya import standalone, cmds
+from maya import standalone
+standalone.initialize()
 
-
+from maya import cmds
 import cmdc
-
-
-def setup():
-    standalone.initialize()
-
 
 
 def new_scene():
