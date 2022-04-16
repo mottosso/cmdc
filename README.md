@@ -93,52 +93,31 @@ It'll work, but won't have half the things you'll need to do anything of use in 
 
 | File | Description
 |:-----|:-------------
-| `src/`            | C++ source for the pybind11 bindings
-| `include/`        | The pybind11 source
-| `lib/`            | The missing Python libraries
-| `tests/`          | Tests for bound methods and types
+| `cmake/`          | CMake setup for Maya and Python libraries
+| `docker/`         | Docker containers for building in linux
+| `os/`             | The missing Python libraries for all operating systems and Python versions
+| `pyblind11/`      | The pybind11 source
 | `scripts/`        | Code-generation
-| `build_win32.ps1` | Build script for any Maya on Windows
-| `build_linux.ps1` | Build script for any Maya on Linux
-| `docker_build_linux.ps1` | Build script for any Maya on Windows for Linux
-| `Dockerfile`      | Linux build environment, same one used by CI
-| `docker_entrypoint.ps1` |Docker helper file
+| `src/`            | C++ source for the pybind11 bindings
+| `tests/`          | Tests for bound methods and types
+
 
 <br>
 
 ### Build
 
-This should build on any platform, for any Maya with Python available. Including 2022. Included is an example build script for Maya 2020 on Windows.
+Build requirements:
 
-- A Maya devkit
-- C++11 compatible compiler, e.g. Visual Studio 2019
+- [CMake 3.4 or later](https://cmake.org/download/)
+- [Maya devkit](https://www.autodesk.com/developer-network/platform-technologies/maya)
+- Complier and toolchain requirements listed in Maya's API documentation
 
-**Windows**
-
-```pwsh
-$env:DEVKIT_LOCATION="C:\github\maya-devkit\2020.2\windows"
-pwsh .\build_win32.ps1 2020
+```
+cmake -B ./build -DCMAKE_BUILD_TYPE=Release -DMAYA_VERSION=2020 -DMAYA_DEVKIT_ROOT="path/to/devkit"
+cmake --build .\build --config Release
 ```
 
-> **NOTE**: Keep `pwsh` to avoid existing your terminal on failure
-
-**Linux**
-
-```bash
-export DEVKIT_LOCATION=/github/maya-devkit/2020.2/linux
-cd cmdc
-docker build -t cmdc .
-./build_linux.ps1 2020
-```
-
-**Linux on Windows**
-
-```pwsh
-$env:DEVKIT_LOCATION="C:\github\maya-devkit\2020.2\linux"
-cd cmdc
-docker build -t cmdc .
-.\docker_build_linux.ps1 2020
-```
+This should build on any platform, for any Maya with Python available. Including 2023.
 
 <br>
 

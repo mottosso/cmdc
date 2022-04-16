@@ -6,8 +6,6 @@ import time
 import cmdc
 import pybind11_stubgen
 
-STUBS_LOCATION = "build/cmdc.pyi"
-
 
 class InvalidSignatureError(Exception):
     """Raised when one or more signatures are invalid."""
@@ -61,7 +59,8 @@ def count_unnamed_args(lines):
     return len(unnamed_signatures)
 
 
-def main():
+def main(outStubFile, *args):
+
     print("Generating stubs")
     t0 = time.time()
 
@@ -99,17 +98,17 @@ def main():
     print(f"(2) Finished in {t2 - t1:0.3} s")
     print("f(2) ----------------------------")
 
-    print("(3) Writing stubs file..")
+    print("(3) Writing stubs file...")
 
-    with open(STUBS_LOCATION, "w") as handle:
+    with open(outStubFile, "w") as handle:
         handle.write(content)
 
     t3 = time.time()
     print(f"(3) Finished in {t3 - t2:0.3} s")
     print("(3) ----------------------------")
 
-    print(f"Succesfully created .{STUBS_LOCATION} in {t3 - t0:0.3} s")
+    print(f"Succesfully created .{outStubFile} in {t3 - t0:0.3} s")
 
 
 if __name__ == "__main__":
-    main()
+    main(*sys.argv[1:])
