@@ -114,7 +114,7 @@ Build requirements:
 
 ```
 cmake -B ./build -DCMAKE_BUILD_TYPE=Release -DMAYA_VERSION=2020 -DMAYA_DEVKIT_ROOT="path/to/devkit"
-cmake --build .\build --config Release
+cmake --build ./build --config Release
 ```
 
 This should build on any platform, for any Maya with Python available. Including 2023.
@@ -156,9 +156,4 @@ cd cmdc
 mayapy ./scripts/parse_header.py MFnDagNode.h
 ```
 
-From here, you'll have a freshly generated header file, ready to fill in. As you fill things in, you build it like this.
-
-
-```bash
-
-```
+From here, you'll have a freshly generated header file, ready to fill in. As you fill things in, see [build](#build) above for how to iterate and once you're happy you're welcome to submit a Pull Request!
