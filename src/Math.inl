@@ -19,8 +19,9 @@ Vector
     .def(py::self /= double(), py::arg("other"))
     .def(py::self * double(), py::arg("other"))
     .def(py::self / double(), py::arg("other"))
-
-    .def("__neg__",   [](MVector v) { return -v; }, py::is_operator())
+    .def(py::self == py::self, py::arg("other"))
+    .def(py::self != py::self, py::arg("other"))
+    .def(-py::self)
 
     // Support print()
     .def("__repr__", [](const MVector &a) {
@@ -99,6 +100,7 @@ Matrix
 );
 
 Quaternion
+    .def(py::init<>())
     .def(py::init<const double,
                   const double,
                   const double,
@@ -114,6 +116,15 @@ Quaternion
     .def(py::init<const double, const MVector>(),
          py::arg("angle"),
          py::arg("axis"))
+
+    .def(py::self + MQuaternion(), py::arg("other"))
+    .def(py::self - MQuaternion(), py::arg("other"))
+    .def(py::self * MQuaternion(), py::arg("other"))
+    .def(py::self *= MQuaternion(), py::arg("other"))
+    .def(py::self == MQuaternion(), py::arg("other"))
+    .def(py::self != MQuaternion(), py::arg("other"))
+    .def(-py::self)
+
     .def_readwrite("x", &MQuaternion::x)
     .def_readwrite("y", &MQuaternion::y)
     .def_readwrite("z", &MQuaternion::z)
