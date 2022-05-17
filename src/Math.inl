@@ -7,6 +7,18 @@ Vector
                   py::arg("y"),
                   py::arg("z"))
     .def(py::init<const MVector &>(), py::arg("src"))
+    .def(py::init([](const py::sequence & seq) {
+        if (seq.size() < 2 || seq.size() > 3)
+        {
+            throw std::invalid_argument("You must provide a list of 2 or 3 floats.");
+        }
+        double tmp[3] = {0.0, 0.0, 0.0};
+        std::transform(std::begin(seq), std::end(seq), std::begin(tmp),
+                [](pybind11::handle handle) -> double { return handle.cast<double>(); });
+        
+        return std::unique_ptr<MVector>(new MVector(tmp[0], tmp[1], tmp[2]));
+    }), "Create a new vector from a seqence or 2 or 3 floats")
+
     .def_readwrite("x", &MVector::x)
     .def_readwrite("y", &MVector::y)
     .def_readwrite("z", &MVector::z)
@@ -16,13 +28,74 @@ Vector
     .def(py::self += py::self, py::arg("other"))
     .def(py::self -= py::self, py::arg("other"))
     .def(py::self *= double(), py::arg("other"))
+    .def(py::self *= MMatrix(), py::arg("other"))
     .def(py::self /= double(), py::arg("other"))
     .def(py::self * double(), py::arg("other"))
+    .def(py::self * MMatrix(), py::arg("other"))
+    .def(py::self * py::self, py::arg("other"))
     .def(py::self / double(), py::arg("other"))
     .def(py::self == py::self, py::arg("other"))
     .def(py::self != py::self, py::arg("other"))
+    .def(py::self ^ py::self, py::arg("other"))
     .def(-py::self)
 
+    .def("angle", &MVector::angle, py::arg("other"),
+        "Returns the angle, in radians, between this vector and another.")
+
+    .def("isEquivalent", &MVector::isEquivalent, py::arg("other"), py::arg("tolerance"),
+        "Returns True if this vector and another are within a given tolerance of being equal.")
+
+    .def("isParallel", &MVector::isParallel,
+        py::arg("other"), py::arg("tolerance"),
+        "Returns True if this vector and another are within the given tolerance of being parallel.")
+
+    .def("length", &MVector::length,
+        "Returns the magnitude of this vector.")
+
+    .def("normal", &MVector::normal,
+        "Returns a new vector containing the normalized version of this one.")
+
+    .def("normalize", &MVector::normalize,
+        "Normalizes this vector in-place and returns a new reference to it.")
+
+    .def("rotateBy", [](const MVector &self, const MQuaternion& rot){
+        return self.rotateBy(rot);
+    }, py::arg("rot"), "Returns the vector resulting from rotating this one by the given amount.")
+
+    .def("rotateBy", [](const MVector &self, const MEulerRotation& rot){
+        return self.rotateBy(rot);
+    }, py::arg("rot"), "Returns the vector resulting from rotating this one by the given amount.")
+
+    .def("rotateTo", &MVector::rotateTo, py::arg("target"),
+        "Returns the quaternion which will rotate this vector into another.")
+
+    .def("transformAsNormal", &MVector::transformAsNormal, py::arg("matrix"),
+        "Returns a new vector which is calculated by postmultiplying this vector by the transpose of the given matrix's inverse and then normalizing the result.")
+
+    .def_property_readonly_static("oneVector", [](py::object) { return MVector::one; },
+        "The vector <1,1,1>")
+
+    .def_property_readonly_static("zeroVector", [](py::object) { return MVector::zero; },
+        "The vector <0,0,0>")
+
+    .def_property_readonly_static("xAxisVector", [](py::object) { return MVector::xAxis; },
+        "The vector <1,0,0>")
+
+    .def_property_readonly_static("xNegAxisVector", [](py::object) { return MVector::xNegAxis; },
+        "The vector <-1,0,0>")
+    
+    .def_property_readonly_static("yAxisVector", [](py::object) { return MVector::yAxis; },
+        "The vector <0,1,0>")
+
+    .def_property_readonly_static("yNegAxisVector", [](py::object) { return MVector::yNegAxis; },
+        "The vector <0,-1,0>")
+
+    .def_property_readonly_static("zAxisVector", [](py::object) { return MVector::zAxis; },
+        "The vector <0,0,1>")
+
+    .def_property_readonly_static("zNegAxisVector", [](py::object) { return MVector::zNegAxis; },
+        "The vector <0,0,-1>")
+    
     // Support print()
     .def("__repr__", [](const MVector &a) {
         return "<cmdc.Vector( " +
