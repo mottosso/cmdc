@@ -167,7 +167,7 @@ TransformationMatrix
 
     .def("rotationOrientation", &MTransformationMatrix::rotationOrientation, _doc_TransformationMatrix_rotationOrientation)
 
-    .def("setRotationOrientation", &MTransformationMatrix::setRotationOrientation, _doc_TransformationMatrix_setRotationOrientation)
+    .def("setRotationOrientation", &MTransformationMatrix::setRotationOrientation, py::arg("q"), _doc_TransformationMatrix_setRotationOrientation)
 
     .def("scalePivot", [](MTransformationMatrix & self, MSpace::Space space) -> MPoint {
         MStatus status;
