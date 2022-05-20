@@ -170,7 +170,7 @@ FnTransform
         }
 
         return transform;
-    }, py::arg("parent") = MObject::kNullObj, _doc_FnTransform_create)
+    }, py::arg_v("parent", MObject::kNullObj, "Object.kNullObj"), _doc_FnTransform_create)
 
     .def("enableLimit", [](MFnTransform & self, MFnTransform::LimitType limitType, bool enable) {
         MStatus status = self.enableLimit(limitType, enable);
