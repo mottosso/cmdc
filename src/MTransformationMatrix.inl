@@ -82,7 +82,7 @@ TransformationMatrix
 
     .def("asMatrix", [](MTransformationMatrix & self, double interp = 1.0) -> MMatrix {
         return self.asMatrix(interp);
-    }, _doc_TransformationMatrix_asMatrix)
+    }, py::arg("interp") = 1.0, _doc_TransformationMatrix_asMatrix)
 
     .def("asMatrixInverse", &MTransformationMatrix::asMatrixInverse, _doc_TransformationMatrix_asMatrixInverse)
 
