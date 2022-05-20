@@ -17,7 +17,7 @@ Vector
                 [](pybind11::handle handle) -> double { return handle.cast<double>(); });
         
         return std::unique_ptr<MVector>(new MVector(tmp[0], tmp[1], tmp[2]));
-    }), "Create a new vector from a seqence or 2 or 3 floats")
+    }), py::arg("d"), "Create a new vector from a seqence or 2 or 3 floats")
 
     .def_readwrite("x", &MVector::x)
     .def_readwrite("y", &MVector::y)
