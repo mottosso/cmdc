@@ -1,5 +1,3 @@
-import inspect
-from itertools import count
 import sys
 import time
 
@@ -40,6 +38,10 @@ def main(outStubFile, *args):
     print("Generating stubs")
     t0 = time.time()
 
+    raise_on_invalid_stub = True
+    if "--no-raise" in args:
+        raise_on_invalid_stub = False
+
     module = pybind11_stubgen.ModuleStubsGenerator(cmdc)
     module.write_setup_py = False
 
@@ -48,9 +50,10 @@ def main(outStubFile, *args):
     module.parse()
 
     invalid_signatures_count = pybind11_stubgen.FunctionSignature.n_invalid_signatures
-    if invalid_signatures_count > 0:
+    if invalid_signatures_count > 0 and raise_on_invalid_stub:
         raise InvalidSignatureError(
-            f"Module contains {invalid_signatures_count} invalid signature(s)"
+            f"Module contains {invalid_signatures_count} invalid signature(s). "
+            "Use `--no-raise` if you want to generate the stubs anyway."
         )
 
     t1 = time.time()
@@ -62,9 +65,10 @@ def main(outStubFile, *args):
     lines = module.to_lines()
     unnamed_args_count = count_unnamed_args(lines)
 
-    if unnamed_args_count > 0:
+    if unnamed_args_count > 0 and raise_on_invalid_stub:
         raise UnnamedArgumentError(
-            f"Module contains {unnamed_args_count} signatures with unnamed arguments."
+            f"Module contains {unnamed_args_count} signatures with unnamed arguments. "
+            "Use `--no-raise` if you want to generate the stubs anyway."
         )
 
     t2 = time.time()
