@@ -13,28 +13,26 @@ class UnnamedArgumentError(Exception):
     """Raised when one or more signatures contain unnamed arguments."""
 
 
-def count_unnamed_args(lines):
+def count_unnamed_args(content):
     """Count all the signatures that have unnamed arguments.
 
     This ignores property setters as these will always have unnamed arguments.
     """
+    lines = content.split("\n")
 
     unnamed_signatures = []
-    for line in lines:
+
+    previous_line = ""
+    for i, line in enumerate(lines):
         if "arg0" in line and "setter" not in previous_line:
+            print(f"Invalid signature line {i + 1}: {line.strip(' ')}")
             unnamed_signatures.append(line)
         previous_line = line
-
-    if unnamed_signatures:
-        print("These signatures contain unnamed arguments:")
-        for signature in unnamed_signatures:
-            print(f"    {signature.strip(' ')}")
 
     return len(unnamed_signatures)
 
 
 def main(outStubFile, *args):
-
     print("Generating stubs")
     t0 = time.time()
 
@@ -62,8 +60,8 @@ def main(outStubFile, *args):
 
     print("(2) Generating stubs content..")
 
-    lines = module.to_lines()
-    unnamed_args_count = count_unnamed_args(lines)
+    content = "\n".join(module.to_lines())
+    unnamed_args_count = count_unnamed_args(content)
 
     if unnamed_args_count > 0 and raise_on_invalid_stub:
         raise UnnamedArgumentError(
