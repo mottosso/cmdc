@@ -15,30 +15,6 @@ class UnnamedArgumentError(Exception):
     """Raised when one or more signatures contain unnamed arguments."""
 
 
-def cleanup_imports(content):
-    """Remove any classes accidentally imported as modules.
-
-    This is a fix for this bug:
-    https://github.com/sizmailov/pybind11-stubgen/issues/36
-    Some classes with nested classes get imported when they shouldn't, breaking
-    leaving them breaks autocomplete
-    """
-
-    classes = []
-    for name, obj in inspect.getmembers(cmdc, inspect.isclass):
-        classes.append(name)
-
-        # also include any class that might be defined inside of another class.
-        # these are actually the ones that are causing issues.
-        for sub_name, _ in inspect.getmembers(obj, inspect.isclass):
-            classes.append(sub_name)
-
-    for class_name in classes:
-        content = content.replace("import {}\n".format(class_name), "")
-
-    return content
-
-
 def count_unnamed_args(lines):
     """Count all the signatures that have unnamed arguments.
 
@@ -90,9 +66,6 @@ def main(outStubFile, *args):
         raise UnnamedArgumentError(
             f"Module contains {unnamed_args_count} signatures with unnamed arguments."
         )
-
-    content = "\n".join(module.to_lines())
-    content = cleanup_imports(content)
 
     t2 = time.time()
     print(f"(2) Finished in {t2 - t1:0.3} s")
