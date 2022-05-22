@@ -1,5 +1,7 @@
 py::class_<MAngle> Angle(m, "Angle");
 py::class_<MDAGDrawOverrideInfo> DAGDrawOverrideInfo(m, "DAGDrawOverrideInfo");
+py::class_<MDGModifier> DGModifier(m, "DGModifier");
+py::class_<MDagModifier, MDGModifier> DagModifier(m, "DagModifier");
 py::class_<MDagPath> DagPath(m, "DagPath");
 py::class_<MDagPathArray> DagPathArray(m, "DagPathArray");
 py::class_<MDataBlock> DataBlock(m, "DataBlock");
@@ -24,7 +26,6 @@ py::class_<MVector> Vector(m, "Vector");
 py::enum_<MFn::Type> fn_type(Fn, "Type");
 py::class_<MUuid> Uuid(m, "Uuid");
 py::class_<MNodeClass> NodeClass(m, "NodeClass");
-py::class_<MDGModifier> DGModifier(m, "DGModifier");
 py::class_<MFnDagNode> FnDagNode(m, "FnDagNode");
 py::class_<MBoundingBox> BoundingBox(m, "BoundingBox");
 py::class_<MColor> Color(m, "Color");

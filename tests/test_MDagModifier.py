@@ -8,6 +8,9 @@ from maya.api import OpenMaya
 
 from . import assert_equals, as_obj, as_plug, new_scene
 
+def test_subclassDGModifier():
+    assert issubclass(cmdc.DagModifier, cmdc.DGModifier)
+
 def test_createNode():
     return 
 

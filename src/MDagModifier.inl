@@ -25,9 +25,7 @@
     "If it is not a transform type then the doIt() will raise a RuntimeError."
 
 
-#include "MDGModifier.inl"
-
-py::class_<MDagModifier, MDGModifier>(m, "DagModifier")
+DagModifier
     .def(py::init<>())
 
     .def("createNode", [](MDagModifier & self, std::string type, MObject parent = MObject::kNullObj) -> MObject {
