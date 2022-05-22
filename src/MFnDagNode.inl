@@ -97,9 +97,6 @@
 #define _doc_FnDagNode_setObject \
     "Attaches the function set to the specified node or DAG path."
 
-#define _doc_FnDagNode_setObject \
-    "Attaches the function set to the specified node or DAG path."
-
 #define _doc_FnDagNode_transformationMatrix \
     "Returns the object space transformation matrix for this DAG node."
 
@@ -387,16 +384,6 @@ FnDagNode
     .def("removeChildAt", [](MFnDagNode& self, unsigned int index) {
         return self.removeChildAt(index);
     }, py::arg("index"), _doc_FnDagNode_removeChildAt)
-
-    .def("setObject", [](MFnDagNode& self, MObject& object) -> void {
-        if (!self.setObject(object)) throw std::runtime_error(
-            "Invalid parameter passed for node - "
-            "not a DAG Node, "
-            "Node does not exist or "
-            "no valid pointer to Node"
-        );
-    }, py::arg("object"),
-       _doc_FnDagNode_setObject)
 
     .def("setObject", [](MFnDagNode& self, MDagPath path) {
         if (!self.setObject(path)) throw std::runtime_error(
