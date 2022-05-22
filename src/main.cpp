@@ -20,6 +20,7 @@
 #include <maya/MDGModifier.h>
 #include <maya/MEulerRotation.h>
 #include <maya/MFn.h>
+#include <maya/MFnBase.h>
 #include <maya/MIntArray.h>
 #include <maya/MMatrix.h>
 #include <maya/MNodeClass.h>
@@ -73,10 +74,11 @@ PYBIND11_MODULE(cmdc, m) {
     #include "MDagPath.inl"
     #include "MDGModifier.inl"
     #include "MFn.inl"
-    #include "Types.inl"
-    #include "MObject.inl"
+    #include "MFnBase.inl"
     #include "MFnDependencyNode.inl"
     #include "MFnDagNode.inl"
+    #include "Types.inl"
+    #include "MObject.inl"
     #include "MBoundingBox.inl"
     #include "MPlug.inl"
     #include "MSelectionList.inl"

@@ -4,6 +4,8 @@ from nose.tools import (
     assert_equals,
 )
 
+def test_inherits_FnDependencyNode():
+    assert issubclass(cmdc.FnDagNode, cmdc.FnDependencyNode)
 
 def test_create():
     fn = cmdc.FnDagNode()
