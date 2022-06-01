@@ -15,6 +15,9 @@ def test_new_vector():
     a = cmdc.Vector(1, 2, 3)
     assert a.x == 1.0 and a.y == 2.0 and a.z == 3.0
 
+    a = cmdc.Vector(1, 2)
+    assert a.x == 1.0 and a.y == 2.0 and a.z == 0.0
+
     b = cmdc.Vector([4, 5, 6])
     assert b.x == 4.0 and b.y == 5.0 and b.z == 6.0
 
@@ -25,19 +28,22 @@ def test_new_vector():
     assert d.x == 1.0 and d.y == 2.0 and d.z == 3.0
 
     nose.tools.assert_raises(
-        ValueError,
+        TypeError,
         cmdc.Vector,
         [9]
     )
 
     nose.tools.assert_raises(
-        ValueError,
+        TypeError,
         cmdc.Vector,
         [9, 10, 11, 12]
     )
 
     copy = cmdc.Vector(a)
     assert a is not copy
+
+    copy = cmdc.Vector(cmdc.Point(1,2,3))
+    assert copy.x == 1.0 and copy.y == 2.0 and copy.z == 3.0
 
     one = cmdc.Vector.oneVector
     assert one.x == 1.0 and one.y == 1.0 and one.z == 1.0
@@ -62,6 +68,8 @@ def test_new_vector():
 
     zNegAxis = cmdc.Vector.zNegAxisVector
     assert zNegAxis.x == 0.0 and zNegAxis.y == 0.0 and zNegAxis.z == -1.0
+
+    assert len(cmdc.Vector.zeroVector) == 3
 
 def test_add():
     xy = cmdc.Vector.xAxisVector + cmdc.Vector.yAxisVector
