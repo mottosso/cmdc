@@ -70,7 +70,15 @@ py::enum_<MEulerRotation::RotationOrder>(EulerRotation, "RotationOrder")
 EulerRotation
     .def(py::init<>())
     .def(py::init<const MEulerRotation&>(), py::arg("src"))
-    .def(py::init<const MVector&, MEulerRotation::RotationOrder>(), py::arg("vec"), py::arg("order") = MEulerRotation::kXYZ)
+    .def(py::init<const MVector&, MEulerRotation::RotationOrder>(),
+         py::arg("vec"), py::arg("order") = MEulerRotation::kXYZ)
+    .def(py::init<double, double, double, MEulerRotation::RotationOrder>(),
+    py::arg("x"), py::arg("y"), py::arg("x"), py::arg("order") = MEulerRotation::kXYZ)
+    .def(py::init([](std::array<double, 3> seq, MEulerRotation::RotationOrder order)
+        {
+            return std::unique_ptr<MEulerRotation>(new MEulerRotation(seq[0], seq[1], seq[2], order));
+        }
+        ), py::arg("seq"), py::arg("order") = MEulerRotation::kXYZ)
 
     .def_readwrite("x", &MEulerRotation::x)
     .def_readwrite("y", &MEulerRotation::y)
@@ -112,83 +120,83 @@ EulerRotation
         return self.bound();
     }, _doc_EulerRotation_bound)
 
-    // .def("boundIt", [](MEulerRotation & self) -> & {
-    //     throw std::logic_error{"Function not yet implemented."};
-    // }, _doc_EulerRotation_boundIt)
+    .def("boundIt", [](MEulerRotation & self) -> MEulerRotation& {
+        return self.boundIt();
+    }, _doc_EulerRotation_boundIt)
 
-    // .def("boundIt", [](MEulerRotation & self, MEulerRotation src) -> & {
-    //     throw std::logic_error{"Function not yet implemented."};
-    // }, py::arg("src"), _doc_EulerRotation_boundIt)
+    .def("boundIt", [](MEulerRotation & self, MEulerRotation src) -> MEulerRotation& {
+        return self.boundIt(src);
+    }, py::arg("src"), _doc_EulerRotation_boundIt)
 
-    // .def("closestCut", [](MEulerRotation & self, MEulerRotation dst) -> MEulerRotation {
-    //     throw std::logic_error{"Function not yet implemented."};
-    // }, py::arg("dst"), _doc_EulerRotation_closestCut)
+    .def("closestCut", [](MEulerRotation & self, MEulerRotation target) -> MEulerRotation {
+        return self.closestCut(target);
+    }, py::arg("target"), _doc_EulerRotation_closestCut)
 
-    // .def("closestSolution", [](MEulerRotation & self, MEulerRotation dst) -> MEulerRotation {
-    //     throw std::logic_error{"Function not yet implemented."};
-    // }, py::arg("dst"), _doc_EulerRotation_closestSolution)
+    .def("closestSolution", [](MEulerRotation & self, MEulerRotation target) -> MEulerRotation {
+        return self.closestSolution(target);
+    }, py::arg("dst"), _doc_EulerRotation_closestSolution)
 
-    // .def_static("decompose", [](MMatrix matrix, MEulerRotation::RotationOrder ord) -> MEulerRotation {
-    //     throw std::logic_error{"Function not yet implemented."};
-    // }, py::arg("matrix"), py::arg("ord"), _doc_EulerRotation_decompose)
+    .def_static("decompose", &MEulerRotation::decompose,
+        py::arg("matrix"), py::arg("ord"), _doc_EulerRotation_decompose)
 
-    // .def("incrementalRotateBy", [](MEulerRotation & self, MVector axis, double angle) -> & {
-    //     throw std::logic_error{"Function not yet implemented."};
-    // }, py::arg("axis"), py::arg("angle"), _doc_EulerRotation_incrementalRotateBy)
+    .def("incrementalRotateBy", &MEulerRotation::incrementalRotateBy,
+        py::arg("axis"), py::arg("angle"), _doc_EulerRotation_incrementalRotateBy)
 
-    // .def("inverse", [](MEulerRotation & self) -> MEulerRotation {
-    //     throw std::logic_error{"Function not yet implemented."};
-    // }, _doc_EulerRotation_inverse)
+    .def("inverse", [](MEulerRotation & self) -> MEulerRotation {
+        return self.inverse();
+    }, _doc_EulerRotation_inverse)
 
-    // .def("invertIt", [](MEulerRotation & self) -> & {
-    //     throw std::logic_error{"Function not yet implemented."};
-    // }, _doc_EulerRotation_invertIt)
+    .def("invertIt", &MEulerRotation::invertIt, _doc_EulerRotation_invertIt)
 
-    // .def("isEquivalent", [](MEulerRotation & self, MEulerRotation other, double tolerance = kEulerRotationEpsilon) -> bool {
-    //     throw std::logic_error{"Function not yet implemented."};
-    // }, py::arg("other"), py::arg("tolerance") = kEulerRotationEpsilon, _doc_EulerRotation_isEquivalent)
+    .def("isEquivalent", [](MEulerRotation & self, MEulerRotation other, double tolerance = kEulerRotationEpsilon) -> bool {
+        return self.isEquivalent(other, tolerance);
+    }, py::arg("other"), py::arg("tolerance") = kEulerRotationEpsilon, _doc_EulerRotation_isEquivalent)
 
-    // .def("isZero", [](MEulerRotation & self, double tolerance = kEulerRotationEpsilon) -> bool {
-    //     throw std::logic_error{"Function not yet implemented."};
-    // }, py::arg("tolerance") = kEulerRotationEpsilon, _doc_EulerRotation_isZero)
+    .def("isZero", [](MEulerRotation & self, double tolerance = kEulerRotationEpsilon) -> bool {
+        return self.isZero(tolerance);
+    }, py::arg("tolerance") = kEulerRotationEpsilon, _doc_EulerRotation_isZero)
 
-    // .def("reorder", [](MEulerRotation & self, MEulerRotation::RotationOrder ord) -> MEulerRotation {
-    //     throw std::logic_error{"Function not yet implemented."};
-    // }, py::arg("ord"), _doc_EulerRotation_reorder)
+    .def("reorder", [](MEulerRotation & self, MEulerRotation::RotationOrder order) -> MEulerRotation {
+        return self.reorder(order);
+    }, py::arg("order"), _doc_EulerRotation_reorder)
 
-    // .def("reorderIt", [](MEulerRotation & self, MEulerRotation::RotationOrder ord) -> & {
-    //     throw std::logic_error{"Function not yet implemented."};
-    // }, py::arg("ord"), _doc_EulerRotation_reorderIt)
+    .def("reorderIt", [](MEulerRotation & self, MEulerRotation::RotationOrder order) -> MEulerRotation& {
+        return self.reorderIt(order);
+    }, py::arg("order"), _doc_EulerRotation_reorderIt)
 
-    // .def("setToAlternateSolution", [](MEulerRotation & self) -> & {
-    //     throw std::logic_error{"Function not yet implemented."};
-    // }, _doc_EulerRotation_setToAlternateSolution)
+    .def("setToAlternateSolution", [](MEulerRotation & self) -> MEulerRotation& {
+        return self.setToAlternateSolution();
+    }, _doc_EulerRotation_setToAlternateSolution)
 
-    // .def("setToAlternateSolution", [](MEulerRotation & self, MEulerRotation src) -> & {
-    //     throw std::logic_error{"Function not yet implemented."};
-    // }, py::arg("src"), _doc_EulerRotation_setToAlternateSolution)
+    .def("setToAlternateSolution", [](MEulerRotation & self, MEulerRotation rot) -> MEulerRotation& {
+        return self.setToAlternateSolution(rot);
+    }, py::arg("rot"), _doc_EulerRotation_setToAlternateSolution)
 
-    // .def("setToClosestCut", [](MEulerRotation & self, MEulerRotation dst) -> & {
-    //     throw std::logic_error{"Function not yet implemented."};
-    // }, py::arg("dst"), _doc_EulerRotation_setToClosestCut)
+    .def("setToClosestCut", [](MEulerRotation & self, MEulerRotation target) -> MEulerRotation& {
+        return self.setToClosestCut(target);
+    }, py::arg("target"), _doc_EulerRotation_setToClosestCut)
 
-    // .def("setToClosestCut", [](MEulerRotation & self, MEulerRotation src, MEulerRotation dst) -> & {
-    //     throw std::logic_error{"Function not yet implemented."};
-    // }, py::arg("src"), py::arg("dst"), _doc_EulerRotation_setToClosestCut)
+    .def("setToClosestCut", [](MEulerRotation & self, MEulerRotation src, MEulerRotation target) -> MEulerRotation& {
+        return self.setToClosestCut(src, target);
+    }, py::arg("src"), py::arg("target"), _doc_EulerRotation_setToClosestCut)
 
-    // .def("setToClosestSolution", [](MEulerRotation & self, MEulerRotation dst) -> & {
-    //     throw std::logic_error{"Function not yet implemented."};
-    // }, py::arg("dst"), _doc_EulerRotation_setToClosestSolution)
+    .def("setToClosestSolution", [](MEulerRotation & self, MEulerRotation target) -> MEulerRotation& {
+        return self.setToClosestSolution(target);
+    }, py::arg("target"), _doc_EulerRotation_setToClosestSolution)
 
-    // .def("setToClosestSolution", [](MEulerRotation & self, MEulerRotation src, MEulerRotation dst) -> & {
-    //     throw std::logic_error{"Function not yet implemented."};
-    // }, py::arg("src"), py::arg("dst"), _doc_EulerRotation_setToClosestSolution)
+    .def("setToClosestSolution", [](MEulerRotation & self, MEulerRotation src, MEulerRotation target) -> MEulerRotation& {
+        return self.setToClosestSolution(src, target);
+    }, py::arg("src"), py::arg("target"), _doc_EulerRotation_setToClosestSolution)
 
-    // .def("setValue", [](MEulerRotation & self, MVector v, MEulerRotation::RotationOrder ord = MEulerRotation::kXYZ) -> & {
-    //     throw std::logic_error{"Function not yet implemented."};
-    // }, py::arg("v"), py::arg("ord") = MEulerRotation::kXYZ, _doc_EulerRotation_setValue)
+    .def("setValue", [](MEulerRotation & self, const MEulerRotation & rot) -> MEulerRotation& {
+        return self.setValue(rot.x, rot.y, rot.z, rot.order);
+    })
 
-    // .def("setValue", [](MEulerRotation & self, double xx, double yy, double zz, MEulerRotation::RotationOrder ord = MEulerRotation::kXYZ) -> & {
-    //     throw std::logic_error{"Function not yet implemented."};
-    // }, py::arg("xx"), py::arg("yy"), py::arg("zz"), py::arg("ord") = MEulerRotation::kXYZ, _doc_EulerRotation_setValue);
+    .def("setValue", [](MEulerRotation & self, MVector vec, MEulerRotation::RotationOrder order = MEulerRotation::kXYZ) -> MEulerRotation& {
+        return self.setValue(vec, order);
+    }, py::arg("v"), py::arg("order") = MEulerRotation::kXYZ, _doc_EulerRotation_setValue)
+
+    .def("setValue", [](MEulerRotation & self, double xx, double yy, double zz, MEulerRotation::RotationOrder order = MEulerRotation::kXYZ) -> MEulerRotation& {
+        return self.setValue(xx, yy, zz, order);
+    }, py::arg("xx"), py::arg("yy"), py::arg("zz"), py::arg("order") = MEulerRotation::kXYZ, _doc_EulerRotation_setValue);
     ;
