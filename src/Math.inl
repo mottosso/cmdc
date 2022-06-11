@@ -300,13 +300,13 @@ Quaternion
 
     .def_static("slerp", [](const MQuaternion& p, const MQuaternion& q, double t, short spin) {
         return slerp(p, q, t, spin);
-    }py::arg("p"), py::arg("q"), py::arg("t"), py::arg("spin"))
+    }, py::arg("p"), py::arg("q"), py::arg("t"), py::arg("spin"))
 
     .def_static("squad", [](const MQuaternion& p, const MQuaternion& a, const MQuaternion& b,
                             const MQuaternion& q, double t, short spin) {
         return squad(p, a, b, q, t, spin);
 
-    }py::arg("p"), py::arg("a"), py::arg("b"), py::arg("q"), py::arg("t"), py::arg("spin"))
+    }, py::arg("p"), py::arg("a"), py::arg("b"), py::arg("q"), py::arg("t"), py::arg("spin"))
 
     .def_static("squadPt", [](const MQuaternion& q0, const MQuaternion& q1, const MQuaternion& q2)	{
         return squadPt(q0, q1, q2);
