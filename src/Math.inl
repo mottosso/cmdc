@@ -281,7 +281,7 @@ Quaternion
     .def("normalizeIt", &MQuaternion::normalizeIt)
     .def("setToXAxis", &MQuaternion::setToXAxis, py::arg("angle"))
     .def("setToYAxis", &MQuaternion::setToYAxis, py::arg("angle"))
-    .def("setToZAxis", &MQuaternion::setToZAxis, , py::arg("angle"))
+    .def("setToZAxis", &MQuaternion::setToZAxis, py::arg("angle"))
     .def("setValue", [](MQuaternion& self, const MQuaternion& quat) {
         self = quat;
     }, py::arg("quat"))
