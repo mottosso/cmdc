@@ -190,7 +190,7 @@ EulerRotation
 
     .def("setValue", [](MEulerRotation & self, const MEulerRotation & rot) -> MEulerRotation& {
         return self.setValue(rot.x, rot.y, rot.z, rot.order);
-    })
+    }, py::arg("rot"), _doc_EulerRotation_setValue)
 
     .def("setValue", [](MEulerRotation & self, MVector vec, MEulerRotation::RotationOrder order = MEulerRotation::kXYZ) -> MEulerRotation& {
         return self.setValue(vec, order);
