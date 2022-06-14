@@ -46,3 +46,14 @@ String
         return "<cmdc.String()>";
     }
 );
+
+
+py::enum_<MSpace::Space>(Space, "Space")
+    .value("kInvalid", MSpace::Space::kInvalid) 
+    .value("kTransform", MSpace::Space::kTransform)
+    .value("kPreTransform", MSpace::Space::kPreTransform)
+    .value("kPostTransform", MSpace::Space::kPostTransform)
+    .value("kWorld", MSpace::Space::kWorld)
+    .value("kObject", MSpace::Space::kObject)
+    .value("kLast", MSpace::Space::kLast)
+    .export_values();

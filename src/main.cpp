@@ -8,6 +8,8 @@
 #include <regex>
 #include <string>
 #include <vector>
+#include <algorithm>
+#include <iterator>
 
 // Types
 #include <maya/MAngle.h>
@@ -43,6 +45,7 @@
 // Function sets
 #include <maya/MFnDependencyNode.h>
 #include <maya/MFnDagNode.h>
+#include <maya/MFnTransform.h>
 
 #include "util/atov.hpp"
 #include "util/plug.hpp"
@@ -69,6 +72,7 @@ PYBIND11_MODULE(cmdc, m) {
     #include "ForwardDeclarations.inl"
 
     #include "Math.inl"
+    #include "MEulerRotation.inl"
     #include "MDagModifier.inl"
     #include "MDagPath.inl"
     #include "MDGModifier.inl"
@@ -80,6 +84,8 @@ PYBIND11_MODULE(cmdc, m) {
     #include "MBoundingBox.inl"
     #include "MPlug.inl"
     #include "MSelectionList.inl"
+    #include "MTransformationMatrix.inl"
+    #include "MFnTransform.inl"
 
 #ifdef VERSION_INFO
     m.attr("__version__") = MACRO_STRINGIFY(VERSION_INFO);
