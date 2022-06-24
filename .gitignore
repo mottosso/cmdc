@@ -6,6 +6,7 @@ tmp/*
 MFn.Types.inl
 devkit.tgz
 devkitBase
+*.tags
 
 # IDE stuff
 .vscode
