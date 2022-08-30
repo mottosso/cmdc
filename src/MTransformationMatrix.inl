@@ -79,6 +79,16 @@ TransformationMatrix
     .def(py::init<>())
     .def(py::init<const MMatrix &>(), py::arg("src"))
     .def(py::init<const MTransformationMatrix &>(), py::arg("src"))
+    .def(py::init([](std::array<double, 16> seq) {
+        double tmp[4][4] = {{seq[0], seq[1], seq[2], seq[3]},
+                            {seq[4], seq[5], seq[6], seq[7]},
+                            {seq[8], seq[9], seq[10], seq[11]},
+                            {seq[12], seq[13], seq[14], seq[15]}
+                            };
+
+        const MMatrix matrix(tmp);
+        return std::unique_ptr<MTransformationMatrix>(new MTransformationMatrix(matrix));
+    }), py::arg("seq"), "Create a new transformation matrix from a sequence of 16 float values.")
 
     .def("asMatrix", [](MTransformationMatrix & self, double interp = 1.0) -> MMatrix {
         return self.asMatrix(interp);

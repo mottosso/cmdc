@@ -35,6 +35,12 @@ Vector
     .def(py::self ^ py::self, py::arg("other"))
     .def(-py::self)
 
+    .def("asArray", [](const MVector &self) -> py::array {
+        double v[3];
+        self.get(v);
+        return py::array(3, v);
+    })
+
     .def("angle", &MVector::angle, py::arg("other"),
         "Returns the angle, in radians, between this vector and another.")
 
