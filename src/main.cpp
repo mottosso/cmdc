@@ -43,13 +43,15 @@
 #include <maya/MObjectArray.h>  // MFnDagNode
 
 // Function sets
-#include <maya/MFnDependencyNode.h>
 #include <maya/MFnDagNode.h>
 #include <maya/MFnTransform.h>
+#include <maya/MFnDependencyNode.h>
 
 #include "util/atov.hpp"
 #include "util/plug.hpp"
 #include "util/obj.hpp"
+
+#include "fn/init.h"
 
 #define STRINGIFY(x) #x
 #define MACRO_STRINGIFY(x) STRINGIFY(x)
@@ -79,13 +81,13 @@ PYBIND11_MODULE(cmdc, m) {
     #include "MFn.inl"
     #include "Types.inl"
     #include "MObject.inl"
-    #include "MFnDependencyNode.inl"
-    #include "MFnDagNode.inl"
     #include "MBoundingBox.inl"
     #include "MPlug.inl"
     #include "MSelectionList.inl"
     #include "MTransformationMatrix.inl"
-    #include "MFnTransform.inl"
+
+    init_fn_classes(m);
+    
 
 #ifdef VERSION_INFO
     m.attr("__version__") = MACRO_STRINGIFY(VERSION_INFO);

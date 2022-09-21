@@ -1,7 +1,11 @@
 cmake_minimum_required(VERSION 3.4)
 project(cmdc)
 
-set(CMDC_SOURCES "src/main.cpp")
+set(CMDC_SOURCES "src/main.cpp"
+                 "src/fn/init.cpp"
+                 "src/fn/MFnDagNode.cpp"
+                 "src/fn/MFnDependencyNode.cpp"
+                 "src/fn/MFnTransform.cpp")
 
 if (NOT DEFINED MAYA_VERSION)
     set(MAYA_VERSION 2020 CACHE STRING "Maya version")
