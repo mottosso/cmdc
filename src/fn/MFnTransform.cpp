@@ -104,6 +104,36 @@ namespace py = pybind11;
 void init_MFnTransform(py::module_ &m) {
     py::class_<MFnTransform, MFnDagNode> FnTransform(m, "FnTransform");
 
+    py::enum_<MFnTransform::LimitType>(FnTransform, "LimitType")
+        .value("kScaleMinX", MFnTransform::kScaleMinX)
+        .value("kScaleMaxX", MFnTransform::kScaleMaxX)
+        .value("kScaleMinY", MFnTransform::kScaleMinY)
+        .value("kScaleMaxY", MFnTransform::kScaleMaxY)
+        .value("kScaleMinZ", MFnTransform::kScaleMinZ)
+        .value("kScaleMaxZ", MFnTransform::kScaleMaxZ)
+
+        .value("kShearMinXY", MFnTransform::kShearMinXY)
+        .value("kShearMaxXY", MFnTransform::kShearMaxXY)
+        .value("kShearMinXZ", MFnTransform::kShearMinXZ)
+        .value("kShearMaxXZ", MFnTransform::kShearMaxXZ)
+        .value("kShearMinYZ", MFnTransform::kShearMinYZ)
+        .value("kShearMaxYZ", MFnTransform::kShearMaxYZ)
+
+        .value("kRotateMinX", MFnTransform::kRotateMinX)
+        .value("kRotateMaxX", MFnTransform::kRotateMaxX)
+        .value("kRotateMinY", MFnTransform::kRotateMinY)
+        .value("kRotateMaxY", MFnTransform::kRotateMaxY)
+        .value("kRotateMinZ", MFnTransform::kRotateMinZ)
+        .value("kRotateMaxZ", MFnTransform::kRotateMaxZ)
+
+        .value("kTranslateMinX", MFnTransform::kTranslateMinX)
+        .value("kTranslateMaxX", MFnTransform::kTranslateMaxX)
+        .value("kTranslateMinY", MFnTransform::kTranslateMinY)
+        .value("kTranslateMaxY", MFnTransform::kTranslateMaxY)
+        .value("kTranslateMinZ", MFnTransform::kTranslateMinZ)
+        .value("kTranslateMaxZ", MFnTransform::kTranslateMaxZ)
+        .export_values();
+
     FnTransform
         .def(py::init<>())
 
@@ -491,34 +521,4 @@ void init_MFnTransform(py::module_ &m) {
                 throw std::logic_error(status.errorString().asChar());
             }
         }, py::arg("vec"), py::arg("space"), _doc_FnTransform_translateBy);
-
-    py::enum_<MFnTransform::LimitType>(FnTransform, "LimitType")
-    .value("kScaleMinX", MFnTransform::kScaleMinX)
-    .value("kScaleMaxX", MFnTransform::kScaleMaxX)
-    .value("kScaleMinY", MFnTransform::kScaleMinY)
-    .value("kScaleMaxY", MFnTransform::kScaleMaxY)
-    .value("kScaleMinZ", MFnTransform::kScaleMinZ)
-    .value("kScaleMaxZ", MFnTransform::kScaleMaxZ)
-
-    .value("kShearMinXY", MFnTransform::kShearMinXY)
-    .value("kShearMaxXY", MFnTransform::kShearMaxXY)
-    .value("kShearMinXZ", MFnTransform::kShearMinXZ)
-    .value("kShearMaxXZ", MFnTransform::kShearMaxXZ)
-    .value("kShearMinYZ", MFnTransform::kShearMinYZ)
-    .value("kShearMaxYZ", MFnTransform::kShearMaxYZ)
-
-    .value("kRotateMinX", MFnTransform::kRotateMinX)
-    .value("kRotateMaxX", MFnTransform::kRotateMaxX)
-    .value("kRotateMinY", MFnTransform::kRotateMinY)
-    .value("kRotateMaxY", MFnTransform::kRotateMaxY)
-    .value("kRotateMinZ", MFnTransform::kRotateMinZ)
-    .value("kRotateMaxZ", MFnTransform::kRotateMaxZ)
-
-    .value("kTranslateMinX", MFnTransform::kTranslateMinX)
-    .value("kTranslateMaxX", MFnTransform::kTranslateMaxX)
-    .value("kTranslateMinY", MFnTransform::kTranslateMinY)
-    .value("kTranslateMaxY", MFnTransform::kTranslateMaxY)
-    .value("kTranslateMinZ", MFnTransform::kTranslateMinZ)
-    .value("kTranslateMaxZ", MFnTransform::kTranslateMaxZ)
-    .export_values();
 }

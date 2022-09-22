@@ -52,6 +52,7 @@
 #include "util/obj.hpp"
 
 #include "fn/init.h"
+#include "math/init.h"
 
 #define STRINGIFY(x) #x
 #define MACRO_STRINGIFY(x) STRINGIFY(x)
@@ -73,8 +74,6 @@ PYBIND11_MODULE(cmdc, m) {
 
     #include "ForwardDeclarations.inl"
 
-    #include "Math.inl"
-    #include "MEulerRotation.inl"
     #include "MDagModifier.inl"
     #include "MDagPath.inl"
     #include "MDGModifier.inl"
@@ -84,8 +83,8 @@ PYBIND11_MODULE(cmdc, m) {
     #include "MBoundingBox.inl"
     #include "MPlug.inl"
     #include "MSelectionList.inl"
-    #include "MTransformationMatrix.inl"
 
+    init_math_classes(m);
     init_fn_classes(m);
     
 

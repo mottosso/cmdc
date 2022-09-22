@@ -1,12 +1,6 @@
 cmake_minimum_required(VERSION 3.4)
 project(cmdc)
 
-set(CMDC_SOURCES "src/main.cpp"
-                 "src/fn/init.cpp"
-                 "src/fn/MFnDagNode.cpp"
-                 "src/fn/MFnDependencyNode.cpp"
-                 "src/fn/MFnTransform.cpp")
-
 if (NOT DEFINED MAYA_VERSION)
     set(MAYA_VERSION 2020 CACHE STRING "Maya version")
 endif()
@@ -46,7 +40,9 @@ add_subdirectory(pybind11)
 add_custom_target(BuildMFnTypes ALL python ./scripts/mfn.py parse ${MAYA_DEVKIT_ROOT}
                   BYPRODUCTS ./src/MFn.Types.inl
                   WORKING_DIRECTORY ${PROJECT_SOURCE_DIR})
-add_library(${PROJECT_NAME} SHARED ${CMDC_SOURCES})
+add_library(${PROJECT_NAME} SHARED "")
+add_subdirectory(src)
+
 add_dependencies(${PROJECT_NAME} BuildMFnTypes)
 add_custom_command(TARGET ${PROJECT_NAME}
                     POST_BUILD

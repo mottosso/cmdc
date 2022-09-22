@@ -123,6 +123,12 @@ namespace py = pybind11;
 void init_MFnDagNode(py::module_ &m) {
     py::class_<MFnDagNode, MFnDependencyNode> FnDagNode(m, "FnDagNode");
 
+    py::enum_<MFnDagNode::MObjectColorType>(FnDagNode, "ObjectColorType")
+        .value("kUseDefaultColor", MFnDagNode::MObjectColorType::kUseDefaultColor) 
+        .value("kUseIndexColor", MFnDagNode::MObjectColorType::kUseIndexColor) 
+        .value("kUseRGBColor", MFnDagNode::MObjectColorType::kUseRGBColor) 
+        .export_values();
+
     FnDagNode
         .def_property_readonly_static("kNextPos", [](py::object /* self */) {
             return static_cast<unsigned int>(MFnDagNode::kNextPos); 
@@ -425,10 +431,4 @@ void init_MFnDagNode(py::module_ &m) {
         .def("transformationMatrix", [](MFnDagNode& self) -> MMatrix {
             return self.transformationMatrix();
         }, _doc_FnDagNode_transformationMatrix);
-
-    py::enum_<MFnDagNode::MObjectColorType>(FnDagNode, "ObjectColorType")
-    .value("kUseDefaultColor", MFnDagNode::MObjectColorType::kUseDefaultColor) 
-    .value("kUseIndexColor", MFnDagNode::MObjectColorType::kUseIndexColor) 
-    .value("kUseRGBColor", MFnDagNode::MObjectColorType::kUseRGBColor) 
-    .export_values();
 }
