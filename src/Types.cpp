@@ -3,6 +3,8 @@
 #include <maya/MTypeId.h>
 #include <maya/MString.h>
 #include <maya/MString.h>
+#include <maya/MFn.h>
+#include "MFn.Types.inl"
 
 namespace py = pybind11;
 
@@ -11,6 +13,8 @@ void init_types(py::module_ &m) {
     py::class_<MSpace> Space(m, "Space");
     py::class_<MStatus> Status(m, "Status");
     py::class_<MString> String(m, "String");
+    py::class_<MFn> Fn(m, "Fn");
+    py::enum_<MFn::Type> fn_type(Fn, "Type");
 
     Status
         .def(py::init<>())
@@ -66,4 +70,10 @@ void init_types(py::module_ &m) {
         .value("kObject", MSpace::Space::kObject)
         .value("kLast", MSpace::Space::kLast)
         .export_values();
+
+    for (int x = MFn::Type::kInvalid; x <= MFn::Type::kLast; x++) {
+        MFn::Type type = static_cast<MFn::Type>(x);
+        fn_type.value(type_names[x].c_str(), type);
+    }
+    fn_type.export_values();
 }

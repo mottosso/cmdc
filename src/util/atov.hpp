@@ -1,3 +1,11 @@
+#include <string>
+#include <vector>
+#include <maya/MIntArray.h>
+#include <maya/MPlugArray.h>
+#include <maya/MPlug.h>
+#include <maya/MString.h>
+#include <maya/MStringArray.h>
+
 namespace atov {
     inline std::vector<int> convert(MIntArray& array)
     {

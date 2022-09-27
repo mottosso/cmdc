@@ -1,3 +1,6 @@
+#include <maya/MPlug.h>
+#include <maya/MString.h>
+
 namespace plug {
     inline void assert_not_null(MPlug &p) {
         if (p.isNull()) {

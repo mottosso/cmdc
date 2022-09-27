@@ -1,14 +1,12 @@
 py::class_<MAngle> Angle(m, "Angle");
+py::class_<MColor> Color(m, "Color");
 py::class_<MDAGDrawOverrideInfo> DAGDrawOverrideInfo(m, "DAGDrawOverrideInfo");
 py::class_<MDagPathArray> DagPathArray(m, "DagPathArray");
 py::class_<MDataBlock> DataBlock(m, "DataBlock");
 py::class_<MDataHandle> DataHandle(m, "DataHandle");
 py::class_<MDistance> Distance(m, "Distance");
-py::class_<MFn> Fn(m, "Fn");
 py::class_<MObjectArray> ObjectArray(m, "ObjectArray");
 py::class_<MPxData> PxData(m, "PxData");
-py::enum_<MFn::Type> fn_type(Fn, "Type");
 py::class_<MTime> Time(m, "Time");
 py::class_<MUuid> Uuid(m, "Uuid");
 py::class_<MNodeClass> NodeClass(m, "NodeClass");
-py::class_<MColor> Color(m, "Color");

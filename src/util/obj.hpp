@@ -1,3 +1,7 @@
+#include <string>
+#include <maya/MObject.h>
+#include <maya/MFn.h>
+
 namespace validate {
     inline void is_not_null(MObject &o, std::string error_message) {
         if (o.isNull()) {
