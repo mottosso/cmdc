@@ -13,7 +13,6 @@
 
 namespace py = pybind11;
 
-
 #define _doc_FnDagNode_create \
     "Creates a new DAG node of the specified type, with the given name.\n"\
     "The type may be either a type name or a type ID. If no name is given\n"\

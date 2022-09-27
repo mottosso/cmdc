@@ -60,6 +60,15 @@
 
 namespace py = pybind11;
 
+void init_types(py::module_ &);
+void init_MObject(py::module_ &);
+void init_MBoundingBox(py::module_ &);
+void init_MDagModifier(py::module_ &);
+void init_MDGModifier(py::module_ &);
+void init_MPlug(py::module_ &);
+void init_MSelectionList(py::module_ &);
+void init_MDagPath(py::module_ &);
+
 PYBIND11_MODULE(cmdc, m) {
     m.doc() = R"pbdoc(
         cmdc
@@ -73,17 +82,16 @@ PYBIND11_MODULE(cmdc, m) {
     )pbdoc";
 
     #include "ForwardDeclarations.inl"
-
-    #include "MDagModifier.inl"
-    #include "MDagPath.inl"
-    #include "MDGModifier.inl"
     #include "MFn.inl"
-    #include "Types.inl"
-    #include "MObject.inl"
-    #include "MBoundingBox.inl"
-    #include "MPlug.inl"
-    #include "MSelectionList.inl"
 
+    init_types(m);
+    init_MObject(m);
+    init_MDagPath(m);
+    init_MPlug(m);
+    init_MBoundingBox(m);
+    init_MDGModifier(m);
+    init_MDagModifier(m);
+    init_MSelectionList(m);
     init_math_classes(m);
     init_fn_classes(m);
     
