@@ -8,7 +8,7 @@
 #include <maya/MDistance.h>
 #include <maya/MAngle.h>
 #include <maya/MDataHandle.h>
-#include <maya/MDatablock.h>
+#include <maya/MDataBlock.h>
 #include <maya/MPxData.h>
 #include <maya/MString.h>
 #include <maya/MStringArray.h>
