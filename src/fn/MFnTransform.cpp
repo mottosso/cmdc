@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <pybind11/pybind11.h>
 #include <maya/MDagPath.h>
 #include <maya/MObject.h>
