@@ -22,3 +22,16 @@ def test_limits():
 
     transform.enableLimit(cmdc.FnTransform.kScaleMinX, True)
     assert transform.isLimited(cmdc.FnTransform.kScaleMinX)
+
+
+def test_scale():
+    transform = cmdc.FnTransform()
+    transform.create()
+
+    transform.scaleBy([2.0, 3.0, 4.0])
+    transformation = transform.transformation
+    assert transformation.scale(cmdc.Space.kTransform) == [2.0, 3.0, 4.0]
+
+    transform.setScale([4.0, 2.0, 1.0])
+    transformation = transform.transformation
+    assert transformation.scale(cmdc.Space.kTransform) == [4.0, 2.0, 1.0]

@@ -251,6 +251,7 @@ jobs:
           mkdir -p /var/tmp/runtime-root
           export XDG_RUNTIME_DIR=/var/tmp/runtime-root
           export MAYA_DISABLE_ADP=1
+          export MAYA_NO_STANDALONE_ATEXIT=1
 
       - name: Tests
         run: |
