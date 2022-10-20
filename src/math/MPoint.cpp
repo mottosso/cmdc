@@ -6,12 +6,12 @@
 #include <maya/MQuaternion.h>
 #include <maya/MEulerRotation.h>
 #include <maya/MMatrix.h>
+#include "../init.h"
 
 namespace py = pybind11;
 
-void init_MPoint(py::module_ &m) {
-    py::class_<MPoint> Point(m, "Point");
-
+template <>
+void init_class(py::class_<MPoint> &Point) {
     Point
         .def(py::init<>())
         .def(py::init<double, double, double, double>(),

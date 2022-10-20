@@ -3,6 +3,7 @@
 #include <maya/MBoundingBox.h>
 #include <maya/MPoint.h>
 #include <maya/MMatrix.h>
+#include "init.h"
 
 namespace py = pybind11;
 
@@ -33,9 +34,8 @@ namespace py = pybind11;
 #define _doc_BoundingBox_width \
     "Size in X"
 
-void init_MBoundingBox(py::module_ &m) {
-    py::class_<MBoundingBox> BoundingBox(m, "BoundingBox");
-
+template <>
+void init_class(py::class_<MBoundingBox> &BoundingBox) {
     BoundingBox
         .def(py::init<>())
 

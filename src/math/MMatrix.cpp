@@ -6,12 +6,12 @@
 #include <maya/MQuaternion.h>
 #include <maya/MEulerRotation.h>
 #include <maya/MMatrix.h>
+#include "../init.h"
 
 namespace py = pybind11;
 
-void init_MMatrix(py::module_ &m) {
-    py::class_<MMatrix> Matrix(m, "Matrix");
-
+template <>
+void init_class(py::class_<MMatrix> &Matrix) {
     Matrix
         .def(py::init<>())
         .def(py::init<const MMatrix &>(), py::arg("src"))

@@ -6,12 +6,12 @@
 #include <maya/MQuaternion.h>
 #include <maya/MEulerRotation.h>
 #include <maya/MMatrix.h>
+#include "../init.h"
 
 namespace py = pybind11;
 
-void init_MQuaternion(py::module_ &m) {
-    py::class_<MQuaternion> Quaternion(m, "Quaternion");
-
+template <>
+void init_class(py::class_<MQuaternion> &Quaternion) {
     Quaternion
         .def(py::init<>())
         .def(py::init<const double,

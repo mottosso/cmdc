@@ -2,6 +2,7 @@
 #include <pybind11/operators.h>
 #include <maya/MObject.h>
 #include <maya/MObjectHandle.h>
+#include "init.h"
 
 namespace py = pybind11;
 
@@ -18,10 +19,8 @@ namespace py = pybind11;
 #define _doc_Object_apiTypeStr \
     "Return the type name of the internal Maya Object."
 
-void init_MObject(py::module_ &m) {
-    py::class_<MObject> Object(m, "Object");
-    py::class_<MObjectHandle> ObjectHandle(m, "ObjectHandle");
-
+template <>
+void init_class(py::class_<MObject> &Object) {
     Object
         .def_property_readonly_static("kNullObj", [](py::object /* self */) { return MObject::kNullObj; })
         .def(py::init<>())
@@ -47,7 +46,10 @@ void init_MObject(py::module_ &m) {
             return ret;
         }
     );
+}
 
+template <>
+void init_class(py::class_<MObjectHandle> &ObjectHandle) {
     ObjectHandle
         .def(py::init<>())
         .def(py::init<const MObject &>(), py::arg("object"))

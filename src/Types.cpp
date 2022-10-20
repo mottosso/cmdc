@@ -5,26 +5,12 @@
 #include <maya/MString.h>
 #include <maya/MFn.h>
 #include "MFn.Types.inl"
+#include "init.h"
 
 namespace py = pybind11;
 
-void init_types(py::module_ &m) {
-    py::class_<MTypeId> TypeId(m, "TypeId");
-    py::class_<MSpace> Space(m, "Space");
-    py::class_<MStatus> Status(m, "Status");
-    py::class_<MString> String(m, "String");
-    py::class_<MFn> Fn(m, "Fn");
-    py::enum_<MFn::Type> fn_type(Fn, "Type");
-
-    Status
-        .def(py::init<>())
-        .def(py::init<const MStatus &>(), py::arg("status"))
-
-        .def("__repr__", [](const MStatus &a) {
-            return "<cmdc.Status()>";
-        }
-    );
-
+template <>
+void init_class(py::class_<MTypeId> &TypeId) {
     TypeId
         .def(py::init<>())
         .def(py::init<const MTypeId &>(), py::arg("src"))
@@ -43,7 +29,22 @@ void init_types(py::module_ &m) {
             return "<cmdc.TypeId( " + std::to_string(id) + ")>";
         }
     );
+}
 
+template <>
+void init_class(py::class_<MStatus> &Status) {
+    Status
+        .def(py::init<>())
+        .def(py::init<const MStatus &>(), py::arg("status"))
+
+        .def("__repr__", [](const MStatus &a) {
+            return "<cmdc.Status()>";
+        }
+    );
+}
+
+template <>
+void init_class(py::class_<MString> &String) {
     String
         .def(py::init<>())
         .def(py::init<const MString &>(), py::arg("other"))
@@ -60,7 +61,10 @@ void init_types(py::module_ &m) {
             return "<cmdc.String()>";
         }
     );
+}
 
+template <>
+void init_class(py::class_<MSpace> &Space) {
     py::enum_<MSpace::Space>(Space, "Space")
         .value("kInvalid", MSpace::Space::kInvalid) 
         .value("kTransform", MSpace::Space::kTransform)
@@ -70,7 +74,10 @@ void init_types(py::module_ &m) {
         .value("kObject", MSpace::Space::kObject)
         .value("kLast", MSpace::Space::kLast)
         .export_values();
+}
 
+template <>
+void init_enum(py::enum_<MFn::Type> &fn_type) {
     for (int x = MFn::Type::kInvalid; x <= MFn::Type::kLast; x++) {
         MFn::Type type = static_cast<MFn::Type>(x);
         fn_type.value(type_names[x].c_str(), type);

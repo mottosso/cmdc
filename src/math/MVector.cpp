@@ -6,12 +6,12 @@
 #include <maya/MQuaternion.h>
 #include <maya/MEulerRotation.h>
 #include <maya/MMatrix.h>
+#include "../init.h"
 
 namespace py = pybind11;
 
-void init_MVector(py::module_ &m) {
-    py::class_<MVector> Vector(m, "Vector");
-
+template <>
+void init_class(py::class_<MVector> &Vector) {
     Vector
         .def(py::init<>())
         .def(py::init<const double,

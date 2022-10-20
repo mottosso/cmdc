@@ -10,6 +10,7 @@
 #include <maya/MDagPathArray.h>
 #include <maya/MColor.h>
 #include <maya/MMatrix.h>
+#include "../init.h"
 
 namespace py = pybind11;
 
@@ -118,10 +119,8 @@ namespace py = pybind11;
 #define _doc_FnDagNode_transformationMatrix \
     "Returns the object space transformation matrix for this DAG node."
 
-
-void init_MFnDagNode(py::module_ &m) {
-    py::class_<MFnDagNode, MFnDependencyNode> FnDagNode(m, "FnDagNode");
-
+template <>
+void init_class(py::class_<MFnDagNode, MFnDependencyNode> &FnDagNode) {
     py::enum_<MFnDagNode::MObjectColorType>(FnDagNode, "ObjectColorType")
         .value("kUseDefaultColor", MFnDagNode::MObjectColorType::kUseDefaultColor) 
         .value("kUseIndexColor", MFnDagNode::MObjectColorType::kUseIndexColor) 

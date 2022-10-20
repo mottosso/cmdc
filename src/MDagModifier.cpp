@@ -7,6 +7,7 @@
 #include <maya/MPlug.h>
 #include <maya/MFnDagNode.h>
 #include "util/obj.hpp"
+#include "init.h"
 
 namespace py = pybind11;
 
@@ -38,9 +39,8 @@ namespace py = pybind11;
     "the world, so long as it is a transform type.\n"\
     "If it is not a transform type then the doIt() will raise a RuntimeError."
 
-void init_MDagModifier(py::module_ &m) {
-    py::class_<MDagModifier, MDGModifier> DagModifier(m, "DagModifier");
-
+template <>
+void init_class(py::class_<MDagModifier, MDGModifier> &DagModifier) {
     DagModifier
         .def(py::init<>())
 

@@ -6,6 +6,7 @@
 #include <maya/MQuaternion.h>
 #include <maya/MEulerRotation.h>
 #include <maya/MMatrix.h>
+#include "../init.h"
 
 namespace py = pybind11;
 
@@ -69,9 +70,8 @@ namespace py = pybind11;
 #define _doc_EulerRotation_decompose \
     "Extracts a rotation from a matrix."
 
-void init_MEulerRotation(py::module_ &m) {
-    py::class_<MEulerRotation> EulerRotation(m, "EulerRotation");
-
+template <>
+void init_class(py::class_<MEulerRotation> &EulerRotation) {
     py::enum_<MEulerRotation::RotationOrder>(EulerRotation, "RotationOrder")
         .value("kXYZ", MEulerRotation::RotationOrder::kXYZ)
         .value("kYZX", MEulerRotation::RotationOrder::kYZX)

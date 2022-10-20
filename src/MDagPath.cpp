@@ -6,6 +6,7 @@
 #include <maya/MObject.h>
 #include <maya/MString.h>
 #include <maya/MMatrix.h>
+#include "init.h"
 
 namespace py = pybind11;
 
@@ -122,9 +123,8 @@ namespace py = pybind11;
 #define _doc_DagPath_transform \
     "Returns the last transform node on the path."
 
-void init_MDagPath(py::module_ &m) {
-    py::class_<MDagPath> DagPath(m, "DagPath");
-
+template <>
+void init_class(py::class_<MDagPath> &DagPath) {
     DagPath
         .def(py::init<>())
 

@@ -9,6 +9,7 @@
 #include <maya/MTime.h>
 #include "util/obj.hpp"
 #include "util/plug.hpp"
+#include "init.h"
 
 namespace py = pybind11;
 
@@ -212,9 +213,8 @@ namespace py = pybind11;
     "Note that the link is broken immediately and is not affected by\n"\
     "the modifier's doIt() or undoIt() methods."
 
-void init_MDGModifier(py::module_ &m) {
-    py::class_<MDGModifier> DGModifier(m, "DGModifier");
-
+template <>
+void init_class(py::class_<MDGModifier> &DGModifier) {
     DGModifier
         .def(py::init<>())
 

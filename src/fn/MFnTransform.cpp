@@ -10,6 +10,7 @@
 #include <maya/MMatrix.h>
 #include <maya/MPoint.h>
 #include <maya/MVector.h>
+#include "../init.h"
 
 namespace py = pybind11;
 
@@ -103,9 +104,8 @@ namespace py = pybind11;
 #define _doc_FnTransform_enableLimit \
     "Enables or disables a specified limit type."
 
-void init_MFnTransform(py::module_ &m) {
-    py::class_<MFnTransform, MFnDagNode> FnTransform(m, "FnTransform");
-
+template <>
+void init_class(py::class_<MFnTransform, MFnDagNode> &FnTransform) {
     py::enum_<MFnTransform::LimitType>(FnTransform, "LimitType")
         .value("kScaleMinX", MFnTransform::kScaleMinX)
         .value("kScaleMaxX", MFnTransform::kScaleMaxX)

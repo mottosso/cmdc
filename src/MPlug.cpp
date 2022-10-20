@@ -15,6 +15,7 @@
 #include <maya/MTime.h>
 #include "util/plug.hpp"
 #include "util/atov.hpp"
+#include "init.h"
 
 namespace py = pybind11;
 
@@ -270,9 +271,8 @@ namespace py = pybind11;
     "Note that the behavior of connectedTo() is identical\n"\
     "to sourceWithConversion(), that is, do not skip over unit conversion nodes."
 
-void init_MPlug(py::module_ &m) {
-    py::class_<MPlug> Plug(m, "Plug");
-
+template <>
+void init_class(py::class_<MPlug> &Plug) {
     py::enum_<MPlug::MValueSelector>(Plug, "ValueSelector")
         .value("kAll", MPlug::MValueSelector::kAll)
         .value("kNonDefault", MPlug::MValueSelector::kNonDefault)

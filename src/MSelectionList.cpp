@@ -9,6 +9,8 @@
 #include <maya/MStringArray.h>
 #include <maya/MUuid.h>
 #include "util/atov.hpp"
+#include "init.h"
+
 
 namespace py = pybind11;
 
@@ -96,9 +98,8 @@ namespace py = pybind11;
     "Removes from the list those elements of the given component which\n"\
     "are already on it and adds those which are not."
 
-void init_MSelectionList(py::module_ &m) {
-    py::class_<MSelectionList> SelectionList(m, "SelectionList");
-
+template <>
+void init_class(py::class_<MSelectionList> &SelectionList) {
     py::enum_<MSelectionList::MergeStrategy>(SelectionList, "MergeStrategy")
         .value("kMergeNormal", MSelectionList::MergeStrategy::kMergeNormal)
         .value("kXORWithList", MSelectionList::MergeStrategy::kXORWithList)

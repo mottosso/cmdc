@@ -8,6 +8,7 @@
 #include <maya/MMatrix.h>
 #include <maya/MStatus.h>
 #include <maya/MString.h>
+#include "../init.h"
 
 namespace py = pybind11;
 
@@ -77,9 +78,8 @@ namespace py = pybind11;
 #define _doc_TransformationMatrix_isEquivalent \
     "Returns true if this transformation's matrix is within tolerance of another's matrix."
 
-void init_MTransformationMatrix(py::module_ &m) {
-    py::class_<MTransformationMatrix> TransformationMatrix(m, "TransformationMatrix");
-    
+template <>
+void init_class(py::class_<MTransformationMatrix> &TransformationMatrix) {
     py::enum_<MTransformationMatrix::RotationOrder>(TransformationMatrix, "RotationOrder")
         .value("kInvalid", MTransformationMatrix::RotationOrder::kInvalid) 
         .value("kXYZ", MTransformationMatrix::RotationOrder::kXYZ)

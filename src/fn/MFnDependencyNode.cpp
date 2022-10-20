@@ -2,6 +2,7 @@
 #include <maya/MObject.h>
 #include <maya/MPlug.h>
 #include <maya/MFnDependencyNode.h>
+#include "../init.h"
 
 namespace py = pybind11;
 
@@ -13,9 +14,8 @@ namespace py = pybind11;
 #define _doc_FnDependencyNode_findPlug \
     "Attempt to find a plug for the given attribute."
 
-void init_MFnDependencyNode(py::module_ &m) {
-    py::class_<MFnDependencyNode> FnDependencyNode(m, "FnDependencyNode");
-
+template <>
+void init_class(py::class_<MFnDependencyNode> &FnDependencyNode) {
     FnDependencyNode
         .def(py::init<>())
         .def(py::init<const MObject &>(), py::arg("object"))
