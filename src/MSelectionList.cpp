@@ -155,13 +155,26 @@ void init_class(py::class_<MSelectionList> &SelectionList) {
         _doc_SelectionList_add)
 
         .def("add", [](MSelectionList & self, MUuid uuid, bool mergeWithExisting = false) -> MSelectionList {
-            throw std::logic_error{"Function not yet implemented."};
+            MStatus status = self.add(uuid, mergeWithExisting);
+
+            if (!status) {
+                MString error_msg("No object has uuid '^1s'.");
+                        error_msg.format(error_msg, uuid.asString());
+
+                throw std::runtime_error(error_msg.asChar());
+            }
+
+            return self;
         }, py::arg("uuid"),
         py::arg("mergeWithExisting") = false,
         _doc_SelectionList_add)
 
         .def("clear", [](MSelectionList & self) {
-            throw std::logic_error{"Function not yet implemented."};
+            MStatus status = self.clear();
+
+            if (!status) {
+                throw std::runtime_error("Failed to clear selection list.");
+            }
         }, R"pbdoc(Empties the selection list.)pbdoc")
 
         .def("getDagPath", [](MSelectionList & self, unsigned int index) -> MDagPath {
@@ -256,18 +269,39 @@ void init_class(py::class_<MSelectionList> &SelectionList) {
         _doc_SelectionList_getSelectionStrings)
 
         .def("hasItem", [](MSelectionList & self, MDagPath item, MObject component = MObject::kNullObj) -> bool {
-            throw std::logic_error{"Function not yet implemented."};
+            MStatus status;
+            bool exists = self.hasItem(item, component, &status);
+
+            if (!status) {
+                throw std::runtime_error("Failed to check if item is in list.");
+            }
+            
+            return exists;
         }, py::arg("item"),
         py::arg_v("component", MObject::kNullObj, "Object.kNullObj"),
         _doc_SelectionList_hasItem)
 
         .def("hasItem", [](MSelectionList & self, MObject item) -> bool {
-            throw std::logic_error{"Function not yet implemented."};
+            MStatus status;
+            bool exists = self.hasItem(item, &status);
+
+            if (!status) {
+                throw std::runtime_error("Failed to check if item is in list.");
+            }
+            
+            return exists;
         }, py::arg("item"),
         _doc_SelectionList_hasItem)
 
         .def("hasItem", [](MSelectionList & self, MPlug plug) -> bool {
-            throw std::logic_error{"Function not yet implemented."};
+            MStatus status;
+            bool exists = self.hasItem(plug, &status);
+
+            if (!status) {
+                throw std::runtime_error("Failed to check if item is in list.");
+            }
+            
+            return exists;
         }, py::arg("plug"),
         _doc_SelectionList_hasItem)
 

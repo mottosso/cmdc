@@ -35,6 +35,7 @@
 #include <maya/MFnDependencyNode.h>
 #include <maya/MFnDagNode.h>
 #include <maya/MFnTransform.h>
+#include <maya/MFnMesh.h>
 
 #include "init.h"
 
@@ -56,7 +57,7 @@ PYBIND11_MODULE(cmdc, m) {
 
     )pbdoc";
 
-    #include "ForwardDeclarations.inl"
+    #include "ForwardDeclarations.h"
 
     init_enum(fn_type);
     init_class(TypeId);
@@ -64,6 +65,7 @@ PYBIND11_MODULE(cmdc, m) {
     init_class(String);
     init_class(Space);
     init_class(Object);
+    init_class(ObjectHandle);
     init_class(DagPath);
     init_class(Plug);
     init_class(BoundingBox);
@@ -79,6 +81,7 @@ PYBIND11_MODULE(cmdc, m) {
     init_class(FnDagNode);
     init_class(FnDependencyNode);
     init_class(FnTransform);
+    init_class(FnMesh);
 
 #ifdef VERSION_INFO
     m.attr("__version__") = MACRO_STRINGIFY(VERSION_INFO);

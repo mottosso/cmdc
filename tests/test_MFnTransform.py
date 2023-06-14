@@ -1,10 +1,27 @@
 import nose.tools
-
+from maya import cmds
 import cmdc 
 
 
 def test_init_transform():
     transform = cmdc.FnTransform()
+
+    existing = cmds.createNode('transform')
+    sel = cmdc.SelectionList()
+    sel.add(existing)
+
+    transformObj = sel.getDependNode(0)
+    assert transformObj.hasFn(cmdc.Fn.kTransform)
+
+    transform = cmdc.FnTransform(transformObj)
+    assert existing == transform.name()
+
+    transformDag = sel.getDagPath(0)
+    transform = cmdc.FnTransform(transformDag)
+
+    assert transform.getPath() == transformDag
+
+    cmds.delete(existing)
 
 
 def test_create_transform():
