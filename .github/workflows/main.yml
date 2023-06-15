@@ -321,7 +321,7 @@ jobs:
 #
   upload_release:
     name: Upload release
-    needs: [maya-win, maya-linux, maya-macos, generate-stubs, test]
+    needs: [maya-win, maya-linux, maya-macos-11, maya-macos-12, generate-stubs, test]
     runs-on: ubuntu-latest
 
     # Only run on e.g. v0.1.0
