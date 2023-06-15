@@ -30,6 +30,7 @@
 #include <maya/MBoundingBox.h>
 #include <maya/MDagPathArray.h>  // MFnDagNode
 #include <maya/MObjectArray.h>  // MFnDagNode
+#include <maya/MMeshSmoothOptions.h>
 
 // Function sets
 #include <maya/MFnDependencyNode.h>

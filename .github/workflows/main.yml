@@ -43,6 +43,8 @@ jobs:
             devkit: "https://autodesk-adn-transfer.s3-us-west-2.amazonaws.com/ADN+Extranet/M%26E/Maya/devkit+2022/Autodesk_Maya_2022_3_Update_DEVKIT_Windows.zip"
           - maya: "2023"
             devkit: "https://autodesk-adn-transfer.s3-us-west-2.amazonaws.com/ADN+Extranet/M%26E/Maya/devkit+2023/Autodesk_Maya_2023_DEVKIT_Windows.zip"
+          - maya: "2024"
+            devkit: "https://autodesk-adn-transfer.s3-us-west-2.amazonaws.com/ADN+Extranet/M%26E/Maya/devkit+2024/Autodesk_Maya_2024_1_Update_DEVKIT_Windows.zip"
 
     steps:
       - name: Checkout code
@@ -73,8 +75,8 @@ jobs:
   # MacOS
   #
   #
-  maya-macos:
-    runs-on: macos-10.15
+  maya-macos-11:
+    runs-on: macos-11
 
     strategy:
       fail-fast: false
@@ -105,7 +107,46 @@ jobs:
 
       - uses: maxim-lobanov/setup-xcode@v1
         with:
-          xcode-version: '10.3'
+          xcode-version: '11.7'
+
+      - name: Configure CMake
+        run: |
+          cmake -G Xcode -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DMAYA_VERSION=${{matrix.maya}} -DMAYA_DEVKIT_ROOT="$PWD/devkitBase"
+
+      - name: Build
+        run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
+
+      - name: Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: macos-${{matrix.maya}}
+          path: build/${{env.BUILD_TYPE}}/cmdc.so
+
+  maya-macos-12:
+    runs-on: macos-12
+
+    strategy:
+      fail-fast: false
+
+      matrix:
+       include:
+          - maya: "2024"
+            devkit: "https://autodesk-adn-transfer.s3-us-west-2.amazonaws.com/ADN+Extranet/M%26E/Maya/devkit+2024/Autodesk_Maya_2024_1_Update_DEVKIT_Mac.dmg"
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          submodules: true
+
+      - name: Install devkit
+        run: |
+          curl -o devkit.dmg ${{matrix.devkit}}
+          7z x devkit.dmg
+
+      - uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: '13.4'
 
       - name: Configure CMake
         run: |
@@ -144,6 +185,7 @@ jobs:
           - maya: "2020.4"
           - maya: "2022.3"
           - maya: "2023"
+          - maya: "2024"
 
     steps:
       - name: Checkout code
@@ -219,6 +261,9 @@ jobs:
         - maya: "2023"
           image: "scottenglert/maya-test:2023"
           pip: "get-pip.py"
+        - maya: "2024"
+          image: "scottenglert/maya-test:2024"
+          pip: "get-pip.py"
 
     steps:
       - name: Checkout code
@@ -246,6 +291,8 @@ jobs:
 
         # Since 2019, this sucker throws an unnecessary
         # warning if not declared.
+        # The MAYA_NO_STANDALONE_ATEXIT is needed to return a non 0 return code for test failure
+        # this seems to be addressed with bug fix MAYA-122975 (Maya 2024)
       - name: Environment
         run: |
           mkdir -p /var/tmp/runtime-root

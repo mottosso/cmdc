@@ -34,3 +34,4 @@ py::class_<MTransformationMatrix> TransformationMatrix(m, "TransformationMatrix"
 py::class_<MFnTransform, MFnDagNode> FnTransform(m, "FnTransform");
 py::class_<MDagModifier, MDGModifier> DagModifier(m, "DagModifier");
 py::class_<MFnMesh, MFnDagNode> FnMesh(m, "FnMesh");
+py::class_<MMeshSmoothOptions> MeshSmoothOptions(m, "MeshSmoothOptions");
