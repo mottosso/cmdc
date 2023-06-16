@@ -142,7 +142,8 @@ jobs:
       - name: Install devkit
         run: |
           curl -o devkit.dmg ${{matrix.devkit}}
-          DEVKITMOUNT=$(hdiutil mount devkit.dmg | awk 'END {$1=$2=""; print $0}')
+          MOUNTDIR=$(hdiutil mount devkit.dmg | awk 'END {$1=$2=""; print $0}')
+          cp -r $MOUNTDIR .
 
       - uses: maxim-lobanov/setup-xcode@v1
         with:
@@ -150,7 +151,7 @@ jobs:
 
       - name: Configure CMake
         run: |
-          cmake -G Xcode -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DMAYA_VERSION=${{matrix.maya}} -DMAYA_DEVKIT_ROOT="$DEVKITMOUNT"
+          cmake -G Xcode -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DMAYA_VERSION=${{matrix.maya}} -DMAYA_DEVKIT_ROOT="$PWD/devkitBase"
 
       - name: Build
         run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
