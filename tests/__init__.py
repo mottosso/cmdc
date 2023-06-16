@@ -1,3 +1,12 @@
+# temp fix for nose erroring for Python 3.10
+# see nose issue #1122 in github
+import sys
+if sys.version_info.major == 3 and sys.version_info.minor == 10:
+    import collections.abc
+    for member in ['Callable', 'Iterable', 'Sequence']:
+        if not hasattr(collections, member):
+            setattr(collections, member, getattr(collections.abc, member))
+
 from maya import standalone
 standalone.initialize()
 
