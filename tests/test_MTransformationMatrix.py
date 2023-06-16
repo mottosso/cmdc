@@ -9,6 +9,11 @@ def test_new_transformation_matrix():
 
     otherCopy = cmdc.TransformationMatrix(cmdc.Matrix())
 
+    fromList = cmdc.TransformationMatrix([1, 0, 0, 0,
+                                          0, 1, 0, 0,
+                                          0, 0, 1, 0,
+                                          0, 0, 0, 1])
+
 def test_as_matrix():
     mat = cmdc.TransformationMatrix()
 

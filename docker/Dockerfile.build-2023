@@ -1,4 +1,4 @@
-FROM aswf/ci-base:2022.2
+FROM aswf/ci-base:2022.4
 
 # Download devkit
 ENV DEVKIT "https://autodesk-adn-transfer.s3-us-west-2.amazonaws.com/ADN+Extranet/M%26E/Maya/devkit+2023/Autodesk_Maya_2023_DEVKIT_Linux.tgz"

@@ -1,0 +1,9 @@
+target_sources(${PROJECT_NAME}
+    PRIVATE
+        ${CMAKE_CURRENT_LIST_DIR}/MEulerRotation.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/MMatrix.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/MPoint.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/MQuaternion.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/MTransformationMatrix.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/MVector.cpp
+    )

@@ -1,15 +1,4 @@
 #include <pybind11/pybind11.h>
-#include <pybind11/operators.h>
-#include <pybind11/stl.h>
-
-#include <cstdlib>
-#include <fstream>
-#include <iostream>
-#include <regex>
-#include <string>
-#include <vector>
-#include <algorithm>
-#include <iterator>
 
 // Types
 #include <maya/MAngle.h>
@@ -41,21 +30,21 @@
 #include <maya/MBoundingBox.h>
 #include <maya/MDagPathArray.h>  // MFnDagNode
 #include <maya/MObjectArray.h>  // MFnDagNode
+#include <maya/MMeshSmoothOptions.h>
 
 // Function sets
 #include <maya/MFnDependencyNode.h>
 #include <maya/MFnDagNode.h>
 #include <maya/MFnTransform.h>
+#include <maya/MFnMesh.h>
 
-#include "util/atov.hpp"
-#include "util/plug.hpp"
-#include "util/obj.hpp"
+#include "init.h"
 
 #define STRINGIFY(x) #x
 #define MACRO_STRINGIFY(x) STRINGIFY(x)
-#define CHECK_STATUS(status) if (!status) { throw std::runtime_error(status.errorString().asChar());}
 
 namespace py = pybind11;
+
 
 PYBIND11_MODULE(cmdc, m) {
     m.doc() = R"pbdoc(
@@ -69,23 +58,31 @@ PYBIND11_MODULE(cmdc, m) {
 
     )pbdoc";
 
-    #include "ForwardDeclarations.inl"
+    #include "ForwardDeclarations.h"
 
-    #include "Math.inl"
-    #include "MEulerRotation.inl"
-    #include "MDagModifier.inl"
-    #include "MDagPath.inl"
-    #include "MDGModifier.inl"
-    #include "MFn.inl"
-    #include "Types.inl"
-    #include "MObject.inl"
-    #include "MFnDependencyNode.inl"
-    #include "MFnDagNode.inl"
-    #include "MBoundingBox.inl"
-    #include "MPlug.inl"
-    #include "MSelectionList.inl"
-    #include "MTransformationMatrix.inl"
-    #include "MFnTransform.inl"
+    init_enum(fn_type);
+    init_class(TypeId);
+    init_class(Status);
+    init_class(String);
+    init_class(Space);
+    init_class(Object);
+    init_class(ObjectHandle);
+    init_class(DagPath);
+    init_class(Plug);
+    init_class(BoundingBox);
+    init_class(DGModifier);
+    init_class(DagModifier);
+    init_class(SelectionList);
+    init_class(EulerRotation);
+    init_class(Matrix);
+    init_class(Point);
+    init_class(Quaternion);
+    init_class(TransformationMatrix);
+    init_class(Vector);
+    init_class(FnDagNode);
+    init_class(FnDependencyNode);
+    init_class(FnTransform);
+    init_class(FnMesh);
 
 #ifdef VERSION_INFO
     m.attr("__version__") = MACRO_STRINGIFY(VERSION_INFO);

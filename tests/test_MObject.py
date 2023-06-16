@@ -4,6 +4,9 @@ def test_init_null():
     obj = cmdc.Object()
     assert obj.isNull()
 
+    obj = cmdc.Object.kNullObj
+    assert obj.isNull()
+
 def test_init_mobject():
     sel = cmdc.SelectionList().add("persp")
     obj = sel.getDependNode(0)
@@ -34,6 +37,8 @@ def test_equality():
     obj = sel.getDependNode(0)
     other = cmdc.Object(obj)
     assert obj == other
+
+    assert cmdc.Object() == cmdc.Object.kNullObj
 
 def test_inequality():
     sel = cmdc.SelectionList()
