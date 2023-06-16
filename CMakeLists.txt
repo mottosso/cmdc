@@ -49,7 +49,6 @@ add_dependencies(${PROJECT_NAME} BuildMFnTypes)
 add_custom_command(TARGET ${PROJECT_NAME}
                     POST_BUILD
                     COMMAND python ./mfn.py clear -
-                    BYPRODUCTS ./src/MFn.Types.inl
                     WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}/scripts"
 )
 
